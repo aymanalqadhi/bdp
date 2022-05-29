@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BDP.Domain.Entities\BDP.Domain.Entities.csproj" />
+    <ProjectReference Include="..\BDP.Domain.Services.Interfaces\BDP.Domain.Services.Interfaces.csproj" />
+    <ProjectReference Include="..\BDP.Shared.Interfaces\BDP.Domain.Repositories.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Interactive" Version="6.0.1" />
+    <PackageReference Include="System.Linq.Async" Version="6.0.1" />
+  </ItemGroup>
+
+</Project>
