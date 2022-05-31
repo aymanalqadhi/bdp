@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using BDP.Domain.Entities;
-using BDP.Domain.Services.Interfaces;
+using BDP.Domain.Services;
 using BDP.Web.Api.Extensions;
 using BDP.Web.Dtos;
 using BDP.Web.Dtos.Requests;
@@ -23,7 +23,7 @@ public class TransactionsController : ControllerBase
     private readonly ITransactionsService _transactionsSvc;
     private readonly IMapper _mapper;
 
-    #endregion
+    #endregion Private fields
 
     #region Ctors
 
@@ -40,7 +40,7 @@ public class TransactionsController : ControllerBase
         _pageSize = configurationSvc.GetInt("QuerySettings:DefaultPageSize");
     }
 
-    #endregion
+    #endregion Ctors
 
     #region Actions
 
@@ -81,7 +81,6 @@ public class TransactionsController : ControllerBase
         return Ok(_mapper.Map<TransactionConfirmationDto>(ret));
     }
 
-
     [HttpPost("{id}/[action]")]
     [Authorize]
     public async Task<IActionResult> Cancel(int id)
@@ -92,5 +91,5 @@ public class TransactionsController : ControllerBase
         return Ok(_mapper.Map<TransactionConfirmationDto>(ret));
     }
 
-    #endregion
+    #endregion Actions
 }

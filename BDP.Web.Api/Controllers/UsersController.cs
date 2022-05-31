@@ -1,8 +1,8 @@
-﻿using BDP.Domain.Services.Interfaces;
-using BDP.Web.Dtos;
+﻿using BDP.Web.Dtos;
 
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using BDP.Domain.Services;
 
 namespace BDP.Web.Api.Controllers;
 
@@ -17,7 +17,7 @@ public class UsersController : ControllerBase
     private readonly IUsersService _usersSvc;
     private readonly IMapper _mapper;
 
-    #endregion
+    #endregion Private fields
 
     #region Ctros
 
@@ -32,7 +32,7 @@ public class UsersController : ControllerBase
         _pageSize = configurationSvc.GetInt("QuerySettings:DefaultPageSize");
     }
 
-    #endregion
+    #endregion Ctros
 
     #region Actions
 
@@ -52,6 +52,5 @@ public class UsersController : ControllerBase
         return Ok(ret.Select(_mapper.Map<UserDto>));
     }
 
-
-    #endregion
+    #endregion Actions
 }

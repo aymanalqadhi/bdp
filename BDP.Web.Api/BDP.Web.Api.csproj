@@ -22,8 +22,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BDP.Domain.Services.Interfaces\BDP.Domain.Services.Interfaces.csproj" />
-    <ProjectReference Include="..\BDP.Domain.Services\BDP.Domain.Services.csproj" />
+    <ProjectReference Include="..\BDP.Application.App\BDP.Application.App.csproj" />
+    <ProjectReference Include="..\BDP.Domain.Services.Interfaces\BDP.Domain.Services.csproj" />
     <ProjectReference Include="..\BDP.Infrastructure.Repositories.EntityFramework\BDP.Infrastructure.Repositories.EntityFramework.csproj" />
     <ProjectReference Include="..\BDP.Infrastructure.Services\BDP.Infrastructure.Services.csproj" />
     <ProjectReference Include="..\BDP.Web.Dtos\BDP.Web.Dtos.csproj" />

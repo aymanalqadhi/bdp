@@ -1,8 +1,8 @@
-﻿using AutoMapper;
-
-using BDP.Domain.Entities;
-using BDP.Domain.Services.Interfaces;
+﻿using BDP.Domain.Entities;
+using BDP.Domain.Services;
 using BDP.Web.Dtos;
+
+using AutoMapper;
 
 namespace BDP.Web.Api;
 

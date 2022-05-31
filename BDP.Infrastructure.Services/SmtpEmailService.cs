@@ -1,5 +1,4 @@
-﻿using BDP.Domain.Services.Interfaces;
-
+﻿using BDP.Domain.Services;
 using System.Net;
 using System.Net.Mail;
 

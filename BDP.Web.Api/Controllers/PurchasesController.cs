@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using BDP.Domain.Entities;
-using BDP.Domain.Services.Interfaces;
+using BDP.Domain.Services;
 using BDP.Web.Api.Extensions;
 using BDP.Web.Dtos;
 using Microsoft.AspNetCore.Authorization;
@@ -22,7 +22,7 @@ public class PurchasesController : ControllerBase
     private readonly IPurchasesService _purchasesSvc;
     private readonly IMapper _mapper;
 
-    #endregion
+    #endregion Private fields
 
     #region Ctors
 
@@ -38,7 +38,7 @@ public class PurchasesController : ControllerBase
         _mapper = mapper;
     }
 
-    #endregion
+    #endregion Ctors
 
     #region Actions
 
@@ -67,5 +67,5 @@ public class PurchasesController : ControllerBase
         }));
     }
 
-    #endregion
+    #endregion Actions
 }

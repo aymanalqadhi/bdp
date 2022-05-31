@@ -2,7 +2,7 @@
 
 using System.Linq.Expressions;
 
-namespace BDP.Domain.Services.Interfaces;
+namespace BDP.Domain.Services;
 
 public interface ITransactionsService
 {
@@ -18,7 +18,7 @@ public interface ITransactionsService
     IAsyncEnumerable<Transaction> ForUserAsync(
         int page,
         int pageSize,
-        User user, 
+        User user,
         Expression<Func<Transaction, object>>[]? includes = null);
 
     /// <summary>

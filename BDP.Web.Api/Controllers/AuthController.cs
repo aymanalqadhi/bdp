@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using BDP.Domain.Services.Interfaces;
+using BDP.Domain.Services;
 
 using BDP.Web.Api.Auth.Jwt;
 using BDP.Web.Api.Extensions;
@@ -23,7 +23,7 @@ public class AuthController : ControllerBase
     private readonly IMapper _mapper;
     private readonly JwtSettings _jwt = new();
 
-    #endregion
+    #endregion Private fields
 
     #region Ctors
 
@@ -36,7 +36,7 @@ public class AuthController : ControllerBase
         configSvc.Bind(nameof(JwtSettings), _jwt);
     }
 
-    #endregion
+    #endregion Ctors
 
     #region Actions
 
@@ -52,7 +52,7 @@ public class AuthController : ControllerBase
             LastIpAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown"
         };
 
-        var (user, refreshToken)= await _authSvc.SignInAsync(
+        var (user, refreshToken) = await _authSvc.SignInAsync(
             form.Username,
             form.Password,
             () => JwtUtils.GenerateRefereshToken(_jwt),
@@ -71,7 +71,6 @@ public class AuthController : ControllerBase
 
         return Ok(_mapper.Map<UserDto>(user));
     }
-
 
     [HttpPost("[action]")]
     [Authorize]
@@ -123,5 +122,5 @@ public class AuthController : ControllerBase
         return Ok();
     }
 
-    #endregion
+    #endregion Actions
 }

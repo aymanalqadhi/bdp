@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using BDP.Domain.Entities;
-using BDP.Domain.Services.Interfaces;
+using BDP.Domain.Services;
 using BDP.Web.Api.Auth.Attributes;
 using BDP.Web.Api.Extensions;
 using BDP.Web.Dtos;
@@ -25,7 +25,7 @@ public class EventsController : ControllerBase
     private readonly IEventsService _eventsSvc;
     private readonly IMapper _mapper;
 
-    #endregion
+    #endregion Private fields
 
     #region Ctors
 
@@ -44,7 +44,7 @@ public class EventsController : ControllerBase
         _pageSize = configurationSvc.GetInt("QuerySettings:DefaultPageSize");
     }
 
-    #endregion
+    #endregion Ctors
 
     #region Actions
 
@@ -220,5 +220,5 @@ public class EventsController : ControllerBase
         return Ok();
     }
 
-    #endregion
+    #endregion Actions
 }

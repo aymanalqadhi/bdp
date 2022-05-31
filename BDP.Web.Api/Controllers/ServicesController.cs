@@ -1,5 +1,4 @@
-﻿using BDP.Domain.Services.Interfaces;
-using BDP.Web.Api.Auth.Attributes;
+﻿using BDP.Web.Api.Auth.Attributes;
 using BDP.Web.Api.Extensions;
 using BDP.Web.Dtos;
 using BDP.Web.Dtos.Requests;
@@ -7,6 +6,7 @@ using BDP.Web.Dtos.Requests;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using BDP.Domain.Services;
 
 namespace BDP.Web.Api.Controllers;
 
@@ -21,7 +21,7 @@ public class ServicesController : ControllerBase
     private readonly IServicesService _servicesService;
     private readonly IMapper _mapper;
 
-    #endregion
+    #endregion Private fileds
 
     #region Ctors
 
@@ -37,7 +37,7 @@ public class ServicesController : ControllerBase
         _mapper = mapper;
     }
 
-    #endregion
+    #endregion Ctors
 
     #region Actions
 
@@ -111,5 +111,5 @@ public class ServicesController : ControllerBase
         return Ok(_mapper.Map<ReservationDto>(order));
     }
 
-    #endregion
+    #endregion Actions
 }

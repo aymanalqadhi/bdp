@@ -1,6 +1,6 @@
-﻿using BDP.Domain.Repositories;
+﻿using BDP.Application.App;
+using BDP.Domain.Repositories;
 using BDP.Domain.Services;
-using BDP.Domain.Services.Interfaces;
 using BDP.Infrastructure.Repositories.EntityFramework;
 using BDP.Infrastructure.Services;
 
@@ -115,7 +115,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddSingleton<IAuthorizationHandler, HasAllRolesRequirementHandler>();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, PoliciesProvider>();
 
-#endregion
+#endregion Services
 
 #region Filters
 
@@ -124,7 +124,7 @@ builder.Services.AddControllers(options =>
     options.Filters.Add<HttpResponseExceptionFilter>();
 });
 
-#endregion
+#endregion Filters
 
 var app = builder.Build();
 

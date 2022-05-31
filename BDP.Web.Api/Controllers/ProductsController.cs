@@ -1,11 +1,11 @@
-﻿using BDP.Domain.Services.Interfaces;
-using BDP.Web.Api.Auth.Attributes;
+﻿using BDP.Web.Api.Auth.Attributes;
 using BDP.Web.Api.Extensions;
 using BDP.Web.Dtos;
 using BDP.Web.Dtos.Requests;
 
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using BDP.Domain.Services;
 
 namespace BDP.Web.Api.Controllers;
 
