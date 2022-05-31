@@ -10,7 +10,7 @@ namespace BDP.Infrastructure.Repositories.EntityFramework;
 /// An implementation of <see cref="EfRepository{T}"/> for <see cref="Confirmation"/>
 /// </summary>
 public sealed class ConfirmationsRepository :
-    EfRepository<Confirmation, ConfirmationValidator>, IConfirmationsRepository
+    LegacyRepository<Confirmation, ConfirmationValidator>, IConfirmationsRepository
 {
     public ConfirmationsRepository(DbSet<Confirmation> set) : base(set)
     {

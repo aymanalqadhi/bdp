@@ -10,7 +10,7 @@ namespace BDP.Infrastructure.Repositories.EntityFramework;
 /// An implementation of <see cref="EfRepository{T}"/> for <see cref="UserGroup"/>
 /// </summary>
 public sealed class UserGroupsRepository :
-    EfRepository<UserGroup, UserGroupValidator>, IUserGroupsRepository
+    LegacyRepository<UserGroup, UserGroupValidator>, IUserGroupsRepository
 {
     public UserGroupsRepository(DbSet<UserGroup> set) : base(set)
     {

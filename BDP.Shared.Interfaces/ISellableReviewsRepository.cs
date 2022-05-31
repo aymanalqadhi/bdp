@@ -6,6 +6,6 @@ namespace BDP.Domain.Repositories;
 /// An interface to represent the functionality of a repository for the
 /// <see cref="SellableReview"/> entity
 /// </summary>
-public interface ISellableReviewsRepository : IRepository<SellableReview>
+public interface ISellableReviewsRepository : ILegacyRepository<SellableReview>
 {
 }

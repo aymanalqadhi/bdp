@@ -10,7 +10,7 @@ namespace BDP.Infrastructure.Repositories.EntityFramework;
 /// An implementation of <see cref="EfRepository{T}"/> for <see cref="RefreshToken"/>
 /// </summary>
 public sealed class RefreshTokensRepository :
-    EfRepository<RefreshToken, Validator<RefreshToken>>, IRefreshTokensRepository
+    LegacyRepository<RefreshToken, Validator<RefreshToken>>, IRefreshTokensRepository
 {
     public RefreshTokensRepository(DbSet<RefreshToken> set) : base(set)
     {

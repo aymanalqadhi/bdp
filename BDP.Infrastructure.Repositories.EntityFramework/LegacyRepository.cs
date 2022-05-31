@@ -1,51 +1,71 @@
 ﻿using BDP.Domain.Entities;
 using BDP.Domain.Entities.Validators;
 using BDP.Domain.Repositories;
+
 using Microsoft.EntityFrameworkCore;
+
+using System;
 using System.Linq.Expressions;
 
 namespace BDP.Infrastructure.Repositories.EntityFramework;
 
-public class EfRepository<T, V> : IRepository<T>
+[Obsolete]
+public class LegacyRepository<T, V> : ILegacyRepository<T>
     where T : AuditableEntity
     where V : Validator<T>, new()
 {
+    #region Private Fields
+
     private readonly DbSet<T> _set;
     private readonly V _validator;
+
+    #endregion Private Fields
+
+    #region Public Constructors
 
     /// <summary>
     /// Default constructor
     /// </summary>
     /// <param name="set">The DbSet on which the repository operates</param>
-    public EfRepository(DbSet<T> set)
+    public LegacyRepository(DbSet<T> set)
     {
         _set = set;
         _validator = new V();
     }
 
+    #endregion Public Constructors
+
+    #region Public Methods
+
     /// <inheritdoc/>
-    public async Task<T?> GetAsync(
-        long id,
-        Expression<Func<T, object>>[]? includes = null)
+    public void Add(T entity)
     {
-        return await WithIncludes(includes).FirstOrDefaultAsync(i => i.Id == id);
+        var res = _validator.Validate(entity);
+
+        if (!res.IsValid)
+            throw new ValidationAggregateException(res.Errors);
+
+        entity.CreatedAt = DateTime.Now;
+        entity.ModifiedAt = DateTime.Now;
+
+        _set.Add(entity);
     }
 
     /// <inheritdoc/>
-    public IAsyncEnumerable<T> GetAllAsync(Expression<Func<T, object>>[]? includes = null)
-        => WithIncludes(includes).AsAsyncEnumerable();
+    public Task<bool> AllAsync(Expression<Func<T, bool>> pred)
+        => _set.AllAsync(pred);
 
     /// <inheritdoc/>
-    public IAsyncEnumerable<T> GetAllAsync(
-        int page,
-        int pageLength,
-        Expression<Func<T, object>>[]? includes = null)
-    {
-        return WithIncludes(includes)
-            .Skip((page - 1) * pageLength)
-            .Take(page * pageLength)
-            .AsAsyncEnumerable();
-    }
+    public Task<bool> AnyAsync(Expression<Func<T, bool>> pred)
+        => _set.AnyAsync(pred);
+
+    /// <inheritdoc/>
+    public Task<int> CountAsync()
+        => _set.CountAsync();
+
+    /// <inheritdoc/>
+    public Task<int> CountAsync(Expression<Func<T, bool>> pred)
+        => _set.CountAsync(pred);
 
     /// <inheritdoc/>
     public IAsyncEnumerable<T> FilterAsync(
@@ -89,18 +109,36 @@ public class EfRepository<T, V> : IRepository<T>
     }
 
     /// <inheritdoc/>
-    public void Add(T entity)
+    public IAsyncEnumerable<T> GetAllAsync(Expression<Func<T, object>>[]? includes = null)
+        => WithIncludes(includes).AsAsyncEnumerable();
+
+    /// <inheritdoc/>
+    public IAsyncEnumerable<T> GetAllAsync(
+        int page,
+        int pageLength,
+        Expression<Func<T, object>>[]? includes = null)
     {
-        var res = _validator.Validate(entity);
-
-        if (!res.IsValid)
-            throw new ValidationAggregateException(res.Errors);
-
-        entity.CreatedAt = DateTime.Now;
-        entity.ModifiedAt = DateTime.Now;
-
-        _set.Add(entity);
+        return WithIncludes(includes)
+            .Skip((page - 1) * pageLength)
+            .Take(page * pageLength)
+            .AsAsyncEnumerable();
     }
+
+    /// <inheritdoc/>
+    public async Task<T?> GetAsync(
+        long id,
+        Expression<Func<T, object>>[]? includes = null)
+    {
+        return await WithIncludes(includes).FirstOrDefaultAsync(i => i.Id == id);
+    }
+
+    /// <inheritdoc/>
+    public async Task<bool> IsEmptyAsync()
+        => await CountAsync() == 0;
+
+    /// <inheritdoc/>
+    public void Remove(T entity)
+        => _set.Remove(entity);
 
     /// <inheritdoc/>
     public void Update(T entity)
@@ -114,29 +152,9 @@ public class EfRepository<T, V> : IRepository<T>
         _set.Update(entity);
     }
 
-    /// <inheritdoc/>
-    public void Remove(T entity)
-        => _set.Remove(entity);
+    #endregion Public Methods
 
-    /// <inheritdoc/>
-    public Task<int> CountAsync()
-        => _set.CountAsync();
-
-    /// <inheritdoc/>
-    public Task<int> CountAsync(Expression<Func<T, bool>> pred)
-        => _set.CountAsync(pred);
-
-    /// <inheritdoc/>
-    public async Task<bool> IsEmptyAsync()
-        => await CountAsync() == 0;
-
-    /// <inheritdoc/>
-    public Task<bool> AnyAsync(Expression<Func<T, bool>> pred)
-        => _set.AnyAsync(pred);
-
-    /// <inheritdoc/>
-    public Task<bool> AllAsync(Expression<Func<T, bool>> pred)
-        => _set.AllAsync(pred);
+    #region Private Methods
 
     /// <summary>
     /// Gets a queryable object with the passed includes
@@ -155,4 +173,6 @@ public class EfRepository<T, V> : IRepository<T>
 
         return query;
     }
+
+    #endregion Private Methods
 }

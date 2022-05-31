@@ -10,7 +10,7 @@ namespace BDP.Infrastructure.Repositories.EntityFramework;
 /// An implementation of <see cref="EfRepository{T}"/> for <see cref="Service"/>
 /// </summary>
 public sealed class ServicesRepository :
-    EfRepository<Service, SellableValidator<Service>>, IServicesRepository
+    LegacyRepository<Service, SellableValidator<Service>>, IServicesRepository
 {
     public ServicesRepository(DbSet<Service> set) : base(set)
     {

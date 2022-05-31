@@ -10,7 +10,7 @@ namespace BDP.Infrastructure.Repositories.EntityFramework;
 /// An implementation of <see cref="EfRepository{T}"/> for <see cref="Purchase"/>
 /// </summary>
 public sealed class PurchasesRepository :
-    EfRepository<Purchase, Validator<Purchase>>, IPurchasesRepository
+    LegacyRepository<Purchase, Validator<Purchase>>, IPurchasesRepository
 {
     public PurchasesRepository(DbSet<Purchase> set) : base(set)
     {

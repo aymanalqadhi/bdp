@@ -6,6 +6,6 @@ namespace BDP.Domain.Repositories;
 /// An interface to represent the functionality of a repository for the
 /// <see cref="FinancialRecordVerification"/> entity
 /// </summary>
-public interface IFinancialRecordVerificationsRepository : IRepository<FinancialRecordVerification>
+public interface IFinancialRecordVerificationsRepository : ILegacyRepository<FinancialRecordVerification>
 {
 }

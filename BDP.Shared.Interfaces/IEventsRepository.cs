@@ -6,6 +6,6 @@ namespace BDP.Domain.Repositories;
 /// An interface to represent the functionality of a repository for the
 /// <see cref="Event"/> entity
 /// </summary>
-public interface IEventsRepository : IRepository<Event>
+public interface IEventsRepository : ILegacyRepository<Event>
 {
 }

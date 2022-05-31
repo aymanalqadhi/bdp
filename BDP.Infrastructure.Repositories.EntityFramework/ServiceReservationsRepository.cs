@@ -10,7 +10,7 @@ namespace BDP.Infrastructure.Repositories.EntityFramework;
 /// An implementation of <see cref="EfRepository{T}"/> for <see cref="ServiceReservation"/>
 /// </summary>
 public sealed class ServiceReservationsRepository :
-    EfRepository<ServiceReservation, Validator<ServiceReservation>>, IServiceReservationsRepository
+    LegacyRepository<ServiceReservation, Validator<ServiceReservation>>, IServiceReservationsRepository
 {
     public ServiceReservationsRepository(DbSet<ServiceReservation> set) : base(set)
     {

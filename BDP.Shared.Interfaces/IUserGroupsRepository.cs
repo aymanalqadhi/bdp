@@ -6,6 +6,6 @@ namespace BDP.Domain.Repositories;
 /// An interface to represent the functionality of a repository for the
 /// <see cref="UserGroup"/> entity
 /// </summary>
-public interface IUserGroupsRepository : IRepository<UserGroup>
+public interface IUserGroupsRepository : ILegacyRepository<UserGroup>
 {
 }

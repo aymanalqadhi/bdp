@@ -6,6 +6,6 @@ namespace BDP.Domain.Repositories;
 /// An interface to represent the functionality of a repository for the
 /// <see cref="Attachment"/> entity
 /// </summary>
-public interface IAttachmentsRepository : IRepository<Attachment>
+public interface IAttachmentsRepository : ILegacyRepository<Attachment>
 {
 }
