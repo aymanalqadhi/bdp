@@ -93,7 +93,7 @@ public sealed class EfUnitOfWork : ILegacyUnitOfWork, IDisposable, IAsyncDisposa
 
     /// <inheritdoc/>
     public async Task<IAsyncDatabaseTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
-        => new EfDatabaseTransaction(await _ctx.Database.BeginTransactionAsync(cancellationToken));
+        => new AsyncDatabaseTransaction(await _ctx.Database.BeginTransactionAsync(cancellationToken));
 
     /// <inheritdoc/>
     public void Dispose()
