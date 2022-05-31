@@ -24,7 +24,7 @@ public class WalletController : ControllerBase
     private readonly IFinancialRecordsService _financialRecordsSvc;
     private readonly IFinanceService _financeSvc;
 
-    #endregion
+    #endregion Private fields
 
     #region Ctors
 
@@ -43,7 +43,7 @@ public class WalletController : ControllerBase
         _pageSize = configurationSvc.GetInt("QuerySettings:DefaultPageSize");
     }
 
-    #endregion
+    #endregion Ctors
 
     #region Actions
 
@@ -90,7 +90,6 @@ public class WalletController : ControllerBase
         return Ok();
     }
 
-
     [HttpPost("[action]")]
     [Authorize]
     public async Task<IActionResult> Withdraw([FromBody] WithdrawRequest form)
@@ -101,5 +100,5 @@ public class WalletController : ControllerBase
         return Ok();
     }
 
-    #endregion
+    #endregion Actions
 }

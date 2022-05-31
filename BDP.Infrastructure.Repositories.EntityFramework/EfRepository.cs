@@ -1,9 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
-
-using BDP.Domain.Entities;
-using BDP.Domain.Repositories;
+﻿using BDP.Domain.Entities;
 using BDP.Domain.Entities.Validators;
+using BDP.Domain.Repositories;
+using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace BDP.Infrastructure.Repositories.EntityFramework;
 

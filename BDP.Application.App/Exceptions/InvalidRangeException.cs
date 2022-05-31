@@ -8,7 +8,7 @@ public sealed class InvalidRangeException : Exception
     private readonly double _min;
     private readonly double _max;
 
-    #endregion
+    #endregion Private fields
 
     #region Ctors
 
@@ -26,7 +26,7 @@ public sealed class InvalidRangeException : Exception
         _max = max;
     }
 
-    #endregion
+    #endregion Ctors
 
     #region Public properties
 
@@ -45,5 +45,5 @@ public sealed class InvalidRangeException : Exception
     /// </summary>
     public double Max => _max;
 
-    #endregion
+    #endregion Public properties
 }

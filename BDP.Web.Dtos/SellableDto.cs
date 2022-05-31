@@ -43,7 +43,7 @@ public class SellableDto
     public DateTime CreatedAt { get; set; }
 
     /// <summary>
-    /// Gets or sets 
+    /// Gets or sets
     /// </summary>
     public DateTime ModifiedAt { get; set; }
 }

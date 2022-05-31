@@ -1,6 +1,5 @@
 ﻿using BDP.Web.Dtos.Attributes;
 using Microsoft.AspNetCore.Http;
-using System.ComponentModel.DataAnnotations;
 
 namespace BDP.Web.Dtos.Requests;
 

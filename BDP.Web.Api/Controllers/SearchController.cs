@@ -11,7 +11,7 @@ public class SearchController : ControllerBase
 
     private readonly ISearchSuggestionsService _searchSuggestionsSvc;
 
-    #endregion
+    #endregion Private fields
 
     #region Ctors
 
@@ -20,7 +20,7 @@ public class SearchController : ControllerBase
         _searchSuggestionsSvc = searchSuggestionsSvc;
     }
 
-    #endregion
+    #endregion Ctors
 
     #region Actions
 
@@ -28,5 +28,5 @@ public class SearchController : ControllerBase
     public async Task<IActionResult> Suggestions(string query)
         => Ok(await _searchSuggestionsSvc.FindSuggestionsAsync(query));
 
-    #endregion
+    #endregion Actions
 }

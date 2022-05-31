@@ -13,7 +13,7 @@ public class JwtSettings
     public string RefreshTokenSecret { get; set; } = null!;
 
     /// <summary>
-    /// Gets or sets the access token expiration mintues 
+    /// Gets or sets the access token expiration mintues
     /// </summary>
     public double AccessTokenExpirationMinutes { get; set; } = 5;
 

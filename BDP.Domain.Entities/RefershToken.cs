@@ -35,7 +35,7 @@ public sealed class RefreshToken : AuditableEntity
     /// <summary>
     /// Gets or sets the expiration date of the token
     /// </summary>
-    public DateTime ValidUntil { get; set; } 
+    public DateTime ValidUntil { get; set; }
 
     /// <summary>
     /// Gets or sets the owner user

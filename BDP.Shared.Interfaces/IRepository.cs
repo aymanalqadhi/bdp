@@ -44,7 +44,7 @@ public interface IRepository<T> where T : AuditableEntity
     /// <returns>A list of all matching items in the repository</returns>
     IAsyncEnumerable<T> FilterAsync(
         Expression<Func<T, bool>> pred,
-        Expression<Func<T, object>>[]? includes = null, 
+        Expression<Func<T, object>>[]? includes = null,
         bool descOrder = false);
 
     /// <summary>

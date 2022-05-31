@@ -20,5 +20,5 @@ public class InvalidConfirmationCredentials : Exception
     /// </summary>
     public Confirmation Confirmation => _confirmation;
 
-    override public string Message => $"invalid credentails were used to activate account";
+    public override string Message => $"invalid credentails were used to activate account";
 }

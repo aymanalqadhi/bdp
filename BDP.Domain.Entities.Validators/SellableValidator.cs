@@ -26,4 +26,5 @@ public class SellableValidator<T> : Validator<T> where T : Sellable
     }
 }
 
-public sealed class SellableValidator : SellableValidator<Sellable> { }
+public sealed class SellableValidator : SellableValidator<Sellable>
+{ }

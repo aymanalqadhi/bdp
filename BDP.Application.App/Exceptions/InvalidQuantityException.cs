@@ -1,6 +1,4 @@
-﻿using BDP.Domain.Entities;
-
-namespace BDP.Application.App.Exceptions;
+﻿namespace BDP.Application.App.Exceptions;
 
 public class InvalidQuantityException : Exception
 {

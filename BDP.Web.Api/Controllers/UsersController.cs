@@ -1,8 +1,7 @@
-﻿using BDP.Web.Dtos;
-
-using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
 using BDP.Domain.Services;
+using BDP.Web.Dtos;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BDP.Web.Api.Controllers;
 

@@ -23,7 +23,7 @@ public class FinancialRecordsController : ControllerBase
     private readonly IFinancialRecordsService _financialRecordsSvc;
     private readonly IMapper _mapper;
 
-    #endregion
+    #endregion Private fields
 
     #region Ctors
 
@@ -40,7 +40,7 @@ public class FinancialRecordsController : ControllerBase
         _pageSize = configurationSvc.GetInt("QuerySettings:DefaultPageSize");
     }
 
-    #endregion
+    #endregion Ctors
 
     #region Actions
 
@@ -83,7 +83,7 @@ public class FinancialRecordsController : ControllerBase
         return Ok(_mapper.Map<FinancialRecordVerificationDto>(ret));
     }
 
-    #endregion
+    #endregion Actions
 
     #region Private methods
 
@@ -104,5 +104,5 @@ public class FinancialRecordsController : ControllerBase
         );
     }
 
-    #endregion
+    #endregion Private methods
 }
