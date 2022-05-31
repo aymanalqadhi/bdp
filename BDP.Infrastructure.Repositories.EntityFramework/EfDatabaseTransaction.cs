@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 namespace BDP.Infrastructure.Repositories.EntityFramework;
 
-public class EfDatabaseTransaction : IDatabaseTransaction
+public class EfDatabaseTransaction : IAsyncDatabaseTransaction
 {
     private readonly IDbContextTransaction _tx;
 

@@ -82,7 +82,7 @@ public sealed class EfUnitOfWork : ILegacyUnitOfWork, IDisposable, IAsyncDisposa
         => _ctx.SaveChangesAsync();
 
     /// <inheritdoc/>
-    public async Task<int> CommitAsync(IDatabaseTransaction transaction, CancellationToken cancellationToken = default)
+    public async Task<int> CommitAsync(IAsyncDatabaseTransaction transaction, CancellationToken cancellationToken = default)
     {
         var ret = await CommitAsync();
 
@@ -92,7 +92,7 @@ public sealed class EfUnitOfWork : ILegacyUnitOfWork, IDisposable, IAsyncDisposa
     }
 
     /// <inheritdoc/>
-    public async Task<IDatabaseTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
+    public async Task<IAsyncDatabaseTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
         => new EfDatabaseTransaction(await _ctx.Database.BeginTransactionAsync(cancellationToken));
 
     /// <inheritdoc/>

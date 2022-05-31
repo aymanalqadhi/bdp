@@ -135,7 +135,7 @@ public class TransactionsService : ITransactionsService
     private async Task<TransactionConfirmation> DoCreateConfirmation(
         Transaction? transaction,
         TransactionConfirmationOutcome outcome,
-        IDatabaseTransaction tx)
+        IAsyncDatabaseTransaction tx)
     {
         if (transaction == null)
             throw new NotFoundException($"transaction not found");
