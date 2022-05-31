@@ -2,7 +2,7 @@
 
 namespace BDP.Infrastructure.Repositories.EntityFramework;
 
-public sealed class EfUnitOfWork : IUnitOfWork, IDisposable, IAsyncDisposable
+public sealed class EfUnitOfWork : ILegacyUnitOfWork, IDisposable, IAsyncDisposable
 {
     private readonly BdpDbContext _ctx;
 

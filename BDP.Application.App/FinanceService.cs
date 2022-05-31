@@ -9,7 +9,7 @@ public class FinanceService : IFinanceService
 {
     #region Private fields
 
-    private readonly IUnitOfWork _uow;
+    private readonly ILegacyUnitOfWork _uow;
     private readonly IConfigurationService _configSvc;
     private readonly IRandomGeneratorService _rngSvc;
     private readonly IFinancialRecordsService _financialRecordsSvc;
@@ -29,7 +29,7 @@ public class FinanceService : IFinanceService
     /// <param name="financialRecordsSvc">The financial documents service</param>
     /// <param name="transactionsSvc">The transactions service</param>
     public FinanceService(
-        IUnitOfWork uow,
+        ILegacyUnitOfWork uow,
         IConfigurationService configSvc,
         IRandomGeneratorService rngSvc,
         IFinancialRecordsService financialRecordsSvc,

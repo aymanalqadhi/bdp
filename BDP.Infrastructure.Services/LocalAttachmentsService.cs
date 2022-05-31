@@ -7,7 +7,7 @@ namespace BDP.Infrastructure.Services;
 
 public class LocalAttachmentsService : IAttachmentsService
 {
-    private readonly IUnitOfWork _uow;
+    private readonly ILegacyUnitOfWork _uow;
     private readonly AttachmentsSettings _settings = new();
 
     /// <summary>
@@ -16,7 +16,7 @@ public class LocalAttachmentsService : IAttachmentsService
     /// <param name="uow">Application unit of work</param>
     /// <param name="configSvc">configuration service</param>
     public LocalAttachmentsService(
-        IUnitOfWork uow,
+        ILegacyUnitOfWork uow,
         IConfigurationService configSvc)
     {
         _uow = uow;

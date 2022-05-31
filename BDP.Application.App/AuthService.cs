@@ -11,7 +11,7 @@ namespace BDP.Application.App;
 
 public class AuthService : IAuthService
 {
-    private readonly IUnitOfWork _uow;
+    private readonly ILegacyUnitOfWork _uow;
     private readonly AuthSettings _settings = new();
     private readonly IRandomGeneratorService _rngSvc;
     private readonly IEmailService _emailSvc;
@@ -24,7 +24,7 @@ public class AuthService : IAuthService
     /// <param name="rngSvc">The service used to generate random values</param>
     /// <param name="emailSvc">The service used to send emails</param>
     public AuthService(
-        IUnitOfWork uow,
+        ILegacyUnitOfWork uow,
         IConfigurationService configSvc,
         IRandomGeneratorService rngSvc,
         IEmailService emailSvc)

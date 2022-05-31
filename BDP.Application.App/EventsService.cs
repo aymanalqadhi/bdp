@@ -11,14 +11,14 @@ public class EventsService : IEventsService
 {
     #region Private fields
 
-    private readonly IUnitOfWork _uow;
+    private readonly ILegacyUnitOfWork _uow;
     private readonly IAttachmentsService _attachmentsSvc;
 
     #endregion Private fields
 
     #region Ctors
 
-    public EventsService(IUnitOfWork uow, IAttachmentsService attachmentsSvc)
+    public EventsService(ILegacyUnitOfWork uow, IAttachmentsService attachmentsSvc)
     {
         _uow = uow;
         _attachmentsSvc = attachmentsSvc;
