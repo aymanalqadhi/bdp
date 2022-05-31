@@ -1,7 +1,7 @@
-﻿using BDP.Domain.Entities;
+﻿using BDP.Application.App.Exceptions;
+using BDP.Domain.Entities;
 using BDP.Domain.Repositories;
-using BDP.Domain.Services.Exceptions;
-using BDP.Domain.Services.Interfaces;
+using BDP.Domain.Services;
 
 namespace BDP.Application.App;
 
@@ -12,7 +12,7 @@ public class SearchSuggestionsService : ISearchSuggestionsService
     private readonly IUsersService _usersSvc;
     private readonly ISellablesService _sellablesSvc;
 
-    #endregion
+    #endregion Private fields
 
     #region Ctors
 
@@ -25,7 +25,7 @@ public class SearchSuggestionsService : ISearchSuggestionsService
         _sellablesSvc = sellablesSvc;
     }
 
-    #endregion
+    #endregion Ctors
 
     /// <inheritdoc/>
     public async Task<IEnumerable<SearchSuggestion>> FindSuggestionsAsync(

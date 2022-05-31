@@ -1,7 +1,7 @@
-﻿using BDP.Domain.Entities;
+﻿using BDP.Application.App.Exceptions;
+using BDP.Domain.Entities;
 using BDP.Domain.Repositories;
-using BDP.Domain.Services.Exceptions;
-using BDP.Domain.Services.Interfaces;
+using BDP.Domain.Services;
 
 namespace BDP.Application.App;
 
@@ -15,7 +15,7 @@ public class FinanceService : IFinanceService
     private readonly IFinancialRecordsService _financialRecordsSvc;
     private readonly ITransactionsService _transactionsSvc;
 
-    #endregion
+    #endregion Private fields
 
     #region Ctors
 
@@ -42,7 +42,7 @@ public class FinanceService : IFinanceService
         _transactionsSvc = transactionsSvc;
     }
 
-    #endregion
+    #endregion Ctors
 
     #region Public methods
 
@@ -132,7 +132,7 @@ public class FinanceService : IFinanceService
         return await CreateFinancialRecord(user, -amount, note, tx);
     }
 
-    #endregion
+    #endregion Public methods
 
     #region Private methods
 
@@ -166,5 +166,5 @@ public class FinanceService : IFinanceService
         return record;
     }
 
-    #endregion
+    #endregion Private methods
 }

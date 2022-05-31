@@ -1,8 +1,7 @@
-﻿using BDP.Domain.Entities;
+﻿using BDP.Application.App.Exceptions;
+using BDP.Domain.Entities;
 using BDP.Domain.Repositories;
-using BDP.Domain.Services.Exceptions;
-using BDP.Domain.Services.Interfaces;
-
+using BDP.Domain.Services;
 using System.Linq.Expressions;
 
 namespace BDP.Application.App;
@@ -13,7 +12,7 @@ public class TransactionsService : ITransactionsService
 
     private readonly IUnitOfWork _uow;
 
-    #endregion
+    #endregion Private fields
 
     #region Ctors
 
@@ -26,7 +25,7 @@ public class TransactionsService : ITransactionsService
         _uow = uow;
     }
 
-    #endregion
+    #endregion Ctors
 
     #region Public methods
 
@@ -102,7 +101,7 @@ public class TransactionsService : ITransactionsService
         return await DoCreateConfirmation(transaction, TransactionConfirmationOutcome.Declined, tx);
     }
 
-    #endregion
+    #endregion Public methods
 
     #region Private methods
 
@@ -156,7 +155,7 @@ public class TransactionsService : ITransactionsService
         return confirmation;
     }
 
-    #endregion
+    #endregion Private methods
 
     private enum TransactionDirection
     {

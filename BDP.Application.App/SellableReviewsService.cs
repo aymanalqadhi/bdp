@@ -1,7 +1,7 @@
-﻿using BDP.Domain.Entities;
+﻿using BDP.Application.App.Exceptions;
+using BDP.Domain.Entities;
 using BDP.Domain.Repositories;
-using BDP.Domain.Services.Exceptions;
-using BDP.Domain.Services.Interfaces;
+using BDP.Domain.Services;
 
 namespace BDP.Application.App;
 
@@ -11,7 +11,7 @@ public class SellableReviewsService : ISellableReviewsService
 
     private readonly IUnitOfWork _uow;
 
-    #endregion
+    #endregion Private fields
 
     #region Ctors
 
@@ -24,7 +24,7 @@ public class SellableReviewsService : ISellableReviewsService
         _uow = uow;
     }
 
-    #endregion
+    #endregion Ctors
 
     #region Public methods
 
@@ -104,5 +104,5 @@ public class SellableReviewsService : ISellableReviewsService
                  r.LeftBy.Id == user.Id);
     }
 
-    #endregion
+    #endregion Public methods
 }

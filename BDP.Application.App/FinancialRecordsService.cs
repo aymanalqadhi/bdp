@@ -1,7 +1,7 @@
-﻿using BDP.Domain.Entities;
+﻿using BDP.Application.App.Exceptions;
+using BDP.Domain.Entities;
 using BDP.Domain.Repositories;
-using BDP.Domain.Services.Exceptions;
-using BDP.Domain.Services.Interfaces;
+using BDP.Domain.Services;
 
 using System.Linq.Expressions;
 
@@ -14,7 +14,7 @@ public class FinancialRecordsService : IFinancialRecordsService
     private readonly IUnitOfWork _uow;
     private readonly IAttachmentsService _attachmentsSvc;
 
-    #endregion
+    #endregion Private fields
 
     #region Ctors
 
@@ -29,7 +29,7 @@ public class FinancialRecordsService : IFinancialRecordsService
         _attachmentsSvc = attachmentsSvc;
     }
 
-    #endregion
+    #endregion Ctors
 
     #region Public mehtods
 
@@ -123,5 +123,5 @@ public class FinancialRecordsService : IFinancialRecordsService
         return verification;
     }
 
-    #endregion
+    #endregion Public mehtods
 }

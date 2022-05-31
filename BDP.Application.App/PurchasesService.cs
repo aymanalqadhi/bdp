@@ -1,8 +1,7 @@
-﻿using BDP.Domain.Entities;
+﻿using BDP.Application.App.Exceptions;
+using BDP.Domain.Entities;
 using BDP.Domain.Repositories;
-using BDP.Domain.Services.Exceptions;
-using BDP.Domain.Services.Interfaces;
-
+using BDP.Domain.Services;
 using System.Linq.Expressions;
 
 namespace BDP.Application.App;
@@ -13,7 +12,7 @@ public class PurchasesService : IPurchasesService
 
     private readonly IUnitOfWork _uow;
 
-    #endregion
+    #endregion Private fields
 
     #region Ctors
 
@@ -26,7 +25,7 @@ public class PurchasesService : IPurchasesService
         _uow = uow;
     }
 
-    #endregion
+    #endregion Ctors
 
     #region Public method
 
@@ -60,5 +59,5 @@ public class PurchasesService : IPurchasesService
         );
     }
 
-    #endregion
+    #endregion Public method
 }
