@@ -20,4 +20,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BDP.Tests.Util\BDP.Tests.Util.csproj" />
+  </ItemGroup>
+
 </Project>
