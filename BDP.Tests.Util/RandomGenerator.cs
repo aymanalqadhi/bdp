@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace BDP.Tests.Utils;
+namespace BDP.Tests.Util;
 
 public static class RandomGenerator
 {

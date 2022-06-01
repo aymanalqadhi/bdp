@@ -1,12 +1,12 @@
 ﻿using BDP.Domain.Entities;
 using BDP.Domain.Entities.Validators;
-using BDP.Tests.Utils;
+using BDP.Tests.Util;
 
 using FluentValidation.TestHelper;
 
 using Xunit;
 
-namespace BDP.Tests.Domain.Entities.Validators;
+namespace BDP.Domain.Entities.Validators.Tests;
 
 public class LogValidatorTests
 {
