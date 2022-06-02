@@ -14,6 +14,7 @@ public class AuthService : IAuthService
     private readonly ILegacyUnitOfWork _uow;
     private readonly AuthSettings _settings = new();
     private readonly IRandomGeneratorService _rngSvc;
+    private readonly IPasswordHashingService _passwordHashingSvc;
     private readonly IEmailService _emailSvc;
 
     /// <summary>
@@ -27,12 +28,14 @@ public class AuthService : IAuthService
         ILegacyUnitOfWork uow,
         IConfigurationService configSvc,
         IRandomGeneratorService rngSvc,
+        IPasswordHashingService passwordHashingSvc,
         IEmailService emailSvc)
     {
         configSvc.Bind(nameof(AuthSettings), _settings);
 
         _uow = uow;
         _rngSvc = rngSvc;
+        _passwordHashingSvc = passwordHashingSvc;
         _emailSvc = emailSvc;
     }
 
@@ -48,7 +51,7 @@ public class AuthService : IAuthService
             u => u.Username == username,
             includes: new Expression<Func<User, object>>[] { u => u.Groups });
 
-        if (user == null || !Argon2.Verify(user.PasswordHash, password))
+        if (user == null || !_passwordHashingSvc.Verify(password, user.PasswordHash))
             throw new InvalidUsernameOrPasswordException();
 
         if (await _uow.RefreshTokens.FirstOrDefaultAsync(
@@ -127,7 +130,7 @@ public class AuthService : IAuthService
         {
             Username = username,
             Email = email,
-            PasswordHash = Argon2.Hash(password),
+            PasswordHash = _passwordHashingSvc.Hash(password),
             IsActive = false,
             IsConfirmed = false,
         };
