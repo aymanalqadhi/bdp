@@ -32,7 +32,7 @@ public class PurchasesService : IPurchasesService
     /// <inheritdoc/>
     public async Task<Purchase> GetById(long id)
     {
-        var purchase = await _uow.Purchases.Query().GetOrNullAsync(id);
+        var purchase = await _uow.Purchases.Query().FindOrDefaultAsync(id);
 
         if (purchase is null)
             throw new NotFoundException($"no purchases were found with id #{id}");

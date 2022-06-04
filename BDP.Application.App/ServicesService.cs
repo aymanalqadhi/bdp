@@ -32,7 +32,7 @@ public class ServicesService : IServicesService
             .Query()
             .Include(s => s.Attachments)
             .Include(s => s.OfferedBy)
-            .GetOrNullAsync(id);
+            .FindOrDefaultAsync(id);
 
         if (service is null)
             throw new NotFoundException($"no services were found with id #{id}");

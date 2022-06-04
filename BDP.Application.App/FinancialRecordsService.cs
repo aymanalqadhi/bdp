@@ -114,7 +114,7 @@ public class FinancialRecordsService : IFinancialRecordsService
     {
         await using var tx = await _uow.BeginTransactionAsync();
 
-        if (await _uow.FinancialRecords.Query().GetOrNullAsync(recordId) is var record &&
+        if (await _uow.FinancialRecords.Query().FindOrDefaultAsync(recordId) is var record &&
             record is null)
         {
             throw new NotFoundException($"no records were found with the id {recordId}");
