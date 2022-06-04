@@ -55,7 +55,7 @@ public class WalletController : ControllerBase
     [Authorize]
     public async Task<IActionResult> Records(int page)
     {
-        var user = await _usersSvc.GetByUsernameAsync(User.GetUsername())!;
+        var user = await _usersSvc.GetByUsernameAsync(User.GetUsername());
         var ret = _financialRecordsSvc.ForUserAsync(user)
             .PageDescending(page, _pageSize)
             .Include(r => r.Verification!)
@@ -70,7 +70,7 @@ public class WalletController : ControllerBase
     [Authorize]
     public async Task<IActionResult> Balance()
     {
-        var user = await _usersSvc.GetByUsernameAsync(User.GetUsername())!;
+        var user = await _usersSvc.GetByUsernameAsync(User.GetUsername());
 
         var virtualBalance = await _financeSvc.TotalVirtualAsync(user);
         var usableBalance = await _financeSvc.TotalUsableAsync(user);
@@ -82,7 +82,7 @@ public class WalletController : ControllerBase
     [Authorize]
     public async Task<IActionResult> Deposit([FromBody] DepositRequest form)
     {
-        var user = await _usersSvc.GetByUsernameAsync(User.GetUsername())!;
+        var user = await _usersSvc.GetByUsernameAsync(User.GetUsername());
         await _financeSvc.DepositAsync(user, form.Amount, form.Note);
 
         return Ok();
@@ -92,7 +92,7 @@ public class WalletController : ControllerBase
     [Authorize]
     public async Task<IActionResult> Withdraw([FromBody] WithdrawRequest form)
     {
-        var user = await _usersSvc.GetByUsernameAsync(User.GetUsername())!;
+        var user = await _usersSvc.GetByUsernameAsync(User.GetUsername());
         await _financeSvc.WithdrawAsync(user, form.Amount, form.Note);
 
         return Ok();

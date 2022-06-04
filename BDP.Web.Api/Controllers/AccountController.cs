@@ -2,6 +2,7 @@
 using BDP.Web.Api.Auth;
 using BDP.Web.Api.Extensions;
 using BDP.Web.Dtos.Requests;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -49,7 +50,7 @@ public class AccountController : ControllerBase
     [HttpGet("is-profile-complete")]
     public async Task<IActionResult> IsProfileCompleteAsync()
     {
-        var user = await _usersSvc.GetByUsernameAsync(User.GetUsername(), includeGroups: true)!;
+        var user = await _usersSvc.GetByUsernameAsync(User.GetUsername(), includeGroups: true);
 
         return Ok(new
         {
