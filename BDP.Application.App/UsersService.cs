@@ -59,21 +59,13 @@ public class UsersService : IUsersService
     }
 
     /// <inheritdoc/>
-    public IAsyncEnumerable<User> SearchAsync(
-        string query,
-        int page,
-        int pageSize,
-        bool includePhones = false,
-        bool includeGroups = false)
+    public IQueryBuilder<User> SearchAsync(string query)
     {
-        var includes = PrepareUserIncludes(includePhones, includeGroups);
-
         return _uow.Users
             .Query()
-            .IncludeAll(includes)
-            .Where(u => u.FullName != null && u.FullName.ToLower().Contains(query.ToLower()) || u.Username.ToLower().Contains(query.ToLower()))
-            .OrderByDescending(u => u.Username)
-            .AsAsyncEnumerable();
+            .Where(u => u.FullName != null &&
+                        u.FullName.ToLower().Contains(query.ToLower()) ||
+                        u.Username.ToLower().Contains(query.ToLower()));
     }
 
     /// <inheritdoc/>
