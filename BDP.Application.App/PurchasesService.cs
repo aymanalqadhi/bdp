@@ -34,22 +34,10 @@ public class PurchasesService : IPurchasesService
         => _uow.Purchases.Query().FindAsync(id);
 
     /// <inheritdoc/>
-    public IAsyncEnumerable<Purchase> ForUserAsync(
-        int page,
-        int pageSize,
-        User user,
-        Expression<Func<Purchase, object>>[]? includes = null)
+    public IQueryBuilder<Purchase> ForUserAsync(User user)
     {
-        var query = _uow.Purchases.Query();
-
-        if (includes is not null)
-            query = query.IncludeAll(includes);
-
-        return query
-            .Where(p => p.Transaction.From.Id == user.Id || p.Transaction.To.Id == user.Id)
-            .OrderByDescending(p => p.Id)
-            .Page(page, pageSize)
-            .AsAsyncEnumerable();
+        return _uow.Purchases.Query()
+            .Where(p => p.Transaction.From.Id == user.Id || p.Transaction.To.Id == user.Id);
     }
 
     #endregion Public method
