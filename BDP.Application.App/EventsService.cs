@@ -46,27 +46,12 @@ public class EventsService : IEventsService
         => _uow.EventTypes.Query().FirstAsync(e => e.Id == id);
 
     /// <inheritdoc/>
-    public IAsyncEnumerable<EventType> GetEventTypes()
-        => _uow.EventTypes.Query().AsAsyncEnumerable();
+    public IQueryBuilder<EventType> GetEventTypes()
+        => _uow.EventTypes.Query();
 
     /// <inheritdoc/>
-    public IAsyncEnumerable<Event> ForUserAsync(
-        int page,
-        int pageSize,
-        User user,
-        Expression<Func<Event, object>>[]? includes = null)
-    {
-        var query = _uow.Events.Query();
-
-        if (includes is not null)
-            query = query.IncludeAll(includes);
-
-        return query
-            .Where(e => e.CreatedBy.Id == user.Id)
-            .OrderByDescending(e => e.Id)
-            .Page(page, pageSize)
-            .AsAsyncEnumerable();
-    }
+    public IQueryBuilder<Event> ForUserAsync(User user)
+        => _uow.Events.Query().Where(e => e.CreatedBy.Id == user.Id);
 
     /// <inheritdoc/>
     public async Task<Event> CreateAsync(
