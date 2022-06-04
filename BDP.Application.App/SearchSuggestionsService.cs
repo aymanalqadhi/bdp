@@ -37,9 +37,10 @@ public class SearchSuggestionsService : ISearchSuggestionsService
 
         if (includeUsers)
         {
-            var items = (await _usersSvc
-                .SearchAsync(query, 1, length)
-                .ToListAsync())
+            var items = _usersSvc
+                .SearchAsync(query)
+                .Page(1, length)
+                .AsAsyncEnumerable()
                 .Select(u => new SearchSuggestion
                 {
                     ItemId = u.Id,
@@ -47,14 +48,15 @@ public class SearchSuggestionsService : ISearchSuggestionsService
                     Type = $"user - @{u.Username}"
                 });
 
-            ret.AddRange(items);
+            ret.AddRange(await items.ToListAsync());
         }
 
         if (includeSellables)
         {
-            var items = (await _sellablesSvc
-                .SearchAsync(query, 1, length)
-                .ToListAsync())
+            var items = _sellablesSvc
+                .SearchAsync(query)
+                .Page(1, length)
+                .AsAsyncEnumerable()
                 .Select(s => new SearchSuggestion
                 {
                     ItemId = s.Id,
@@ -62,7 +64,7 @@ public class SearchSuggestionsService : ISearchSuggestionsService
                     Type = s is Service ? "service" : "product"
                 });
 
-            ret.AddRange(items);
+            ret.AddRange(await items.ToListAsync());
         }
 
         ret.Sort((x, y) => x.Title.Length.CompareTo(y.Title.Length));
