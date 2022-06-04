@@ -1,6 +1,6 @@
 ﻿using BDP.Application.App.Exceptions;
 using BDP.Domain.Entities.Validators;
-
+using BDP.Domain.Repositories.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.IdentityModel.Tokens;
