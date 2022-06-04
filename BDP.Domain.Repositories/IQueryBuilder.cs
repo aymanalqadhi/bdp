@@ -83,29 +83,6 @@ public interface IQueryBuilder<T> where T : AuditableEntity
         CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Asynchronously gets an item by id from the backing store. An exception is
-    /// thrown if the item is not found
-    /// </summary>
-    /// <param name="id">The id of the item to get</param>
-    /// <returns>The matched item</returns>
-    Task<T> FindAsync(long id);
-
-    /// <summary>
-    /// Asynchronously gets an item by id from the backing store. If the item is not
-    /// found, null is returned.
-    /// </summary>
-    /// <param name="id">The id of the item to get</param>
-    /// <returns>The matched item if found, null otherwise</returns>
-    Task<T?> FindOrDefaultAsync(long id);
-
-    /// <summary>
-    /// Asynchronously gets whether the query has no items
-    /// </summary>
-    /// <param name="cancellationToken">The task cancellation cancellationToken</param>
-    /// <returns>True if no items are in the qurey, false othersie</returns>
-    Task<bool> HasItemsAsync(CancellationToken cancellationToken = default);
-
-    /// <summary>
     /// Adds an include to the query
     /// </summary>
     /// <param name="expr">The expression used to specify the include</param>
@@ -132,15 +109,6 @@ public interface IQueryBuilder<T> where T : AuditableEntity
     /// <param name="expr">The expression used for ordering</param>
     /// <returns>The modified query builder</returns>
     IQueryBuilder<T> OrderByDescending(Expression<Func<T, object>> expr);
-
-    /// <summary>
-    /// Fetches the page with index <see cref="page"/> and size <see cref="pageSize"/>
-    /// </summary>
-    /// <param name="page">The index of the page (starts at 1)</param>
-    /// <param name="pageLength">The length of the page</param>
-    /// <returns>The modified query builder</returns>
-    /// <exception cref="Exceptions.InvalidPaginationParametersException"></exception>
-    IQueryBuilder<T> Page(int page, int pageLength);
 
     /// <summary>
     /// Skips the first <see cref="count"/> items
