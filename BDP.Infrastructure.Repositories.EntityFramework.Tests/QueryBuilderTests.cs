@@ -95,18 +95,6 @@ public class QueryBuilderTests
     }
 
     [Fact]
-    public async Task HasItemsFact()
-    {
-        Assert.False(_uow.Logs.Query().HasItemsAsync().Result);
-
-        var log = ValidEntitiesFactory.CreateLog();
-        _uow.Logs.Add(log);
-
-        Assert.Equal(1, await _uow.CommitAsync());
-        Assert.True(await _uow.Logs.Query().HasItemsAsync());
-    }
-
-    [Fact]
     public async Task AnyFact()
     {
         var log = ValidEntitiesFactory.CreateLog();
