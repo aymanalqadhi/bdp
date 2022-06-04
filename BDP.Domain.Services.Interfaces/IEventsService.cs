@@ -1,4 +1,6 @@
 ﻿using BDP.Domain.Entities;
+using BDP.Domain.Repositories;
+
 using System.Linq.Expressions;
 
 namespace BDP.Domain.Services;
@@ -23,21 +25,14 @@ public interface IEventsService
     /// Asynchronously gets event types
     /// </summary>
     /// <returns></returns>
-    IAsyncEnumerable<EventType> GetEventTypes();
+    IQueryBuilder<EventType> GetEventTypes();
 
     /// <summary>
     /// Asynchronosly gets events for a user, limited with pagination
     /// </summary>
     /// <param name="user">The user which to get the events for</param>
-    /// <param name="page">The page to get</param>
-    /// <param name="pageSize">The pages size</param>
-    /// <param name="includes">Additional includes</param>
     /// <returns></returns>
-    IAsyncEnumerable<Event> ForUserAsync(
-       int page,
-       int pageSize,
-       User user,
-       Expression<Func<Event, object>>[]? includes = null);
+    IQueryBuilder<Event> ForUserAsync(User user);
 
     /// <summary>
     /// Asynchronously creates a new event
