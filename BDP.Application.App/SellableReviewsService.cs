@@ -29,15 +29,8 @@ public class SellableReviewsService : ISellableReviewsService
     #region Public methods
 
     /// <inheritdoc/>
-    public IAsyncEnumerable<SellableReview> GetForAsync(Sellable item, int page, int pageSize)
-    {
-        return _uow.SellableReviews
-            .Query()
-            .Where(r => r.Item.Id == item.Id)
-            .OrderByDescending(r => r.Id)
-            .Page(page, pageSize)
-            .AsAsyncEnumerable();
-    }
+    public IQueryBuilder<SellableReview> GetForAsync(Sellable item)
+        => _uow.SellableReviews.Query().Where(r => r.Item.Id == item.Id);
 
     /// <inheritdoc/>
     public Task<SellableReview?> GetReviewForUser(Sellable item, User user)
