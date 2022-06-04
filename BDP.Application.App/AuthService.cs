@@ -153,10 +153,11 @@ public class AuthService : IAuthService
         _uow.Confirmations.Add(confirmation);
         await _uow.CommitAsync();
 
-        await _emailSvc.SendHtmlEmail(
+        await _emailSvc.SendEmail(
             user.Email,
             title,
-            BuildConfirmationHtmlEmail(confirmation));
+            BuildConfirmationHtmlEmail(confirmation),
+            EmailOption.HasHtmlBody);
 
         return confirmation;
     }
