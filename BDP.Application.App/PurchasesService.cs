@@ -30,15 +30,8 @@ public class PurchasesService : IPurchasesService
     #region Public method
 
     /// <inheritdoc/>
-    public async Task<Purchase> GetById(long id)
-    {
-        var purchase = await _uow.Purchases.Query().FindOrDefaultAsync(id);
-
-        if (purchase is null)
-            throw new NotFoundException($"no purchases were found with id #{id}");
-
-        return purchase;
-    }
+    public Task<Purchase> GetById(long id)
+        => _uow.Purchases.Query().FindAsync(id);
 
     /// <inheritdoc/>
     public IAsyncEnumerable<Purchase> ForUserAsync(

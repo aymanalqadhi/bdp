@@ -106,13 +106,10 @@ public class AuthService : IAuthService
     /// <inheritdoc/>
     public async Task InvalidateTokenAsync(User user, string token, string uniqueId)
     {
-        var refreshToken = await _uow.RefreshTokens.Query().FirstOrNullAsync(r =>
+        var refreshToken = await _uow.RefreshTokens.Query().FirstAsync(r =>
            r.Owner.Id == user.Id &&
            r.Token == token &&
            r.UniqueIdentifier == uniqueId);
-
-        if (refreshToken is null)
-            throw new NotFoundException("no such token");
 
         _uow.RefreshTokens.Remove(refreshToken);
         await _uow.CommitAsync();
@@ -171,7 +168,7 @@ public class AuthService : IAuthService
     {
         var confirmation = await _uow.Confirmations.Query()
             .Include(c => c.ForUser)
-            .FirstOrNullAsync(c => c.OneTimePassword == otp);
+            .FirstAsync(c => c.OneTimePassword == otp);
 
         await DoActivateAccount(confirmation);
     }
@@ -181,16 +178,13 @@ public class AuthService : IAuthService
     {
         var confirmation = await _uow.Confirmations.Query()
             .Include(c => c.ForUser)
-            .FirstOrNullAsync(c => c.Token == token);
+            .FirstAsync(c => c.Token == token);
 
         await DoActivateAccount(confirmation);
     }
 
-    private async Task DoActivateAccount(Confirmation? confirmation)
+    private async Task DoActivateAccount(Confirmation confirmation)
     {
-        if (confirmation == null)
-            throw new NotFoundException($"invalid confirmation code");
-
         confirmation.ForUser.IsConfirmed = true;
         confirmation.ForUser.IsActive = true;
 

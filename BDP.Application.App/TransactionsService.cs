@@ -92,7 +92,7 @@ public class TransactionsService : ITransactionsService
         var transaction = await _uow.Transactions
             .Query()
             .Include(t => t.Confirmation!)
-            .FirstOrNullAsync(t => t.ConfirmationToken == confirmationToken && t.To.Id == receiver.Id);
+            .FirstAsync(t => t.ConfirmationToken == confirmationToken && t.To.Id == receiver.Id);
 
         return await DoCreateConfirmation(transaction, TransactionConfirmationOutcome.Confirmed, tx);
     }
@@ -105,7 +105,7 @@ public class TransactionsService : ITransactionsService
         var transaction = await _uow.Transactions
             .Query()
             .Include(t => t.Confirmation!)
-            .FirstOrNullAsync(t => t.Id == transactionId && t.To.Id == receiver.Id);
+            .FirstAsync(t => t.Id == transactionId && t.To.Id == receiver.Id);
 
         return await DoCreateConfirmation(transaction, TransactionConfirmationOutcome.Declined, tx);
     }
@@ -144,13 +144,10 @@ public class TransactionsService : ITransactionsService
     }
 
     private async Task<TransactionConfirmation> DoCreateConfirmation(
-        Transaction? transaction,
+        Transaction transaction,
         TransactionConfirmationOutcome outcome,
         IAsyncDatabaseTransaction tx)
     {
-        if (transaction == null)
-            throw new NotFoundException($"transaction not found");
-
         if (transaction.Confirmation != null)
             throw new TransactionAlreadyConfirmedException(transaction.Confirmation);
 
