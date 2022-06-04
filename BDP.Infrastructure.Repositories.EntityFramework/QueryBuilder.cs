@@ -83,27 +83,6 @@ public sealed class QueryBuilder<T> : IQueryBuilder<T> where T : AuditableEntity
     }
 
     /// <inheritdoc/>
-    public Task<T> FindAsync(long id)
-    {
-        try
-        {
-            return _query.FirstAsync(i => i.Id == id);
-        }
-        catch (InvalidOperationException ex)
-        {
-            throw new NotFoundException($"no items were found with id #{id}", ex);
-        }
-    }
-
-    /// <inheritdoc/>
-    public Task<T?> FindOrDefaultAsync(long id)
-        => FirstOrDefaultAsync(i => i.Id == id);
-
-    /// <inheritdoc/>
-    public Task<bool> HasItemsAsync(CancellationToken cancellationToken = default)
-        => _query.AnyAsync(cancellationToken);
-
-    /// <inheritdoc/>
     public IQueryBuilder<T> Include(Expression<Func<T, object>> expr)
     {
         _query = _query.Include(expr);
@@ -132,24 +111,6 @@ public sealed class QueryBuilder<T> : IQueryBuilder<T> where T : AuditableEntity
     public IQueryBuilder<T> OrderByDescending(Expression<Func<T, object>> expr)
     {
         _query = _query.OrderByDescending(expr);
-
-        return this;
-    }
-
-    /// <summary>
-    /// Fetches the page with index <see cref="page"/> and size <see cref="pageSize"/>
-    /// </summary>
-    /// <param name="page">The index of the page</param>
-    /// <param name="pageSize">The size of the page</param>
-    /// <returns>The modified query builder</returns>
-    public IQueryBuilder<T> Page(int page, int pageSize)
-    {
-        if (page <= 0 || pageSize <= 0)
-            throw new InvalidPaginationParametersException(page, pageSize);
-
-        _query = _query
-            .Skip((page - 1) * pageSize)
-            .Take(page * pageSize);
 
         return this;
     }
