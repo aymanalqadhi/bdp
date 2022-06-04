@@ -11,7 +11,7 @@ public class FinancialRecordsService : IFinancialRecordsService
 {
     #region Private fields
 
-    private readonly ILegacyUnitOfWork _uow;
+    private readonly IUnitOfWork _uow;
     private readonly IAttachmentsService _attachmentsSvc;
 
     #endregion Private fields
@@ -23,7 +23,7 @@ public class FinancialRecordsService : IFinancialRecordsService
     /// </summary>
     /// <param name="uow">The unit-of-work of the application</param>
     /// <param name="attachmentsSvc">The attachment managment service of the application</param>
-    public FinancialRecordsService(ILegacyUnitOfWork uow, IAttachmentsService attachmentsSvc)
+    public FinancialRecordsService(IUnitOfWork uow, IAttachmentsService attachmentsSvc)
     {
         _uow = uow;
         _attachmentsSvc = attachmentsSvc;
@@ -38,7 +38,14 @@ public class FinancialRecordsService : IFinancialRecordsService
         User user,
         Expression<Func<FinancialRecord, object>>[]? includes = null)
     {
-        return _uow.FinancialRecords.FilterAsync(f => f.MadeBy.Id == user.Id, includes: includes);
+        var query = _uow.FinancialRecords.Query();
+
+        if (includes is not null)
+            query = query.IncludeAll(includes);
+
+        return query
+            .Where(f => f.MadeBy.Id == user.Id)
+            .AsAsyncEnumerable();
     }
 
     /// <inheritdoc/>
@@ -49,11 +56,15 @@ public class FinancialRecordsService : IFinancialRecordsService
         bool descOrder = false,
         Expression<Func<FinancialRecord, object>>[]? includes = null)
     {
-        return _uow.FinancialRecords.FilterAsync(
-            page, pageSize,
-            f => f.MadeBy.Id == user.Id,
-            descOrder: descOrder,
-            includes: includes);
+        var query = _uow.FinancialRecords.Query();
+
+        if (includes is not null)
+            query = query.IncludeAll(includes);
+
+        return query
+            .Where(f => f.MadeBy.Id == user.Id)
+            .Page(page, pageSize)
+            .AsAsyncEnumerable();
     }
 
     /// <inheritdoc/>
@@ -63,11 +74,15 @@ public class FinancialRecordsService : IFinancialRecordsService
         bool descOrder = false,
         Expression<Func<FinancialRecord, object>>[]? includes = null)
     {
-        return _uow.FinancialRecords.FilterAsync(
-            page, pageSize,
-            f => f.Verification == null,
-            descOrder: descOrder,
-            includes: includes);
+        var query = _uow.FinancialRecords.Query();
+
+        if (includes is not null)
+            query = query.IncludeAll(includes);
+
+        return query
+            .Where(f => f.Verification == null)
+            .Page(page, pageSize)
+            .AsAsyncEnumerable();
     }
 
     /// <inheritdoc/>
@@ -99,13 +114,13 @@ public class FinancialRecordsService : IFinancialRecordsService
     {
         await using var tx = await _uow.BeginTransactionAsync();
 
-        if (await _uow.FinancialRecords.FirstOrDefaultAsync(r => r.Id == recordId) is var record &&
+        if (await _uow.FinancialRecords.Query().GetOrNullAsync(recordId) is var record &&
             record is null)
         {
             throw new NotFoundException($"no records were found with the id {recordId}");
         }
 
-        if (await _uow.FinancialRecordVerficiations.AnyAsync(v => v.FinancialRecord.Id == record.Id))
+        if (await _uow.FinancialRecordVerficiations.Query().AnyAsync(v => v.FinancialRecord.Id == record.Id))
             throw new FinancialRecordAlreadyVerifiedException(record);
 
         var verification = new FinancialRecordVerification

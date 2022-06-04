@@ -7,7 +7,7 @@ namespace BDP.Infrastructure.Services;
 
 public class LocalAttachmentsService : IAttachmentsService
 {
-    private readonly ILegacyUnitOfWork _uow;
+    private readonly IUnitOfWork _uow;
     private readonly AttachmentsSettings _settings = new();
 
     /// <summary>
@@ -16,7 +16,7 @@ public class LocalAttachmentsService : IAttachmentsService
     /// <param name="uow">Application unit of work</param>
     /// <param name="configSvc">configuration service</param>
     public LocalAttachmentsService(
-        ILegacyUnitOfWork uow,
+        IUnitOfWork uow,
         IConfigurationService configSvc)
     {
         _uow = uow;
@@ -71,7 +71,7 @@ public class LocalAttachmentsService : IAttachmentsService
     /// <inheritdoc/>
     public async Task DeleteAsync(string path)
     {
-        var attachment = await _uow.Attachments.FirstOrDefaultAsync(a => a.FullPath == path);
+        var attachment = await _uow.Attachments.Query().FirstOrNullAsync(a => a.FullPath == path);
 
         if (attachment == null)
             throw new FileNotFoundException("attachment not found", path.ToString());

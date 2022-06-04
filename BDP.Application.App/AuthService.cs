@@ -11,7 +11,7 @@ namespace BDP.Application.App;
 
 public class AuthService : IAuthService
 {
-    private readonly ILegacyUnitOfWork _uow;
+    private readonly IUnitOfWork _uow;
     private readonly AuthSettings _settings = new();
     private readonly IRandomGeneratorService _rngSvc;
     private readonly IPasswordHashingService _passwordHashingSvc;
@@ -25,7 +25,7 @@ public class AuthService : IAuthService
     /// <param name="rngSvc">The service used to generate random values</param>
     /// <param name="emailSvc">The service used to send emails</param>
     public AuthService(
-        ILegacyUnitOfWork uow,
+        IUnitOfWork uow,
         IConfigurationService configSvc,
         IRandomGeneratorService rngSvc,
         IPasswordHashingService passwordHashingSvc,
@@ -47,14 +47,15 @@ public class AuthService : IAuthService
         LoginDeviceInfo deviceInfo)
 
     {
-        var user = await _uow.Users.FirstOrDefaultAsync(
-            u => u.Username == username,
-            includes: new Expression<Func<User, object>>[] { u => u.Groups });
+        var user = await _uow.Users
+            .Query()
+            .Include(u => u.Groups)
+            .FirstOrNullAsync(u => u.Username == username);
 
         if (user == null || !_passwordHashingSvc.Verify(password, user.PasswordHash))
             throw new InvalidUsernameOrPasswordException();
 
-        if (await _uow.RefreshTokens.FirstOrDefaultAsync(
+        if (await _uow.RefreshTokens.Query().FirstOrNullAsync(
             r => r.Owner.Id == user.Id &&
             r.UniqueIdentifier == deviceInfo.UniqueIdentifier &&
             r.ValidUntil > DateTime.Now)
@@ -68,7 +69,7 @@ public class AuthService : IAuthService
             return (user, token);
         }
 
-        if (await _uow.RefreshTokens.CountAsync(
+        if (await _uow.RefreshTokens.Query().CountAsync(
                 r => r.Owner.Id == user.Id && r.ValidUntil > DateTime.Now) >= _settings.MaxSessionsCount)
         {
             throw new MaxSessionsCountExceeded(_settings.MaxSessionsCount);
@@ -96,7 +97,7 @@ public class AuthService : IAuthService
 
     /// <inheritdoc/>
     public Task<bool> IsTokenValidAsync(User user, string token, string uniqueId)
-        => _uow.RefreshTokens.AnyAsync(
+        => _uow.RefreshTokens.Query().AnyAsync(
             r => r.Owner.Id == user.Id &&
             r.Token == token &&
             r.UniqueIdentifier == uniqueId &&
@@ -105,7 +106,7 @@ public class AuthService : IAuthService
     /// <inheritdoc/>
     public async Task InvalidateTokenAsync(User user, string token, string uniqueId)
     {
-        var refreshToken = await _uow.RefreshTokens.FirstOrDefaultAsync(r =>
+        var refreshToken = await _uow.RefreshTokens.Query().FirstOrNullAsync(r =>
            r.Owner.Id == user.Id &&
            r.Token == token &&
            r.UniqueIdentifier == uniqueId);
@@ -120,10 +121,10 @@ public class AuthService : IAuthService
     /// <inheritdoc/>
     public async Task<User> SignUpAsync(string username, string email, string password)
     {
-        if (await _uow.Users.AnyAsync(u => u.Username == username))
+        if (await _uow.Users.Query().AnyAsync(u => u.Username == username))
             throw new AlreadyUsedUsernameException(username);
 
-        if (await _uow.Users.AnyAsync(u => u.Email == email))
+        if (await _uow.Users.Query().AnyAsync(u => u.Email == email))
             throw new AlreadyUsedEmailException(email);
 
         var user = new User
@@ -167,15 +168,23 @@ public class AuthService : IAuthService
 
     /// <inheritdoc/>
     public async Task ConfirmWithOtp(string otp)
-        => await DoActivateAccount(
-            await _uow.Confirmations.FirstOrDefaultAsync(c => c.OneTimePassword == otp,
-                includes: new Expression<Func<Confirmation, object>>[] { c => c.ForUser }));
+    {
+        var confirmation = await _uow.Confirmations.Query()
+            .Include(c => c.ForUser)
+            .FirstOrNullAsync(c => c.OneTimePassword == otp);
+
+        await DoActivateAccount(confirmation);
+    }
 
     /// <inheritdoc/>
     public async Task ConfirmWithToken(string token)
-    => await DoActivateAccount(
-        await _uow.Confirmations.FirstOrDefaultAsync(c => c.Token == token,
-            includes: new Expression<Func<Confirmation, object>>[] { c => c.ForUser }));
+    {
+        var confirmation = await _uow.Confirmations.Query()
+            .Include(c => c.ForUser)
+            .FirstOrNullAsync(c => c.Token == token);
+
+        await DoActivateAccount(confirmation);
+    }
 
     private async Task DoActivateAccount(Confirmation? confirmation)
     {

@@ -11,7 +11,7 @@ public class SellablesService : ISellablesService
 {
     #region Private fields
 
-    private readonly ILegacyUnitOfWork _uow;
+    private readonly IUnitOfWork _uow;
 
     #endregion Private fields
 
@@ -21,7 +21,7 @@ public class SellablesService : ISellablesService
     /// Default constructor
     /// </summary>
     /// <param name="uow">The unit of work of the app</param>
-    public SellablesService(ILegacyUnitOfWork uow)
+    public SellablesService(IUnitOfWork uow)
     {
         _uow = uow;
     }
@@ -33,7 +33,7 @@ public class SellablesService : ISellablesService
     /// <inheritdoc/>
     public async Task<Sellable> GetByIdAsync(long id)
     {
-        var ret = await _uow.Sellables.FirstOrDefaultAsync(s => s.Id == id);
+        var ret = await _uow.Sellables.Query().GetOrNullAsync(id);
 
         if (ret is null)
             throw new NotFoundException($"no sellables were found with id #{id}");
@@ -47,11 +47,13 @@ public class SellablesService : ISellablesService
         if (page <= 0 || pageSize <= 0 || pageSize > 1000)
             throw new InvalidPaginationParametersException(page, pageSize);
 
-        return _uow.Sellables.FilterAsync(
-            page, pageSize, s => s.OfferedBy.Id == user.Id,
-            includes: new Expression<Func<Sellable, object>>[] { s => s.Attachments },
-            descOrder: true
-        );
+        return _uow.Sellables
+            .Query()
+            .Where(s => s.OfferedBy.Id == user.Id)
+            .OrderByDescending(s => s.Id)
+            .Include(s => s.Attachments)
+            .Page(page, pageSize)
+            .AsAsyncEnumerable();
     }
 
     /// <inheritdoc/>
@@ -60,12 +62,13 @@ public class SellablesService : ISellablesService
         if (page <= 0 || pageSize <= 0 || pageSize > 1000)
             throw new InvalidPaginationParametersException(page, pageSize);
 
-        return _uow.Sellables.FilterAsync(
-            page, pageSize,
-            s => s.OfferedBy.Id == user.Id && s.Title.ToLower().Contains(query.ToLower()),
-            includes: new Expression<Func<Sellable, object>>[] { s => s.Attachments },
-            descOrder: true
-        );
+        return _uow.Sellables
+            .Query()
+            .Where(s => s.OfferedBy.Id == user.Id && s.Title.ToLower().Contains(query.ToLower()))
+            .OrderByDescending(s => s.Id)
+            .Include(s => s.Attachments)
+            .Page(page, pageSize)
+            .AsAsyncEnumerable();
     }
 
     /// <inheritdoc/>
@@ -74,16 +77,14 @@ public class SellablesService : ISellablesService
         if (page <= 0 || pageSize <= 0 || pageSize > 1000)
             throw new InvalidPaginationParametersException(page, pageSize);
 
-        return _uow.Sellables.FilterAsync(
-            page, pageSize,
-            s => s.Title.ToLower().Contains(query.ToLower()),
-            includes: new Expression<Func<Sellable, object>>[]
-            {
-                s => s.Attachments,
-                s => s.OfferedBy
-            },
-            descOrder: true
-        );
+        return _uow.Sellables
+            .Query()
+            .Where(s => s.Title.ToLower().Contains(query.ToLower()))
+            .OrderByDescending(s => s.Id)
+            .Include(s => s.Attachments)
+            .Include(s => s.OfferedBy)
+            .Page(page, pageSize)
+            .AsAsyncEnumerable();
     }
 
     #endregion Public methods

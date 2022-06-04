@@ -8,7 +8,7 @@ namespace BDP.Application.App;
 
 public class ServicesService : IServicesService
 {
-    private readonly ILegacyUnitOfWork _uow;
+    private readonly IUnitOfWork _uow;
     private readonly IAttachmentsService _attachmentsSvc;
     private readonly IFinanceService _financeSvc;
 
@@ -18,7 +18,7 @@ public class ServicesService : IServicesService
     /// <param name="uow">The unit of work of the app</param>
     /// <param name="attachmentsSvc">The attachments managment service</param>
     /// <param name="financeSvc">The finance service</param>
-    public ServicesService(ILegacyUnitOfWork uow, IAttachmentsService attachmentsSvc, IFinanceService financeSvc)
+    public ServicesService(IUnitOfWork uow, IAttachmentsService attachmentsSvc, IFinanceService financeSvc)
     {
         _uow = uow;
         _attachmentsSvc = attachmentsSvc;
@@ -28,14 +28,11 @@ public class ServicesService : IServicesService
     /// <inheritdoc/>
     public async Task<Service> GetByIdAsync(long id)
     {
-        var service = await _uow.Services.GetAsync(
-            id,
-            includes: new Expression<Func<Service, object>>[]
-            {
-                s => s.OfferedBy,
-                s => s.Attachments
-            }
-       );
+        var service = await _uow.Services
+            .Query()
+            .Include(s => s.Attachments)
+            .Include(s => s.OfferedBy)
+            .GetOrNullAsync(id);
 
         if (service is null)
             throw new NotFoundException($"no services were found with id #{id}");
@@ -103,7 +100,7 @@ public class ServicesService : IServicesService
     /// <inheritdoc/>
     public async Task UnlistAsync(Service service)
     {
-        if (await _uow.ServiceReservations.AnyAsync(
+        if (await _uow.ServiceReservations.Query().AnyAsync(
             o => o.Service.Id == service.Id && o.Transaction.Confirmation == null))
             throw new PendingReservationsLeftException(service);
 

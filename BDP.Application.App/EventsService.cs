@@ -11,14 +11,14 @@ public class EventsService : IEventsService
 {
     #region Private fields
 
-    private readonly ILegacyUnitOfWork _uow;
+    private readonly IUnitOfWork _uow;
     private readonly IAttachmentsService _attachmentsSvc;
 
     #endregion Private fields
 
     #region Ctors
 
-    public EventsService(ILegacyUnitOfWork uow, IAttachmentsService attachmentsSvc)
+    public EventsService(IUnitOfWork uow, IAttachmentsService attachmentsSvc)
     {
         _uow = uow;
         _attachmentsSvc = attachmentsSvc;
@@ -31,27 +31,23 @@ public class EventsService : IEventsService
     /// <inheritdoc/>
     public async Task<Event> GetByIdAsync(long id)
     {
-        var ret = await _uow.Events.FirstOrDefaultAsync(
-            e => e.Id == id,
-            includes: new Expression<Func<Event, object>>[]
-            {
-                e => e.Purchases,
-                e => e.Pictures,
-                e => e.Type,
-                e => e.CreatedBy,
-            }
-        );
+        var @event = await _uow.Events.Query()
+            .Include(e => e.Purchases)
+            .Include(e => e.Pictures)
+            .Include(e => e.Type)
+            .Include(e => e.CreatedBy)
+            .FirstOrNullAsync(e => e.Id == id);
 
-        if (ret == null)
+        if (@event == null)
             throw new NotFoundException($"no events were found with id #{id}");
 
-        return ret;
+        return @event;
     }
 
     /// <inheritdoc/>
     public async Task<EventType> GetTypeByIdAsync(long id)
     {
-        var ret = await _uow.EventTypes.FirstOrDefaultAsync(e => e.Id == id);
+        var ret = await _uow.EventTypes.Query().FirstOrNullAsync(e => e.Id == id);
 
         if (ret == null)
             throw new NotFoundException($"no event types were found with id #{id}");
@@ -61,7 +57,7 @@ public class EventsService : IEventsService
 
     /// <inheritdoc/>
     public IAsyncEnumerable<EventType> GetEventTypes()
-        => _uow.EventTypes.GetAllAsync();
+        => _uow.EventTypes.Query().AsAsyncEnumerable();
 
     /// <inheritdoc/>
     public IAsyncEnumerable<Event> ForUserAsync(
@@ -73,13 +69,16 @@ public class EventsService : IEventsService
         if (page <= 0 || pageSize <= 0 || pageSize > 1000)
             throw new InvalidPaginationParametersException(page, pageSize);
 
-        return _uow.Events.FilterAsync(
-            page,
-            pageSize,
-            e => e.CreatedBy.Id == user.Id,
-            includes: includes,
-            descOrder: true
-        );
+        var query = _uow.Events.Query();
+
+        if (includes is not null)
+            query = query.IncludeAll(includes);
+
+        return query
+            .Where(e => e.CreatedBy.Id == user.Id)
+            .OrderByDescending(e => e.Id)
+            .Page(page, pageSize)
+            .AsAsyncEnumerable();
     }
 
     /// <inheritdoc/>

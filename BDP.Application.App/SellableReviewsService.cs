@@ -9,7 +9,7 @@ public class SellableReviewsService : ISellableReviewsService
 {
     #region Private fields
 
-    private readonly ILegacyUnitOfWork _uow;
+    private readonly IUnitOfWork _uow;
 
     #endregion Private fields
 
@@ -19,7 +19,7 @@ public class SellableReviewsService : ISellableReviewsService
     /// Default constructor
     /// </summary>
     /// <param name="uow">The unit of work of the app</param>
-    public SellableReviewsService(ILegacyUnitOfWork uow)
+    public SellableReviewsService(IUnitOfWork uow)
     {
         _uow = uow;
     }
@@ -30,11 +30,22 @@ public class SellableReviewsService : ISellableReviewsService
 
     /// <inheritdoc/>
     public IAsyncEnumerable<SellableReview> GetForAsync(Sellable item, int page, int pageSize)
-        => _uow.SellableReviews.FilterAsync(page, pageSize, r => r.Item.Id == item.Id, descOrder: true);
+    {
+        return _uow.SellableReviews
+            .Query()
+            .Where(r => r.Item.Id == item.Id)
+            .OrderByDescending(r => r.Id)
+            .Page(page, pageSize)
+            .AsAsyncEnumerable();
+    }
 
     /// <inheritdoc/>
     public Task<SellableReview?> GetReviewForUser(Sellable item, User user)
-        => _uow.SellableReviews.FirstOrDefaultAsync(r => r.Item.Id == item.Id && r.LeftBy.Id == user.Id);
+    {
+        return _uow.SellableReviews
+            .Query()
+            .FirstOrNullAsync(r => r.Item.Id == item.Id && r.LeftBy.Id == user.Id);
+    }
 
     /// <inheritdoc/>
     public async Task<SellableReview> ReviewAsync(
@@ -65,7 +76,10 @@ public class SellableReviewsService : ISellableReviewsService
     /// <inheritdoc/>
     public async Task<SellableReviewInfo> ReviewInfoForAsync(Sellable item)
     {
-        var reviews = _uow.SellableReviews.FilterAsync(r => r.Item.Id == item.Id);
+        var reviews = _uow.SellableReviews
+            .Query()
+            .Where(r => r.Item.Id == item.Id)
+            .AsAsyncEnumerable();
 
         var reviewsCount = await reviews.CountAsync();
         var ratingAvg = reviewsCount > 0 ? await reviews.AverageAsync(r => r.Rating) : 0;
@@ -78,7 +92,7 @@ public class SellableReviewsService : ISellableReviewsService
     {
         if (item is Product)
         {
-            if (!await _uow.ProductOrders.AnyAsync(
+            if (!await _uow.ProductOrders.Query().AnyAsync(
                 o => o.Product.Id == item.Id &&
                      o.Transaction.From.Id == user.Id &&
                      o.Transaction.Confirmation != null &&
@@ -89,7 +103,7 @@ public class SellableReviewsService : ISellableReviewsService
         }
         else if (item is Service)
         {
-            if (!await _uow.ServiceReservations.AnyAsync(
+            if (!await _uow.ServiceReservations.Query().AnyAsync(
                 o => o.Service.Id == item.Id &&
                      o.Transaction.From.Id == user.Id &&
                      o.Transaction.Confirmation != null &&
@@ -99,7 +113,7 @@ public class SellableReviewsService : ISellableReviewsService
             }
         }
 
-        return !await _uow.SellableReviews.AnyAsync(
+        return !await _uow.SellableReviews.Query().AnyAsync(
             r => r.Item.Id == item.Id &&
                  r.LeftBy.Id == user.Id);
     }

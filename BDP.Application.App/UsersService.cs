@@ -11,7 +11,7 @@ public class UsersService : IUsersService
 {
     #region Private fields
 
-    private readonly ILegacyUnitOfWork _uow;
+    private readonly IUnitOfWork _uow;
     private readonly IAttachmentsService _attachmentsSvc;
 
     #endregion Private fields
@@ -22,7 +22,7 @@ public class UsersService : IUsersService
     /// Default constructor
     /// </summary>
     /// <param name="uow">the unit of work of the application</param>
-    public UsersService(ILegacyUnitOfWork uow, IAttachmentsService attachmentsSvc)
+    public UsersService(IUnitOfWork uow, IAttachmentsService attachmentsSvc)
     {
         _uow = uow;
         _attachmentsSvc = attachmentsSvc;
@@ -37,8 +37,10 @@ public class UsersService : IUsersService
         string username, bool includePhones = false, bool includeGroups = false)
     {
         var includes = PrepareUserIncludes(includePhones, includeGroups);
-        var user = await _uow.Users.FirstOrDefaultAsync(
-            _uow => _uow.Username == username, includes: includes.ToArray());
+
+        var user = await _uow.Users.Query()
+            .IncludeAll(includes)
+            .FirstOrNullAsync(u => u.Username == username);
 
         if (user is null)
             throw new NotFoundException($"no users were found with usrename `{username}'");
@@ -51,8 +53,10 @@ public class UsersService : IUsersService
         string email, bool includePhones = false, bool includeGroups = false)
     {
         var includes = PrepareUserIncludes(includePhones, includeGroups);
-        var user = await _uow.Users.FirstOrDefaultAsync(
-            _uow => _uow.Email == email, includes: includes.ToArray());
+
+        var user = await _uow.Users.Query()
+            .IncludeAll(includes)
+            .FirstOrNullAsync(u => u.Email == email);
 
         if (user is null)
             throw new NotFoundException($"no users were found with email `{email}'");
@@ -70,27 +74,28 @@ public class UsersService : IUsersService
     {
         var includes = PrepareUserIncludes(includePhones, includeGroups);
 
-        return _uow.Users.FilterAsync(
-            page, pageSize,
-            u =>
-                u.FullName != null && u.FullName.ToLower().Contains(query.ToLower())
-              || u.Username.ToLower().Contains(query.ToLower())
-            ,
-            includes: includes.ToArray(),
-            descOrder: true);
+        return _uow.Users
+            .Query()
+            .IncludeAll(includes)
+            .Where(u => u.FullName != null && u.FullName.ToLower().Contains(query.ToLower()) || u.Username.ToLower().Contains(query.ToLower()))
+            .OrderByDescending(u => u.Username)
+            .AsAsyncEnumerable();
     }
 
     /// <inheritdoc/>
     public async Task AddUserToGroupAsync(User user, string groupName)
     {
-        var group = await _uow.UserGroups.FirstOrDefaultAsync(g => g.Name == groupName);
+        // TODO:
+        // Fix the logic here
+
+        var group = await _uow.UserGroups.Query().FirstOrNullAsync(g => g.Name == groupName);
 
         if (group is null)
         {
             group = new UserGroup { Name = groupName };
             _uow.UserGroups.Add(group);
         }
-        else if (await _uow.UserGroups.AnyAsync(g => g.Users.Any(u => u.Id == user.Id)))
+        else if (await _uow.UserGroups.Query().AnyAsync(g => g.Users.Any(u => u.Id == user.Id)))
         {
             return;
         }

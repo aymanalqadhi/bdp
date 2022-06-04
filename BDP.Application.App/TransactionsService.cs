@@ -10,7 +10,7 @@ public class TransactionsService : ITransactionsService
 {
     #region Private fields
 
-    private readonly ILegacyUnitOfWork _uow;
+    private readonly IUnitOfWork _uow;
 
     #endregion Private fields
 
@@ -20,7 +20,7 @@ public class TransactionsService : ITransactionsService
     /// Default constructor
     /// </summary>
     /// <param name="uow">The unit of work of the application</param>
-    public TransactionsService(ILegacyUnitOfWork uow)
+    public TransactionsService(IUnitOfWork uow)
     {
         _uow = uow;
     }
@@ -36,27 +36,40 @@ public class TransactionsService : ITransactionsService
         User user,
         Expression<Func<Transaction, object>>[]? includes = null)
     {
-        return _uow.Transactions
-            .FilterAsync(
-                page,
-                pageSize,
-                t => t.From.Id == user.Id || t.To.Id == user.Id,
-                includes, descOrder: true
-            );
+        var query = _uow.Transactions.Query();
+
+        if (includes is not null)
+            query = query.IncludeAll(includes);
+
+        return query
+            .Where(t => t.From.Id == user.Id || t.To.Id == user.Id)
+            .OrderByDescending(t => t.Id)
+            .Page(page, pageSize)
+            .AsAsyncEnumerable();
     }
 
     /// <inheritdoc/>
     public IAsyncEnumerable<Transaction> SentByAsync(User user,
         Expression<Func<Transaction, object>>[]? includes = null)
     {
-        return _uow.Transactions.FilterAsync(t => t.From.Id == user.Id, includes);
+        var query = _uow.Transactions.Query();
+
+        if (includes is not null)
+            query = query.IncludeAll(includes);
+
+        return query.Where(t => t.From.Id == user.Id).AsAsyncEnumerable();
     }
 
     /// <inheritdoc/>
     public IAsyncEnumerable<Transaction> ReceivedByAsync(User user,
         Expression<Func<Transaction, object>>[]? includes = null)
     {
-        return _uow.Transactions.FilterAsync(t => t.To.Id == user.Id, includes);
+        var query = _uow.Transactions.Query();
+
+        if (includes is not null)
+            query = query.IncludeAll(includes);
+
+        return query.Where(t => t.To.Id == user.Id).AsAsyncEnumerable();
     }
 
     /// <inheritdoc/>
@@ -76,12 +89,10 @@ public class TransactionsService : ITransactionsService
     {
         await using var tx = await _uow.BeginTransactionAsync();
 
-        var transaction = await _uow
-           .Transactions
-           .FirstOrDefaultAsync(
-                t => t.ConfirmationToken == confirmationToken && t.To.Id == receiver.Id,
-                includes: new Expression<Func<Transaction, object>>[] { t => t.Confirmation! }
-            );
+        var transaction = await _uow.Transactions
+            .Query()
+            .Include(t => t.Confirmation!)
+            .FirstOrNullAsync(t => t.ConfirmationToken == confirmationToken && t.To.Id == receiver.Id);
 
         return await DoCreateConfirmation(transaction, TransactionConfirmationOutcome.Confirmed, tx);
     }
@@ -91,12 +102,10 @@ public class TransactionsService : ITransactionsService
     {
         await using var tx = await _uow.BeginTransactionAsync();
 
-        var transaction = await _uow
-           .Transactions
-           .FirstOrDefaultAsync(
-                t => t.Id == transactionId && t.To.Id == receiver.Id,
-                includes: new Expression<Func<Transaction, object>>[] { t => t.Confirmation! }
-            );
+        var transaction = await _uow.Transactions
+            .Query()
+            .Include(t => t.Confirmation!)
+            .FirstOrNullAsync(t => t.Id == transactionId && t.To.Id == receiver.Id);
 
         return await DoCreateConfirmation(transaction, TransactionConfirmationOutcome.Declined, tx);
     }
@@ -113,22 +122,24 @@ public class TransactionsService : ITransactionsService
         if (confirmedOnly)
         {
             var res = direction == TransactionDirection.Outgoing
-                ? _uow.Transactions.FilterAsync(
-                      t => t.Confirmation != null &&
-                      t.Confirmation.Outcome == TransactionConfirmationOutcome.Confirmed &&
-                      t.From.Id == user.Id)
-                : _uow.Transactions.FilterAsync(
-                      t => t.Confirmation != null &&
-                      t.Confirmation.Outcome == TransactionConfirmationOutcome.Confirmed &&
-                      t.To.Id == user.Id);
+                ? _uow.Transactions
+                    .Query()
+                    .Where(t => t.Confirmation != null)
+                    .Where(t => t.Confirmation!.Outcome == TransactionConfirmationOutcome.Confirmed && t.From.Id == user.Id)
+                : _uow.Transactions
+                    .Query()
+                    .Where(t => t.Confirmation != null)
+                    .Where(t => t.Confirmation!.Outcome == TransactionConfirmationOutcome.Confirmed && t.To.Id == user.Id);
 
-            return await res.SumAsync(t => t.Amount);
+            return await res.AsAsyncEnumerable().SumAsync(t => t.Amount);
         }
 
-        return await _uow.Transactions.FilterAsync(
-            direction == TransactionDirection.Outgoing
+        return await _uow.Transactions
+            .Query()
+            .Where(direction == TransactionDirection.Outgoing
                  ? t => t.From.Id == user.Id
                  : t => t.To.Id == user.Id)
+            .AsAsyncEnumerable()
             .SumAsync(t => t.Amount);
     }
 
