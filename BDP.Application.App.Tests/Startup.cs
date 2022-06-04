@@ -9,7 +9,7 @@ namespace BDP.Application.App.Tests;
 
 public class Startup
 {
-    public void ConfigurationServices(IServiceCollection services)
+    public static void ConfigurationServices(IServiceCollection services)
     {
         services.AddTransient(_ => TestDbContext.Create());
         services.AddTransient<IUnitOfWork, BdpUnitOfWork>();
