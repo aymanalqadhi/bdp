@@ -1,4 +1,5 @@
 ﻿using BDP.Domain.Entities;
+using BDP.Domain.Repositories;
 
 namespace BDP.Domain.Services;
 
@@ -8,10 +9,8 @@ public interface ISellableReviewsService
     /// Asynchronosly gets reviews for a specific sellable, limited with pagination
     /// </summary>
     /// <param name="item">The item which to get reviews for</param>
-    /// <param name="page">The page to get</param>
-    /// <param name="pageSize">The pages size</param>
     /// <returns></returns>
-    IAsyncEnumerable<SellableReview> GetForAsync(Sellable item, int page, int pageSize);
+    IQueryBuilder<SellableReview> GetForAsync(Sellable item);
 
     /// <summary>
     /// Asynchronously gets the review for an item for a specific
