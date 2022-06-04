@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BDP.Domain.Repositories.Extensions;
 using BDP.Domain.Services;
 using BDP.Web.Dtos;
 using Microsoft.AspNetCore.Mvc;
@@ -47,8 +48,13 @@ public class UsersController : ControllerBase
     [HttpGet("search")]
     public async Task<IActionResult> Search(string query, int page)
     {
-        var ret = await _usersSvc.SearchAsync(query, page, _pageSize).ToListAsync();
-        return Ok(ret.Select(_mapper.Map<UserDto>));
+        var ret = _usersSvc.SearchAsync(query)
+            .OrderDescending()
+            .Page(page, _pageSize)
+            .AsAsyncEnumerable()
+            .Select(_mapper.Map<UserDto>);
+
+        return Ok(await ret.ToListAsync());
     }
 
     #endregion Actions
