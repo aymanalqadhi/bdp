@@ -49,8 +49,7 @@ public class PurchasesController : ControllerBase
     {
         var user = await _usersSvc.GetByUsernameAsync(User.GetUsername());
         var ret = _purchasesSvc.ForUserAsync(user)
-            .OrderDescending()
-            .Page(page, _pageSize)
+            .PageDescending(page, _pageSize)
             .Include(p => p.Transaction)
             .AsAsyncEnumerable();
 

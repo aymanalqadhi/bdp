@@ -51,8 +51,7 @@ public class SellablesController : ControllerBase
     {
         var user = await _usersSvc.GetByUsernameAsync(username);
         var ret = _sellablesSvc.GetForAsync(user)
-            .OrderDescending()
-            .Page(page, _pageSize)
+            .PageDescending(page, _pageSize)
             .AsAsyncEnumerable();
 
         return Ok(await ret.Select((s) =>
@@ -80,8 +79,7 @@ public class SellablesController : ControllerBase
     {
         var item = await _sellablesSvc.GetByIdAsync(id);
         var ret = _sellableReviewsSvc.GetForAsync(item)
-            .OrderDescending()
-            .Page(page, _pageSize)
+            .PageDescending(page, _pageSize)
             .AsAsyncEnumerable()
             .Select(_mapper.Map<SellableReviewDto>);
 

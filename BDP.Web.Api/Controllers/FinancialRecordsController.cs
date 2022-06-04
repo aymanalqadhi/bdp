@@ -50,8 +50,7 @@ public class FinancialRecordsController : ControllerBase
     public async Task<IActionResult> Pending([Required] int page)
     {
         var ret = _financialRecordsSvc.PendingAsync()
-            .OrderDescending()
-            .Page(page, _pageSize)
+            .PageDescending(page, _pageSize)
             .Include(f => f.MadeBy)
             .Include(f => f.MadeBy.ProfilePicture!)
             .AsAsyncEnumerable()
