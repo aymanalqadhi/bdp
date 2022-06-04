@@ -76,6 +76,14 @@ public sealed class QueryBuilder<T> : IQueryBuilder<T> where T : AuditableEntity
     }
 
     /// <inheritdoc/>
+    public Task<T> GetAsync(long id)
+        => FirstAsync(i => i.Id == id);
+
+    /// <inheritdoc/>
+    public Task<T?> GetOrNullAsync(long id)
+        => FirstOrNullAsync(i => i.Id == id);
+
+    /// <inheritdoc/>
     public Task<bool> HasItemsAsync(CancellationToken cancellationToken = default)
         => _query.AnyAsync(cancellationToken);
 
