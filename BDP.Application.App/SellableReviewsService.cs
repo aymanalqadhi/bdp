@@ -37,7 +37,7 @@ public class SellableReviewsService : ISellableReviewsService
     {
         return _uow.SellableReviews
             .Query()
-            .FirstOrNullAsync(r => r.Item.Id == item.Id && r.LeftBy.Id == user.Id);
+            .FirstOrDefaultAsync(r => r.Item.Id == item.Id && r.LeftBy.Id == user.Id);
     }
 
     /// <inheritdoc/>

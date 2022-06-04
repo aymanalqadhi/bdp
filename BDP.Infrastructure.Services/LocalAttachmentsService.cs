@@ -71,7 +71,7 @@ public class LocalAttachmentsService : IAttachmentsService
     /// <inheritdoc/>
     public async Task DeleteAsync(string path)
     {
-        var attachment = await _uow.Attachments.Query().FirstOrNullAsync(a => a.FullPath == path);
+        var attachment = await _uow.Attachments.Query().FirstOrDefaultAsync(a => a.FullPath == path);
 
         if (attachment == null)
             throw new FileNotFoundException("attachment not found", path.ToString());

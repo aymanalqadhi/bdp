@@ -74,7 +74,7 @@ public class UsersService : IUsersService
         // TODO:
         // Fix the logic here
 
-        var group = await _uow.UserGroups.Query().FirstOrNullAsync(g => g.Name == groupName);
+        var group = await _uow.UserGroups.Query().FirstOrDefaultAsync(g => g.Name == groupName);
 
         if (group is null)
         {

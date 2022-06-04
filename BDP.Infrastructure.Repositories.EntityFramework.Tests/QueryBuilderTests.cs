@@ -57,7 +57,7 @@ public class QueryBuilderTests
                      .FirstAsync(l => l.Id == log.Id)).Message == log.Message
                );
             });
-            Assert.NotNull(await _uow.Logs.Query().FirstOrNullAsync(l => l.Id == logs[0].Id));
+            Assert.NotNull(await _uow.Logs.Query().FirstOrDefaultAsync(l => l.Id == logs[0].Id));
         }
         else
         {
@@ -72,7 +72,7 @@ public class QueryBuilderTests
             });
 
             Assert.IsType<InvalidOperationException>(exception.InnerException);
-            Assert.Null(await _uow.Logs.Query().FirstOrNullAsync(l => l.Id == logs[0].Id));
+            Assert.Null(await _uow.Logs.Query().FirstOrDefaultAsync(l => l.Id == logs[0].Id));
         }
     }
 
