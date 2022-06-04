@@ -97,6 +97,13 @@ public interface IQueryBuilder<T> where T : AuditableEntity
     IQueryBuilder<T> Include(Expression<Func<T, object>> expr);
 
     /// <summary>
+    /// Adds a set of includes to the query
+    /// </summary>
+    /// <param name="expr">The expressions used to specify the includes</param>
+    /// <returns>The modified query builder</returns>
+    IQueryBuilder<T> IncludeAll(IEnumerable<Expression<Func<T, object>>> exprs);
+
+    /// <summary>
     /// Orders the current query ascendingly
     /// </summary>
     /// <param name="expr">The expression used for ordering</param>
