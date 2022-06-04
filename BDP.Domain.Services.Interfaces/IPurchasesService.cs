@@ -1,4 +1,6 @@
 ﻿using BDP.Domain.Entities;
+using BDP.Domain.Repositories;
+
 using System.Linq.Expressions;
 
 namespace BDP.Domain.Services;
@@ -16,13 +18,6 @@ public interface IPurchasesService
     /// Asynchronosly gets purchases for a user, limited with pagination
     /// </summary>
     /// <param name="user">The user which to get the purchases for</param>
-    /// <param name="page">The page to get</param>
-    /// <param name="pageSize">The pages size</param>
-    /// <param name="includes">Additional includes</param>
     /// <returns></returns>
-    IAsyncEnumerable<Purchase> ForUserAsync(
-        int page,
-        int pageSize,
-        User user,
-        Expression<Func<Purchase, object>>[]? includes = null);
+    IQueryBuilder<Purchase> ForUserAsync(User user);
 }
