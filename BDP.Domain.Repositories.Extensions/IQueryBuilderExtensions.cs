@@ -20,7 +20,7 @@ public static class IQueryBuilderExtensions
         => source.OrderByDescending(x => x.Id);
 
     /// <summary>
-    /// Fetches the page with index <see cref="page"/> and size <see cref="pageSize"/>
+    /// Fetches the page with index <see cref="page"/> and size <see cref="pageLength"/>
     /// </summary>
     /// <param name="page">The index of the page (starts at 1)</param>
     /// <param name="pageLength">The length of the page</param>
@@ -35,6 +35,22 @@ public static class IQueryBuilderExtensions
         return source
             .Skip((page - 1) * pageLength)
             .Take(page * pageLength);
+    }
+
+    /// <summary>
+    /// Fetches the page with index <see cref="page"/> and size <see cref="pageSize"/>. The
+    /// data is sorted descendingly first, then the page is fetched
+    /// </summary>
+    /// <param name="page">The index of the page (starts at 1)</param>
+    /// <param name="pageLength">The length of the page</param>
+    /// <returns>The modified query builder</returns>
+    /// <exception cref="InvalidPaginationParametersException"></exception>
+    public static IQueryBuilder<T> PageDescending<T>(this IQueryBuilder<T> source, int page, int pageLength)
+        where T : AuditableEntity
+    {
+        return source
+            .OrderDescending()
+            .Page(page, pageLength);
     }
 
     /// <summary>
