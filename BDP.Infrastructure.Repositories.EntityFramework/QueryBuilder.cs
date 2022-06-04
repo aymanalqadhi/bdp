@@ -83,29 +83,6 @@ public sealed class QueryBuilder<T> : IQueryBuilder<T> where T : AuditableEntity
     }
 
     /// <inheritdoc/>
-    public Task<T> SingleAsync(
-        Expression<Func<T, bool>> pred,
-        CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            return _query.SingleAsync(pred, cancellationToken);
-        }
-        catch (InvalidOperationException ex)
-        {
-            throw new NotFoundException($"exactly one item was expected, found more or less", ex);
-        }
-    }
-
-    /// <inheritdoc/>
-    public Task<T?> SingleOrNullAsync(
-        Expression<Func<T, bool>> pred,
-        CancellationToken cancellationToken = default)
-    {
-        return _query.SingleOrDefaultAsync(pred, cancellationToken);
-    }
-
-    /// <inheritdoc/>
     public Task<T> FindAsync(long id)
         => FirstAsync(i => i.Id == id);
 

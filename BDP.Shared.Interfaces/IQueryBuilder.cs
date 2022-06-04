@@ -83,27 +83,6 @@ public interface IQueryBuilder<T> where T : AuditableEntity
         CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Asynchronously gets a single item from the query. Throws an exception if
-    /// no items were found
-    /// </summary>
-    /// <param name="pred">The filting expression</param>
-    /// <param name="cancellationToken">The task cancellation cancellationToken</param>
-    /// <returns>the first item in the query</returns>
-    Task<T> SingleAsync(
-        Expression<Func<T, bool>> pred,
-        CancellationToken cancellationToken = default);
-
-    /// <summary>
-    /// Asynchronously gets a single item from the query that matches the passed
-    /// expression. A null is returned if no items were found
-    /// </summary>
-    /// <param name="pred">The filting expression</param>
-    /// <returns>the first item in the query if found, null otherwise</returns>
-    Task<T?> SingleOrNullAsync(
-        Expression<Func<T, bool>> pred,
-        CancellationToken cancellationToken = default);
-
-    /// <summary>
     /// Asynchronously gets an item by id from the backing store. An exception is
     /// thrown if the item is not found
     /// </summary>
