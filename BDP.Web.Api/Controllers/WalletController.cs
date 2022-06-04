@@ -1,12 +1,16 @@
-﻿using AutoMapper;
-using BDP.Domain.Entities;
+﻿using BDP.Domain.Entities;
 using BDP.Domain.Services;
 using BDP.Web.Api.Extensions;
 using BDP.Web.Dtos;
 using BDP.Web.Dtos.Requests;
 using BDP.Web.Dtos.Responses;
+using BDP.Domain.Repositories.Extensions;
+
+using AutoMapper;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 using System.Linq.Expressions;
 
 namespace BDP.Web.Api.Controllers;
@@ -52,20 +56,15 @@ public class WalletController : ControllerBase
     public async Task<IActionResult> Records(int page)
     {
         var user = await _usersSvc.GetByUsernameAsync(User.GetUsername())!;
-        var ret = await _financialRecordsSvc
-            .ForUserAsync(
-                page,
-                _pageSize,
-                user,
-                descOrder: true,
-                includes: new Expression<Func<FinancialRecord, object>>[]
-                {
-                    r => r.Verification!,
-                    r => r.Verification!.Document!
-                })
-            .ToListAsync();
+        var ret = _financialRecordsSvc.ForUserAsync(user)
+            .OrderDescending()
+            .Page(page, _pageSize)
+            .Include(r => r.Verification!)
+            .Include(r => r.Verification!.Document!)
+            .AsAsyncEnumerable()
+            .Select(_mapper.Map<FinancialRecordDto>);
 
-        return Ok(ret.Select(_mapper.Map<FinancialRecordDto>));
+        return Ok(await ret.ToListAsync());
     }
 
     [HttpGet("[action]")]
