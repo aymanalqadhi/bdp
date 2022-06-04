@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BDP.Domain.Entities;
+using BDP.Domain.Repositories.Extensions;
 using BDP.Domain.Services;
 using BDP.Web.Api.Auth.Attributes;
 using BDP.Web.Api.Extensions;
@@ -48,19 +49,15 @@ public class FinancialRecordsController : ControllerBase
     [IsAdmin]
     public async Task<IActionResult> Pending([Required] int page)
     {
-        var ret = await _financialRecordsSvc
-            .PendingAsync(
-                page,
-                _pageSize,
-                descOrder: true,
-                includes: new Expression<Func<FinancialRecord, object>>[]
-                {
-                    f => f.MadeBy,
-                    f => f.MadeBy.ProfilePicture!
-                })
-            .ToListAsync();
+        var ret = _financialRecordsSvc.PendingAsync()
+            .OrderDescending()
+            .Page(page, _pageSize)
+            .Include(f => f.MadeBy)
+            .Include(f => f.MadeBy.ProfilePicture!)
+            .AsAsyncEnumerable()
+            .Select(_mapper.Map<FinancialRecordDto>);
 
-        return Ok(ret.Select(_mapper.Map<FinancialRecordDto>));
+        return Ok(await ret.ToListAsync());
     }
 
     [HttpPost("[action]")]
