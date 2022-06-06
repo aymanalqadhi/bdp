@@ -16,21 +16,6 @@ public interface ITransactionsService
     IQueryBuilder<Transaction> ForUserAsync(User user);
 
     /// <summary>
-    /// Asynchronously gets all sent transactions from a user
-    /// </summary>
-    /// <param name="user">The user to get the transactions for</param>
-    /// <returns></returns>
-    IQueryBuilder<Transaction> SentByAsync(User user);
-
-    /// <summary>
-    /// Asynchronously gets all received transactions by a user
-    /// </summary>
-    /// <param name="user">The user to get the transactions for</param>
-    /// <param name="includes">Additonal includes</param>
-    /// <returns></returns>
-    IQueryBuilder<Transaction> ReceivedByAsync(User user);
-
-    /// <summary>
     /// Asynchronously gets the total input transferred to the user
     /// </summary>
     /// <param name="user">The user to get the total for</param>
