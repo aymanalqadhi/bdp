@@ -29,4 +29,19 @@ public sealed class Transaction : AuditableEntity
     /// Gets or set the confirmation of the transaction
     /// </summary>
     public TransactionConfirmation? Confirmation { get; set; }
+
+    /// <summary>
+    /// Sets the confirmation token to null if the passed condition is true
+    /// </summary>
+    /// <param name="cond">The condition to check against</param>
+    /// <returns>
+    /// this with ConfirmationToken set to null if the condition it true, unchanged otherwise
+    /// </returns>
+    public Transaction ConcealConfirmationTokenIf(bool cond)
+    {
+        if (cond)
+            ConfirmationToken = null!;
+
+        return this;
+    }
 }
