@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace BDP.Domain.Repositories;
 
-public interface IQueryBuilder<T> where T : AuditableEntity
+public interface IQueryBuilder<T> where T : class
 {
     #region Public Methods
 
@@ -109,6 +109,14 @@ public interface IQueryBuilder<T> where T : AuditableEntity
     /// <param name="expr">The expression used for ordering</param>
     /// <returns>The modified query builder</returns>
     IQueryBuilder<T> OrderByDescending(Expression<Func<T, object>> expr);
+
+    /// <summary>
+    /// Projects into an element in the sequence into a new form
+    /// </summary>
+    /// <typeparam name="V">The new type of the sequence</typeparam>
+    /// <param name="selector">The selector expression used for projection</param>
+    /// <returns>A new query builder for the new sequence form</returns>
+    IQueryBuilder<V> Select<V>(Expression<Func<T, V>> selector) where V : class;
 
     /// <summary>
     /// Skips the first <see cref="count"/> items
