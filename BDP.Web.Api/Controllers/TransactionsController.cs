@@ -1,12 +1,15 @@
-﻿using AutoMapper;
-using BDP.Domain.Entities;
+﻿using BDP.Domain.Entities;
 using BDP.Domain.Repositories.Extensions;
 using BDP.Domain.Services;
 using BDP.Web.Api.Extensions;
 using BDP.Web.Dtos;
 using BDP.Web.Dtos.Requests;
+
+using AutoMapper;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 
@@ -55,17 +58,11 @@ public class TransactionsController : ControllerBase
             .Include(t => t.From)
             .Include(t => t.To)
             .Include(t => t.Confirmation!)
+            .Select(t => t.ConcealConfirmationTokenIf(t.From.Id != user.Id))
+            .Map<Transaction, TransactionDto>(_mapper)
             .AsAsyncEnumerable();
 
-        return Ok(await ret.Select(t =>
-        {
-            var dto = _mapper.Map<TransactionDto>(t);
-
-            if (t.From.Id != user.Id)
-                dto.ConfirmationToken = null;
-
-            return dto;
-        }).ToListAsync());
+        return Ok(ret);
     }
 
     [HttpPost("[action]")]
