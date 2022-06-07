@@ -8,6 +8,13 @@ namespace BDP.Domain.Services;
 public interface ITransactionsService
 {
     /// <summary>
+    /// Asynchronously gets a transaction by id
+    /// </summary>
+    /// <param name="id">The id of the transaction</param>
+    /// <returns>The transaction with the passed id</returns>
+    IQueryBuilder<Transaction> GetByIdAsync(long id);
+
+    /// <summary>
     /// Asynchrnously gets transactions that a user has either sent or recieved
     /// limited by pagination
     /// </summary>
