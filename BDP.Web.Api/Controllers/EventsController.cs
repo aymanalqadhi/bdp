@@ -5,6 +5,7 @@ using BDP.Domain.Services;
 using BDP.Web.Api.Auth.Attributes;
 using BDP.Web.Api.Extensions;
 using BDP.Web.Dtos;
+using BDP.Web.Dtos.Parameters;
 using BDP.Web.Dtos.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,8 +20,6 @@ public class EventsController : ControllerBase
 {
     #region Private fields
 
-    private readonly int _pageSize;
-
     private readonly IUsersService _usersSvc;
     private readonly IPurchasesService _puchasesSvc;
     private readonly IEventsService _eventsSvc;
@@ -31,7 +30,6 @@ public class EventsController : ControllerBase
     #region Ctors
 
     public EventsController(
-        IConfigurationService configurationSvc,
         IUsersService usersSvc,
         IPurchasesService puchasesSvc,
         IEventsService eventsSvc,
@@ -41,8 +39,6 @@ public class EventsController : ControllerBase
         _puchasesSvc = puchasesSvc;
         _eventsSvc = eventsSvc;
         _mapper = mapper;
-
-        _pageSize = configurationSvc.GetInt("QuerySettings:DefaultPageSize");
     }
 
     #endregion Ctors
@@ -67,11 +63,11 @@ public class EventsController : ControllerBase
 
     [HttpGet]
     [Authorize]
-    public async Task<IActionResult> GetEvents([Required] string username, [Required] int page)
+    public async Task<IActionResult> GetEvents([Required] string username, [FromQuery] PagingParameters paging)
     {
         var user = await _usersSvc.GetByUsernameAsync(username);
         var ret = _eventsSvc.ForUserAsync(user)
-            .PageDescending(page, _pageSize)
+            .PageDescending(paging.Page, paging.PageLength)
             .Include(e => e.Pictures)
             .Include(e => e.Type)
             .Include(e => e.CreatedBy)
@@ -137,24 +133,13 @@ public class EventsController : ControllerBase
     [IsCustomer]
     public async Task<IActionResult> GetAssociatePurchase(int id)
     {
-        // TODO:
-        // move ownership logic to the service
-
         var user = await _usersSvc.GetByUsernameAsync(User.GetUsername());
         var @event = await _eventsSvc.GetByIdAsync(id);
 
         if (@event.CreatedBy.Id != user.Id)
             return Unauthorized(new { message = "you do not own the event" });
 
-        return Ok(@event.Purchases.Select(t =>
-        {
-            var dto = _mapper.Map(t, t.GetType(), typeof(PurchaseDto));
-
-            if (t.Transaction.From.Id != user.Id)
-                ((PurchaseDto)dto).Transaction.ConfirmationToken = null;
-
-            return dto;
-        }));
+        return Ok(@event.Purchases.Select(_mapper.Map<PurchaseDto>));
     }
 
     [HttpPost("{id}/purchases")]

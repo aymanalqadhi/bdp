@@ -5,6 +5,7 @@ using BDP.Domain.Services;
 using BDP.Web.Api.Auth.Attributes;
 using BDP.Web.Api.Extensions;
 using BDP.Web.Dtos;
+using BDP.Web.Dtos.Parameters;
 using BDP.Web.Dtos.Requests;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
@@ -18,8 +19,6 @@ public class FinancialRecordsController : ControllerBase
 {
     #region Private fields
 
-    private readonly int _pageSize;
-
     private readonly IUsersService _usersSvc;
     private readonly IFinancialRecordsService _financialRecordsSvc;
     private readonly IMapper _mapper;
@@ -29,7 +28,6 @@ public class FinancialRecordsController : ControllerBase
     #region Ctors
 
     public FinancialRecordsController(
-        IConfigurationService configurationSvc,
         IUsersService usersSvc,
         IFinancialRecordsService financialRecordsSvc,
         IMapper mapper)
@@ -37,8 +35,6 @@ public class FinancialRecordsController : ControllerBase
         _usersSvc = usersSvc;
         _mapper = mapper;
         _financialRecordsSvc = financialRecordsSvc;
-
-        _pageSize = configurationSvc.GetInt("QuerySettings:DefaultPageSize");
     }
 
     #endregion Ctors
@@ -47,10 +43,10 @@ public class FinancialRecordsController : ControllerBase
 
     [HttpGet("[action]")]
     [IsAdmin]
-    public async Task<IActionResult> Pending([Required] int page)
+    public async Task<IActionResult> Pending([FromQuery] PagingParameters paging)
     {
         var ret = _financialRecordsSvc.PendingAsync()
-            .PageDescending(page, _pageSize)
+            .PageDescending(paging.Page, paging.PageLength)
             .Include(f => f.MadeBy)
             .Include(f => f.MadeBy.ProfilePicture!)
             .AsAsyncEnumerable()

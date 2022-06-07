@@ -85,5 +85,18 @@ public class TransactionsController : ControllerBase
         return Ok(_mapper.Map<TransactionConfirmationDto>(ret));
     }
 
+    [HttpGet("{id}/token")]
+    [Authorize]
+    public async Task<IActionResult> GetConfirmationToken(long id)
+    {
+        var user = await _usersSvc.GetByUsernameAsync(User.GetUsername());
+        var tx = await _transactionsSvc.GetByIdAsync(id).FirstAsync();
+
+        if (tx.From.Id != user.Id)
+            return Unauthorized(new { message = "you did not make the transaction" });
+
+        return Ok(new { token = tx.ConfirmationToken });
+    }
+
     #endregion Actions
 }
