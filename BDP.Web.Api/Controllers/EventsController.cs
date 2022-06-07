@@ -52,13 +52,13 @@ public class EventsController : ControllerBase
 
     [HttpGet("types")]
     [Authorize]
-    public async Task<IActionResult> GetEventTypes()
+    public IAsyncEnumerable<EventTypeDto> GetEventTypes()
     {
         var ret = _eventsSvc.GetEventTypes()
-            .AsAsyncEnumerable()
-            .Select(_mapper.Map<EventTypeDto>);
+            .Map<EventType, EventTypeDto>(_mapper)
+            .AsAsyncEnumerable();
 
-        return Ok(await ret.ToListAsync());
+        return ret;
     }
 
     [HttpGet]
@@ -71,10 +71,10 @@ public class EventsController : ControllerBase
             .Include(e => e.Pictures)
             .Include(e => e.Type)
             .Include(e => e.CreatedBy)
-            .AsAsyncEnumerable()
-            .Select(_mapper.Map<EventDto>);
+            .Map<Event, EventDto>(_mapper)
+            .AsAsyncEnumerable();
 
-        return Ok(await ret.ToListAsync());
+        return Ok(ret);
     }
 
     [HttpPost]

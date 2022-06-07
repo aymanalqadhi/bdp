@@ -56,10 +56,10 @@ public class WalletController : ControllerBase
             .PageDescending(paging.Page, paging.PageLength)
             .Include(r => r.Verification!)
             .Include(r => r.Verification!.Document!)
-            .AsAsyncEnumerable()
-            .Select(_mapper.Map<FinancialRecordDto>);
+            .Map<FinancialRecord, FinancialRecordDto>(_mapper)
+            .AsAsyncEnumerable();
 
-        return Ok(await ret.ToListAsync());
+        return Ok(ret);
     }
 
     [HttpGet("[action]")]
