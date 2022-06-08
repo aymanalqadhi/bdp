@@ -38,6 +38,8 @@ public class SmtpEmailService : IEmailService
         using var smtp = new SmtpClient(_settings.Host, _settings.Port);
         smtp.Credentials = new NetworkCredential(_settings.Username, _settings.Password);
         smtp.EnableSsl = _settings.EnableSSL;
+        smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+        smtp.UseDefaultCredentials = false;
 
         using var msg = new MailMessage(_settings.Username, to, subject, body);
         msg.Sender = new MailAddress(_settings.Username);
