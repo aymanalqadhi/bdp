@@ -47,7 +47,7 @@ public interface IEventsService
     /// Gets all events
     /// </summary>
     /// <returns></returns>
-    Task<Event> GetEvents();
+    IQueryBuilder<Event> GetEvents();
 
     /// <summary>
     /// Gets event types
