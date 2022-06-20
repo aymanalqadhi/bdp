@@ -30,7 +30,7 @@ public class EventsService : IEventsService
     #region Public methods
 
     /// <inheritdoc/>
-    public async Task<Event> GetByIdAsync(Guid id)
+    public async Task<Event> GetByIdAsync(EntityKey<Event> id)
     {
         var @event = await _uow.Events.Query()
             .Include(e => e.Purchases)
@@ -43,7 +43,7 @@ public class EventsService : IEventsService
     }
 
     /// <inheritdoc/>
-    public Task<EventType> GetTypeByIdAsync(Guid id)
+    public Task<EventType> GetTypeByIdAsync(EntityKey<EventType> id)
         => _uow.EventTypes.Query().FirstAsync(e => e.Id == id);
 
     /// <inheritdoc/>
@@ -51,13 +51,13 @@ public class EventsService : IEventsService
         => _uow.EventTypes.Query();
 
     /// <inheritdoc/>
-    public IQueryBuilder<Event> ForUserAsync(Guid userId)
+    public IQueryBuilder<Event> ForUserAsync(EntityKey<User> userId)
         => _uow.Events.Query().Where(e => e.CreatedBy.Id == userId);
 
     /// <inheritdoc/>
     public async Task<Event> CreateAsync(
-        Guid userId,
-        Guid typeId,
+        EntityKey<User> userId,
+        EntityKey<EventType> typeId,
         string title,
         string description,
         DateTime takesPlaceAt)
@@ -83,8 +83,8 @@ public class EventsService : IEventsService
 
     /// <inheritdoc/>
     public async Task<Event> UpdateAsync(
-        Guid eventId,
-        Guid typeId,
+        EntityKey<Event> eventId,
+        EntityKey<EventType> typeId,
         string title,
         string description,
         DateTime takesPlaceAt)
@@ -104,7 +104,7 @@ public class EventsService : IEventsService
     }
 
     /// <inheritdoc/>
-    public async Task RemoveAsync(Guid eventId)
+    public async Task RemoveAsync(EntityKey<Event> eventId)
     {
         var @event = await _uow.Events.Query().FindAsync(eventId);
 
@@ -113,7 +113,7 @@ public class EventsService : IEventsService
     }
 
     /// <inheritdoc/>
-    public async Task AssociatePurchaseAsync(Guid eventId, Guid purchaseId)
+    public async Task AssociatePurchaseAsync(EntityKey<Event> eventId, EntityKey<Purchase> purchaseId)
     {
         var @event = await _uow.Events.Query().FindAsync(eventId);
         var purchase = await _uow.Purchases.Query().FindAsync(purchaseId);
@@ -125,7 +125,7 @@ public class EventsService : IEventsService
     }
 
     /// <inheritdoc/>
-    public async Task AddImageAsync(Guid eventId, IUploadFile image)
+    public async Task AddImageAsync(EntityKey<Event> eventId, IUploadFile image)
     {
         var @event = await _uow.Events.Query().FindAsync(eventId);
         var attachment = await _attachmentsSvc.SaveAsync(image);
@@ -137,7 +137,7 @@ public class EventsService : IEventsService
     }
 
     /// <inheritdoc/>
-    public async Task UpdateProgressAsync(Guid eventId, double progress)
+    public async Task UpdateProgressAsync(EntityKey<Event> eventId, double progress)
     {
         if (progress > 1 || progress < 0)
             throw new InvalidRangeException(progress, 0, 1);

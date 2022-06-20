@@ -12,14 +12,14 @@ public interface IEventsService
     /// </summary>
     /// <param name="id">The id of the event</param>
     /// <returns></returns>
-    Task<Event> GetByIdAsync(Guid id);
+    Task<Event> GetByIdAsync(EntityKey<Event> id);
 
     /// <summary>
     /// Asynchronously gets an event type by id
     /// </summary>
     /// <param name="id">The id of the event type</param>
     /// <returns></returns>
-    Task<EventType> GetTypeByIdAsync(Guid id);
+    Task<EventType> GetTypeByIdAsync(EntityKey<EventType> id);
 
     /// <summary>
     /// Asynchronously gets event types
@@ -32,7 +32,7 @@ public interface IEventsService
     /// </summary>
     /// <param name="userId">The id of the user which to get the events for</param>
     /// <returns></returns>
-    IQueryBuilder<Event> ForUserAsync(Guid userId);
+    IQueryBuilder<Event> ForUserAsync(EntityKey<User> userId);
 
     /// <summary>
     /// Asynchronously creates a new event
@@ -44,8 +44,8 @@ public interface IEventsService
     /// <param name="takesPlaceAt">The date at which the event takes place</param>
     /// <returns>The created event</returns>
     Task<Event> CreateAsync(
-        Guid userId,
-        Guid typeId,
+        EntityKey<User> userId,
+        EntityKey<EventType> typeId,
         string title,
         string description,
         DateTime takesPlaceAt);
@@ -60,8 +60,8 @@ public interface IEventsService
     /// <param name="takesPlaceAt">The new taking place date</param>
     /// <returns></returns>
     Task<Event> UpdateAsync(
-        Guid eventId,
-        Guid typeType,
+        EntityKey<Event> eventId,
+        EntityKey<EventType> typeType,
         string title,
         string description,
         DateTime takesPlaceAt
@@ -72,7 +72,7 @@ public interface IEventsService
     /// </summary>
     /// <param name=eventId"></param>
     /// <returns></returns>
-    Task RemoveAsync(Guid eventId);
+    Task RemoveAsync(EntityKey<Event> eventId);
 
     /// <summary>
     /// Asynchronously associates a purchase with the passed event
@@ -80,7 +80,7 @@ public interface IEventsService
     /// <param name=eventId">The id of the event which to associate the purchase with</param>
     /// <param name="purchaseId">The id of the purchase to be associated</param>
     /// <returns></returns>
-    Task AssociatePurchaseAsync(Guid eventId, Guid purchaseId);
+    Task AssociatePurchaseAsync(EntityKey<Event> eventId, EntityKey<Purchase> purchaseId);
 
     /// <summary>
     /// Asynchronously adds an image to the image
@@ -88,7 +88,7 @@ public interface IEventsService
     /// <param name=eventId">The image which to add the image to</param>
     /// <param name="image">The image to be added</param>
     /// <returns></returns>
-    Task AddImageAsync(Guid eventId, IUploadFile image);
+    Task AddImageAsync(EntityKey<Event> eventId, IUploadFile image);
 
     /// <summary>
     /// Asynchronously updates the progress of an event
@@ -96,5 +96,5 @@ public interface IEventsService
     /// <param name=eventId">The id of the event which to update</param>
     /// <param name="progress">The new progress value</param>
     /// <returns></returns>
-    Task UpdateProgressAsync(Guid eventId, double progress);
+    Task UpdateProgressAsync(EntityKey<Event> eventId, double progress);
 }
