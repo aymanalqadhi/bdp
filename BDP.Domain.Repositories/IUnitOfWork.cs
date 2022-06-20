@@ -67,14 +67,14 @@ public interface IUnitOfWork : IDisposable, IAsyncDisposable
     IRepository<Product> Products { get; }
 
     /// <summary>
+    /// Gets the products' variants repository
+    /// </summary>
+    IRepository<ProductVariant> ProductVariants { get; }
+
+    /// <summary>
     /// Gets the refresh tokens repository
     /// </summary>
     IRepository<RefreshToken> RefreshTokens { get; }
-
-    /// <summary>
-    /// Gets the reservable product variants repository
-    /// </summary>
-    IRepository<ReservableVariant> ReservableVariants { get; }
 
     /// <summary>
     /// Gets the reservations repository
@@ -82,9 +82,14 @@ public interface IUnitOfWork : IDisposable, IAsyncDisposable
     IRepository<Reservation> Reservations { get; }
 
     /// <summary>
-    /// Gets the sellable product variants repository
+    /// Gets the reservable product reservation windows repository
     /// </summary>
-    IRepository<SellableVariant> SellableVariants { get; }
+    IRepository<ReservationWindow> ReservationWindows { get; }
+
+    /// <summary>
+    /// Gets the sellable product stock batches repository
+    /// </summary>
+    IRepository<StockBatch> StockBatches { get; }
 
     /// <summary>
     /// Gets the transaction confirmations repository
