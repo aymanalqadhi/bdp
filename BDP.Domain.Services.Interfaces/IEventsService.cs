@@ -7,32 +7,15 @@ namespace BDP.Domain.Services;
 
 public interface IEventsService
 {
-    /// <summary>
-    /// Asynchronously gets an event by id
-    /// </summary>
-    /// <param name="id">The id of the event</param>
-    /// <returns></returns>
-    Task<Event> GetByIdAsync(EntityKey<Event> id);
+    #region Public Methods
 
     /// <summary>
-    /// Asynchronously gets an event type by id
+    /// Asynchronously adds an image to the image
     /// </summary>
-    /// <param name="id">The id of the event type</param>
+    /// <param name=eventId">The image which to add the image to</param>
+    /// <param name="image">The image to be added</param>
     /// <returns></returns>
-    Task<EventType> GetTypeByIdAsync(EntityKey<EventType> id);
-
-    /// <summary>
-    /// Asynchronously gets event types
-    /// </summary>
-    /// <returns></returns>
-    IQueryBuilder<EventType> GetEventTypes();
-
-    /// <summary>
-    /// Asynchronosly gets events for a user, limited with pagination
-    /// </summary>
-    /// <param name="userId">The id of the user which to get the events for</param>
-    /// <returns></returns>
-    IQueryBuilder<Event> ForUserAsync(EntityKey<User> userId);
+    Task AddImageAsync(EntityKey<Event> eventId, IUploadFile image);
 
     /// <summary>
     /// Asynchronously creates a new event
@@ -49,6 +32,40 @@ public interface IEventsService
         string title,
         string description,
         DateTime takesPlaceAt);
+
+    /// <summary>
+    /// Asynchronosly gets events for a user, limited with pagination
+    /// </summary>
+    /// <param name="userId">The id of the user which to get the events for</param>
+    /// <returns></returns>
+    IQueryBuilder<Event> ForUserAsync(EntityKey<User> userId);
+
+    /// <summary>
+    /// Asynchronously gets an event by id
+    /// </summary>
+    /// <param name="id">The id of the event</param>
+    /// <returns></returns>
+    Task<Event> GetByIdAsync(EntityKey<Event> id);
+
+    /// <summary>
+    /// Asynchronously gets event types
+    /// </summary>
+    /// <returns></returns>
+    IQueryBuilder<EventType> GetEventTypes();
+
+    /// <summary>
+    /// Asynchronously gets an event type by id
+    /// </summary>
+    /// <param name="id">The id of the event type</param>
+    /// <returns></returns>
+    Task<EventType> GetTypeByIdAsync(EntityKey<EventType> id);
+
+    /// <summary>
+    /// Asynchronously removes an event
+    /// </summary>
+    /// <param name=eventId"></param>
+    /// <returns></returns>
+    Task RemoveAsync(EntityKey<Event> eventId);
 
     /// <summary>
     /// Asynchronsoulsy updates a event
@@ -68,33 +85,12 @@ public interface IEventsService
     );
 
     /// <summary>
-    /// Asynchronously removes an event
-    /// </summary>
-    /// <param name=eventId"></param>
-    /// <returns></returns>
-    Task RemoveAsync(EntityKey<Event> eventId);
-
-    /// <summary>
-    /// Asynchronously associates a purchase with the passed event
-    /// </summary>
-    /// <param name=eventId">The id of the event which to associate the purchase with</param>
-    /// <param name="purchaseId">The id of the purchase to be associated</param>
-    /// <returns></returns>
-    Task AssociatePurchaseAsync(EntityKey<Event> eventId, EntityKey<Purchase> purchaseId);
-
-    /// <summary>
-    /// Asynchronously adds an image to the image
-    /// </summary>
-    /// <param name=eventId">The image which to add the image to</param>
-    /// <param name="image">The image to be added</param>
-    /// <returns></returns>
-    Task AddImageAsync(EntityKey<Event> eventId, IUploadFile image);
-
-    /// <summary>
     /// Asynchronously updates the progress of an event
     /// </summary>
     /// <param name=eventId">The id of the event which to update</param>
     /// <param name="progress">The new progress value</param>
     /// <returns></returns>
     Task UpdateProgressAsync(EntityKey<Event> eventId, double progress);
+
+    #endregion Public Methods
 }
