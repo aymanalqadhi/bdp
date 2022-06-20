@@ -60,7 +60,14 @@ public sealed class QueryBuilder<T> : IQueryBuilder<T> where T : AuditableEntity
         Expression<Func<T, bool>> pred,
         CancellationToken cancellationToken = default)
     {
-        return _query.FirstAsync(pred, cancellationToken);
+        try
+        {
+            return _query.FirstAsync(pred, cancellationToken);
+        }
+        catch (InvalidOperationException ex)
+        {
+            throw new NotFoundException($"no items were found", ex);
+        }
     }
 
     /// <inheritdoc/>
@@ -80,7 +87,14 @@ public sealed class QueryBuilder<T> : IQueryBuilder<T> where T : AuditableEntity
         Expression<Func<T, bool>> pred,
         CancellationToken cancellationToken = default)
     {
-        return _query.SingleAsync(pred, cancellationToken);
+        try
+        {
+            return _query.SingleAsync(pred, cancellationToken);
+        }
+        catch (InvalidOperationException ex)
+        {
+            throw new NotFoundException($"exactly one item was expected, found more or less", ex);
+        }
     }
 
     /// <inheritdoc/>
