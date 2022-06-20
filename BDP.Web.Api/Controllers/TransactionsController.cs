@@ -51,8 +51,7 @@ public class TransactionsController : ControllerBase
     {
         var user = await _usersSvc.GetByUsernameAsync(User.GetUsername())!;
         var ret = _transactionsSvc.ForUserAsync(user)
-            .OrderDescending()
-            .Page(page, _pageSize)
+            .PageDescending(page, _pageSize)
             .Include(t => t.From)
             .Include(t => t.To)
             .Include(t => t.Confirmation!)

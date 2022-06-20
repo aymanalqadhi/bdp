@@ -49,7 +49,6 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> Search(string query, int page)
     {
         var ret = _usersSvc.SearchAsync(query)
-            .OrderDescending()
             .Page(page, _pageSize)
             .AsAsyncEnumerable()
             .Select(_mapper.Map<UserDto>);

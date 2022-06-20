@@ -71,8 +71,7 @@ public class EventsController : ControllerBase
     {
         var user = await _usersSvc.GetByUsernameAsync(username);
         var ret = _eventsSvc.ForUserAsync(user)
-            .OrderDescending()
-            .Page(page, _pageSize)
+            .PageDescending(page, _pageSize)
             .Include(e => e.Pictures)
             .Include(e => e.Type)
             .Include(e => e.CreatedBy)

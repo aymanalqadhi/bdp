@@ -57,8 +57,7 @@ public class WalletController : ControllerBase
     {
         var user = await _usersSvc.GetByUsernameAsync(User.GetUsername())!;
         var ret = _financialRecordsSvc.ForUserAsync(user)
-            .OrderDescending()
-            .Page(page, _pageSize)
+            .PageDescending(page, _pageSize)
             .Include(r => r.Verification!)
             .Include(r => r.Verification!.Document!)
             .AsAsyncEnumerable()
