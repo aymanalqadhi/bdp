@@ -10,7 +10,7 @@ public class PurchasesService : IPurchasesService
 {
     #region Private fields
 
-    private readonly IUnitOfWork _uow;
+    private readonly ILegacyUnitOfWork _uow;
 
     #endregion Private fields
 
@@ -20,7 +20,7 @@ public class PurchasesService : IPurchasesService
     /// Default constructor
     /// </summary>
     /// <param name="uow">The unit of work of the app</param>
-    public PurchasesService(IUnitOfWork uow)
+    public PurchasesService(ILegacyUnitOfWork uow)
     {
         _uow = uow;
     }

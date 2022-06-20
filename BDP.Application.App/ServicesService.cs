@@ -8,7 +8,7 @@ namespace BDP.Application.App;
 
 public class ServicesService : IServicesService
 {
-    private readonly IUnitOfWork _uow;
+    private readonly ILegacyUnitOfWork _uow;
     private readonly IAttachmentsService _attachmentsSvc;
     private readonly IFinanceService _financeSvc;
 
@@ -18,7 +18,7 @@ public class ServicesService : IServicesService
     /// <param name="uow">The unit of work of the app</param>
     /// <param name="attachmentsSvc">The attachments managment service</param>
     /// <param name="financeSvc">The finance service</param>
-    public ServicesService(IUnitOfWork uow, IAttachmentsService attachmentsSvc, IFinanceService financeSvc)
+    public ServicesService(ILegacyUnitOfWork uow, IAttachmentsService attachmentsSvc, IFinanceService financeSvc)
     {
         _uow = uow;
         _attachmentsSvc = attachmentsSvc;

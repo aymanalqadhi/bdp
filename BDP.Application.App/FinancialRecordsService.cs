@@ -11,7 +11,7 @@ public class FinancialRecordsService : IFinancialRecordsService
 {
     #region Private fields
 
-    private readonly IUnitOfWork _uow;
+    private readonly ILegacyUnitOfWork _uow;
     private readonly IAttachmentsService _attachmentsSvc;
 
     #endregion Private fields
@@ -23,7 +23,7 @@ public class FinancialRecordsService : IFinancialRecordsService
     /// </summary>
     /// <param name="uow">The unit-of-work of the application</param>
     /// <param name="attachmentsSvc">The attachment managment service of the application</param>
-    public FinancialRecordsService(IUnitOfWork uow, IAttachmentsService attachmentsSvc)
+    public FinancialRecordsService(ILegacyUnitOfWork uow, IAttachmentsService attachmentsSvc)
     {
         _uow = uow;
         _attachmentsSvc = attachmentsSvc;

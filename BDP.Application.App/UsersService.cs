@@ -11,7 +11,7 @@ public class UsersService : IUsersService
 {
     #region Private fields
 
-    private readonly IUnitOfWork _uow;
+    private readonly ILegacyUnitOfWork _uow;
     private readonly IAttachmentsService _attachmentsSvc;
 
     #endregion Private fields
@@ -22,7 +22,7 @@ public class UsersService : IUsersService
     /// Default constructor
     /// </summary>
     /// <param name="uow">the unit of work of the application</param>
-    public UsersService(IUnitOfWork uow, IAttachmentsService attachmentsSvc)
+    public UsersService(ILegacyUnitOfWork uow, IAttachmentsService attachmentsSvc)
     {
         _uow = uow;
         _attachmentsSvc = attachmentsSvc;

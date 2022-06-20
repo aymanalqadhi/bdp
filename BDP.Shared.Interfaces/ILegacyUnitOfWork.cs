@@ -3,7 +3,8 @@
 /// <summary>
 /// An interface to represent a unit-of-work functionality
 /// </summary>
-public interface IUnitOfWork
+[Obsolete("Use the new unit of work interface")]
+public interface ILegacyUnitOfWork
 {
     /// <summary>
     /// Gets the users repository

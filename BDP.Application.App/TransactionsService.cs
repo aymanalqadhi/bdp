@@ -10,7 +10,7 @@ public class TransactionsService : ITransactionsService
 {
     #region Private fields
 
-    private readonly IUnitOfWork _uow;
+    private readonly ILegacyUnitOfWork _uow;
 
     #endregion Private fields
 
@@ -20,7 +20,7 @@ public class TransactionsService : ITransactionsService
     /// Default constructor
     /// </summary>
     /// <param name="uow">The unit of work of the application</param>
-    public TransactionsService(IUnitOfWork uow)
+    public TransactionsService(ILegacyUnitOfWork uow)
     {
         _uow = uow;
     }

@@ -93,7 +93,7 @@ builder.Services.AddDbContext<BdpDbContext>(cfg =>
 builder.Services.AddSingleton<IConfigurationService>(appSettingsSvc);
 builder.Services.AddSingleton<IRandomGeneratorService, SimpleRandomGeneratorService>();
 builder.Services.AddSingleton<IEmailService, SmtpEmailService>();
-builder.Services.AddScoped<IUnitOfWork, EfUnitOfWork>();
+builder.Services.AddScoped<ILegacyUnitOfWork, EfUnitOfWork>();
 builder.Services.AddScoped<IAttachmentsService, LocalAttachmentsService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUsersService, UsersService>();

@@ -9,7 +9,7 @@ public class SellableReviewsService : ISellableReviewsService
 {
     #region Private fields
 
-    private readonly IUnitOfWork _uow;
+    private readonly ILegacyUnitOfWork _uow;
 
     #endregion Private fields
 
@@ -19,7 +19,7 @@ public class SellableReviewsService : ISellableReviewsService
     /// Default constructor
     /// </summary>
     /// <param name="uow">The unit of work of the app</param>
-    public SellableReviewsService(IUnitOfWork uow)
+    public SellableReviewsService(ILegacyUnitOfWork uow)
     {
         _uow = uow;
     }
