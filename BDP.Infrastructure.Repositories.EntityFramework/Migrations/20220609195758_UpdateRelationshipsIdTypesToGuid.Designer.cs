@@ -4,6 +4,7 @@ using BDP.Infrastructure.Repositories.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
 {
     [DbContext(typeof(BdpDbContext))]
-    partial class BdpDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220609195758_UpdateRelationshipsIdTypesToGuid")]
+    partial class UpdateRelationshipsIdTypesToGuid
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
