@@ -1,4 +1,6 @@
 ﻿using BDP.Domain.Entities;
+using BDP.Domain.Repositories;
+
 using System.Linq.Expressions;
 
 namespace BDP.Domain.Services;
@@ -6,45 +8,17 @@ namespace BDP.Domain.Services;
 public interface IFinancialRecordsService
 {
     /// <summary>
-    /// Asynchrnously gets all financial records for a user
+    /// Asynchrnously gets financial records for a user
     /// </summary>
     /// <param name="user">The user to get financial records for</param>
-    /// <param name="includes">Additional includes</param>
     /// <returns></returns>
-    IAsyncEnumerable<FinancialRecord> ForUserAsync(
-        User user,
-        Expression<Func<FinancialRecord, object>>[]? includes = null);
+    IQueryBuilder<FinancialRecord> ForUserAsync(User user);
 
     /// <summary>
-    /// Asynchrnously gets all financial records for a user, limited by pagination
+    /// Asynchronously gets pending financial records for a specific user
     /// </summary>
-    /// <param name="page">The page to fetch</param>
-    /// <param name="pageSize">The size of the page to fetch</param>
-    /// <param name="descOrder">Whether to order the rows descendantly or not</param>
-    /// <param name="user">The user to get financial records for</param>
-    /// <param name="includes">Additional includes</param>
     /// <returns></returns>
-    public IAsyncEnumerable<FinancialRecord> ForUserAsync(
-        int page,
-        int pageSize,
-        User user,
-        bool descOrder = false,
-        Expression<Func<FinancialRecord, object>>[]? includes = null);
-
-    /// <summary>
-    /// Asynchronously gets all pending financial records for a specific user
-    /// </summary>
-    /// <param name="page">The page to fetch</param>
-    /// <param name="pageSize">The size of the page to fetch</param>
-    /// <param name="descOrder">Whether to order the rows descendantly or not</param>
-    /// <param name="user">The user to get financial records for</param>
-    /// <param name="includes">Additional includes</param>
-    /// <returns></returns>
-    IAsyncEnumerable<FinancialRecord> PendingAsync(
-        int page,
-        int pageSize,
-        bool descOrder = false,
-        Expression<Func<FinancialRecord, object>>[]? includes = null);
+    IQueryBuilder<FinancialRecord> PendingAsync();
 
     /// <summary>
     /// Asynchrnounsly gets the total balance from financial records
