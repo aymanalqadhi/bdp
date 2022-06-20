@@ -195,44 +195,6 @@ public class BdpDbContext : DbContext
             .WithMany()
             .OnDelete(DeleteBehavior.Restrict);
 
-        // auto include
-        builder.Entity<User>()
-            .Navigation(u => u.ProfilePicture)
-            .AutoInclude();
-        builder.Entity<User>()
-            .Navigation(u => u.CoverPicture)
-            .AutoInclude();
-        builder.Entity<Sellable>()
-            .Navigation(s => s.OfferedBy)
-            .AutoInclude();
-
-        builder.Entity<FinancialRecord>()
-            .Navigation(t => t.Verification)
-            .AutoInclude();
-
-        builder.Entity<Transaction>()
-            .Navigation(t => t.Confirmation)
-            .AutoInclude();
-
-        builder.Entity<SellableReview>()
-            .Navigation(r => r.LeftBy)
-            .AutoInclude();
-
-        builder.Entity<ProductOrder>()
-            .Navigation(o => o.Product)
-            .AutoInclude();
-
-        builder.Entity<ServiceReservation>()
-            .Navigation(o => o.Service)
-            .AutoInclude();
-
-        builder.Entity<Transaction>()
-            .Navigation(o => o.From)
-            .AutoInclude();
-        builder.Entity<Transaction>()
-            .Navigation(o => o.To)
-            .AutoInclude();
-
         // seed data
         builder.Entity<EventType>()
             .HasData(new() { Name = "Wedding" },
