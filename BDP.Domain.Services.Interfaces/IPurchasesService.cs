@@ -17,7 +17,7 @@ public interface IPurchasesService
     /// <summary>
     /// Asynchronosly gets purchases for a user, limited with pagination
     /// </summary>
-    /// <param name="user">The user which to get the purchases for</param>
+    /// <param name="userId">The id of the user which to get the purchases for</param>
     /// <returns></returns>
-    IQueryBuilder<Purchase> ForUserAsync(User user);
+    IQueryBuilder<Purchase> ForUserAsync(Guid userId);
 }
