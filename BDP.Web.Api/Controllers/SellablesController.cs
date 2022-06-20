@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BDP.Domain.Entities;
 using BDP.Domain.Repositories.Extensions;
 using BDP.Domain.Services;
 using BDP.Web.Api.Auth.Attributes;
@@ -49,26 +50,25 @@ public class SellablesController : ControllerBase
         var user = await _usersSvc.GetByUsernameAsync(username);
         var ret = _sellablesSvc.GetForAsync(user)
             .PageDescending(paging.Page, paging.PageLength)
+            .Map(_mapper, typeof(SellableDto))
             .AsAsyncEnumerable();
 
-        return Ok(await ret.Select((s) =>
-        {
-            return _mapper.Map(s, s.GetType(), typeof(SellableDto));
-        }).ToListAsync());
+        return Ok(ret);
     }
 
     [HttpGet("[action]")]
     public async Task<IActionResult> Search([Required] string query, string? username, [FromQuery] PagingParameters paging)
     {
-        var ret = username != null
+        var searchResult = username != null
             ? _sellablesSvc.SearchForAsync(await _usersSvc.GetByUsernameAsync(username), query)
             : _sellablesSvc.SearchAsync(query);
 
-        return Ok(await ret
+        var ret = searchResult
             .Page(paging.Page, paging.PageLength)
-            .AsAsyncEnumerable()
-            .Select((s) => _mapper.Map(s, s.GetType(), typeof(SellableDto)))
-            .ToListAsync());
+            .Map(_mapper, typeof(SellableDto))
+            .AsAsyncEnumerable();
+
+        return Ok(ret);
     }
 
     [HttpGet("{id}/reviews")]
@@ -77,10 +77,10 @@ public class SellablesController : ControllerBase
         var item = await _sellablesSvc.GetByIdAsync(id);
         var ret = _sellableReviewsSvc.GetForAsync(item)
             .PageDescending(paging.Page, paging.PageLength)
-            .AsAsyncEnumerable()
-            .Select(_mapper.Map<SellableReviewDto>);
+            .Map<SellableReview, SellableReviewDto>(_mapper)
+            .AsAsyncEnumerable();
 
-        return Ok(await ret.ToListAsync());
+        return Ok(ret);
     }
 
     [HttpGet("{id}/my-review")]

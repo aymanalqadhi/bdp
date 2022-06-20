@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
+using BDP.Web.Dtos.Parameters;
 
 namespace BDP.Web.Api.Controllers;
 
@@ -20,8 +21,6 @@ namespace BDP.Web.Api.Controllers;
 public class TransactionsController : ControllerBase
 {
     #region Private fields
-
-    private readonly int _pageSize;
 
     private readonly IUsersService _usersSvc;
     private readonly ITransactionsService _transactionsSvc;
@@ -32,7 +31,6 @@ public class TransactionsController : ControllerBase
     #region Ctors
 
     public TransactionsController(
-        IConfigurationService configurationSvc,
         IUsersService usersSvc,
         ITransactionsService transactionsSvc,
         IMapper mapper)
@@ -40,8 +38,6 @@ public class TransactionsController : ControllerBase
         _usersSvc = usersSvc;
         _transactionsSvc = transactionsSvc;
         _mapper = mapper;
-
-        _pageSize = configurationSvc.GetInt("QuerySettings:DefaultPageSize");
     }
 
     #endregion Ctors
@@ -50,11 +46,11 @@ public class TransactionsController : ControllerBase
 
     [HttpGet]
     [Authorize]
-    public async Task<IActionResult> MyTransactions([Required] int page)
+    public async Task<IActionResult> MyTransactions([FromQuery] PagingParameters paging)
     {
         var user = await _usersSvc.GetByUsernameAsync(User.GetUsername());
         var ret = _transactionsSvc.ForUserAsync(user)
-            .PageDescending(page, _pageSize)
+            .PageDescending(paging.Page, paging.PageLength)
             .Include(t => t.From)
             .Include(t => t.To)
             .Include(t => t.Confirmation!)

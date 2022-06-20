@@ -1,8 +1,12 @@
-﻿using AutoMapper;
+﻿using BDP.Domain.Entities;
 using BDP.Domain.Repositories.Extensions;
 using BDP.Domain.Services;
+using BDP.Web.Api.Extensions;
 using BDP.Web.Dtos;
 using BDP.Web.Dtos.Parameters;
+
+using AutoMapper;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace BDP.Web.Api.Controllers;
@@ -42,14 +46,12 @@ public class UsersController : ControllerBase
             ));
 
     [HttpGet("search")]
-    public async Task<IActionResult> Search(string query, [FromQuery] PagingParameters paging)
+    public IAsyncEnumerable<UserDto> Search(string query, [FromQuery] PagingParameters paging)
     {
-        var ret = _usersSvc.SearchAsync(query)
+        return _usersSvc.SearchAsync(query)
             .Page(paging.Page, paging.PageLength)
-            .AsAsyncEnumerable()
-            .Select(_mapper.Map<UserDto>);
-
-        return Ok(await ret.ToListAsync());
+            .Map<User, UserDto>(_mapper)
+            .AsAsyncEnumerable();
     }
 
     #endregion Actions
