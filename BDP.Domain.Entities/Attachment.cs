@@ -1,21 +1,10 @@
 ﻿namespace BDP.Domain.Entities;
 
 /// <summary>
-/// A recrod to represent keys for the <see cref="Attachment"/> entity
-/// </summary>
-/// <param name="Id">The id field of the key</param>
-public sealed record AttachmentKey(Guid Id) : EntityKey<Attachment>(Id);
-
-/// <summary>
 /// A class to represent a file attachment
 /// </summary>
-public class Attachment : AuditableEntity
+public class Attachment : AuditableEntity<Attachment>
 {
-    /// <summary>
-    /// Gets or sets the id of the attachment
-    /// </summary>
-    public AttachmentKey Id { get; set; } = new AttachmentKey(Guid.NewGuid());
-
     /// <summary>
     /// Gets or sets the full URI of the attachment
     /// </summary>
