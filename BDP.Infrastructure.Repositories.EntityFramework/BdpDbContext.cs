@@ -61,11 +61,6 @@ public class BdpDbContext : DbContext
     public DbSet<LogTag> LogTags => Set<LogTag>();
 
     /// <summary>
-    /// Gets the phone numbers table
-    /// </summary>
-    public DbSet<PhoneNumber> PhoneNumbers => Set<PhoneNumber>();
-
-    /// <summary>
     /// Gets the product orders table
     /// </summary>
     public DbSet<ProductOrder> ProductOrders => Set<ProductOrder>();
@@ -76,24 +71,19 @@ public class BdpDbContext : DbContext
     public DbSet<Product> Products => Set<Product>();
 
     /// <summary>
-    /// Gets the purchases table
-    /// </summary>
-    public DbSet<Purchase> Purchases => Set<Purchase>();
-
-    /// <summary>
     /// Gets the referesh tokens table
     /// </summary>
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
     /// <summary>
-    /// Gets the sellable reviews table
+    /// Gets the product reviews
     /// </summary>
-    public DbSet<SellableReview> SellableReviews => Set<SellableReview>();
+    public DbSet<ProductReview> ProductReviews => Set<ProductReview>();
 
     /// <summary>
-    /// Gets the sellables table
+    /// Gets the product reviews
     /// </summary>
-    public DbSet<Sellable> Sellables => Set<Sellable>();
+    public DbSet<ServiceReview> ServiceReviews => Set<ServiceReview>();
 
     /// <summary>
     /// Gets the service reservations table
@@ -116,14 +106,14 @@ public class BdpDbContext : DbContext
     public DbSet<Transaction> Transactions => Set<Transaction>();
 
     /// <summary>
-    /// Gets the user groups table
-    /// </summary>
-    public DbSet<UserGroup> UserGroups => Set<UserGroup>();
-
-    /// <summary>
     /// Gets the users table
     /// </summary>
     public DbSet<User> Users => Set<User>();
+
+    /// <summary>
+    /// Gets the user profiles table
+    /// </summary>
+    public DbSet<UserProfile> UserProfiles => Set<UserProfile>();
 
     #endregion Properties
 
@@ -139,14 +129,14 @@ public class BdpDbContext : DbContext
         builder.Entity<User>().HasIndex(u => u.Username).IsUnique();
         builder.Entity<User>().HasIndex(u => u.Email).IsUnique();
 
-        // configure user groups unique fields
-        builder.Entity<UserGroup>().HasIndex(u => u.Name).IsUnique();
-
         // configure transaction unique fields
         builder.Entity<Transaction>().HasIndex(t => t.ConfirmationToken).IsUnique();
 
         // set decimal bakcend-type
-        builder.Entity<Sellable>()
+        builder.Entity<Product>()
+            .Property(s => s.Price)
+            .HasPrecision(18, 6);
+        builder.Entity<Service>()
             .Property(s => s.Price)
             .HasPrecision(18, 6);
         builder.Entity<Transaction>()
@@ -157,10 +147,6 @@ public class BdpDbContext : DbContext
             .HasPrecision(18, 6);
 
         // break cycles
-        builder.Entity<UserGroup>()
-            .HasMany(g => g.Users)
-            .WithMany(u => u.Groups);
-
         builder.Entity<Transaction>()
             .HasOne(t => t.From)
             .WithMany()
@@ -189,18 +175,23 @@ public class BdpDbContext : DbContext
             .WithOne(c => c.Transaction)
             .HasForeignKey<TransactionConfirmation>(t => t.TransactionId);
 
-        builder.Entity<SellableReview>()
+        builder.Entity<ProductReview>()
+            .HasOne(r => r.LeftBy)
+            .WithMany()
+            .OnDelete(DeleteBehavior.NoAction);
+
+        builder.Entity<ServiceReview>()
             .HasOne(r => r.LeftBy)
             .WithMany()
             .OnDelete(DeleteBehavior.NoAction);
 
         builder.Entity<ProductOrder>()
-            .HasOne(o => o.Product)
+            .HasOne(o => o.Item)
             .WithMany()
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.Entity<ServiceReservation>()
-            .HasOne(s => s.Service)
+            .HasOne(s => s.Item)
             .WithMany()
             .OnDelete(DeleteBehavior.Restrict);
 
@@ -261,15 +252,17 @@ public class BdpDbContext : DbContext
         SetIdConversion<FinancialRecordVerification>(builder);
         SetIdConversion<Log>(builder);
         SetIdConversion<LogTag>(builder);
-        SetIdConversion<PhoneNumber>(builder);
-        SetIdConversion<Purchase>(builder);
+        SetIdConversion<Product>(builder);
+        SetIdConversion<ProductOrder>(builder);
+        SetIdConversion<ProductReview>(builder);
+        SetIdConversion<Service>(builder);
+        SetIdConversion<ServiceReservation>(builder);
+        SetIdConversion<ServiceReview>(builder);
         SetIdConversion<RefreshToken>(builder);
-        SetIdConversion<Sellable>(builder);
-        SetIdConversion<SellableReview>(builder);
         SetIdConversion<Transaction>(builder);
         SetIdConversion<TransactionConfirmation>(builder);
         SetIdConversion<User>(builder);
-        SetIdConversion<UserGroup>(builder);
+        SetIdConversion<UserProfile>(builder);
     }
 
     #endregion Protected Methods
