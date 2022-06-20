@@ -31,7 +31,7 @@ public sealed class FinancialRecordVerification : AuditableEntity<FinancialRecor
     public Attachment? Document { get; set; } = null!;
 
     /// <summary>
-    /// Gets or sets additional notes on verifications
+    /// Gets or sets an additional note
     /// </summary>
-    public string? Notes { get; set; }
+    public string? Note { get; set; }
 }
