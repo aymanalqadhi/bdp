@@ -61,14 +61,9 @@ public class QueryBuilderTests
         }
         else
         {
-            var id = logs[0].Id;
-
-            while (!logs.Any(log => log.Id == id))
-                id = RandomGenerator.NextLong(0);
-
             var exception = await Assert.ThrowsAsync<AggregateException>(async () =>
             {
-                await _uow.Logs.Query().FirstAsync(l => l.Id == id);
+                await _uow.Logs.Query().FirstAsync(l => l.Id == Guid.NewGuid());
             });
 
             Assert.IsType<InvalidOperationException>(exception.InnerException);
