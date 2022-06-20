@@ -10,7 +10,7 @@ namespace BDP.Infrastructure.Repositories.EntityFramework;
 /// An implementation of <see cref="EfRepository{T}"/> for <see cref="Event"/>
 /// </summary>
 public sealed class EventsRepository :
-    EfRepository<Event, Validator<Event>>, IEventsRepository
+    LegacyRepository<Event, Validator<Event>>, IEventsRepository
 {
     public EventsRepository(DbSet<Event> set) : base(set)
     {

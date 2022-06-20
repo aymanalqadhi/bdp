@@ -10,7 +10,7 @@ namespace BDP.Infrastructure.Repositories.EntityFramework;
 /// An implementation of <see cref="EfRepository{T}"/> for <see cref="Attachment"/>
 /// </summary>
 public sealed class AttachmentsRepository :
-    EfRepository<Attachment, Validator<Attachment>>, IAttachmentsRepository
+    LegacyRepository<Attachment, Validator<Attachment>>, IAttachmentsRepository
 {
     public AttachmentsRepository(DbSet<Attachment> set) : base(set)
     {

@@ -6,6 +6,6 @@ namespace BDP.Domain.Repositories;
 /// An interface to represent the functionality of a repository for the
 /// <see cref="Purchase"/> entity
 /// </summary>
-public interface IPurchasesRepository : IRepository<Purchase>
+public interface IPurchasesRepository : ILegacyRepository<Purchase>
 {
 }

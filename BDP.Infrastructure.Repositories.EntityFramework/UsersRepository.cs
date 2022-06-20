@@ -10,7 +10,7 @@ namespace BDP.Infrastructure.Repositories.EntityFramework;
 /// An implementation of <see cref="EfRepository{T}"/> for <see cref="User"/>
 /// </summary>
 public sealed class UsersRepository :
-    EfRepository<User, UserValidator>, IUsersRepository
+    LegacyRepository<User, UserValidator>, IUsersRepository
 {
     public UsersRepository(DbSet<User> set) : base(set)
     {

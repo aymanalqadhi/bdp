@@ -6,6 +6,6 @@ namespace BDP.Domain.Repositories;
 /// An interface to represent the functionality of a repository for the
 /// <see cref="Confirmation"/> entity
 /// </summary>
-public interface IConfirmationsRepository : IRepository<Confirmation>
+public interface IConfirmationsRepository : ILegacyRepository<Confirmation>
 {
 }

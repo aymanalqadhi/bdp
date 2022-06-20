@@ -10,7 +10,7 @@ namespace BDP.Infrastructure.Repositories.EntityFramework;
 /// An implementation of <see cref="EfRepository{T}"/> for <see cref="PhoneNumber"/>
 /// </summary>
 public sealed class PhoneNumbersRepository :
-    EfRepository<PhoneNumber, Validator<PhoneNumber>>, IPhoneNumbersRepository
+    LegacyRepository<PhoneNumber, Validator<PhoneNumber>>, IPhoneNumbersRepository
 {
     public PhoneNumbersRepository(
         DbSet<PhoneNumber> set) : base(set)

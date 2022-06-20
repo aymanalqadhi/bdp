@@ -10,7 +10,7 @@ namespace BDP.Infrastructure.Repositories.EntityFramework;
 /// An implementation of <see cref="EfRepository{T}"/> for <see cref="Transaction"/>
 /// </summary>
 public sealed class TransactionsRepository :
-    EfRepository<Transaction, TransactionValidator>, ITransactionsRepository
+    LegacyRepository<Transaction, TransactionValidator>, ITransactionsRepository
 {
     public TransactionsRepository(DbSet<Transaction> set) : base(set)
     {

@@ -6,6 +6,6 @@ namespace BDP.Domain.Repositories;
 /// An interface to represent the functionality of a repository for the
 /// <see cref="ServiceReservation"/> entity
 /// </summary>
-public interface IServiceReservationsRepository : IRepository<ServiceReservation>
+public interface IServiceReservationsRepository : ILegacyRepository<ServiceReservation>
 {
 }
