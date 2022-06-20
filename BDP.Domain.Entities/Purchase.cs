@@ -1,8 +1,7 @@
 ﻿namespace BDP.Domain.Entities;
 
-public abstract class Purchase<TEntity, TVariant> : AuditableEntity<TEntity>
+public abstract class Purchase<TEntity> : AuditableEntity<TEntity>
     where TEntity : class
-    where TVariant : ProductVariant<TVariant>
 {
     /// <summary>
     /// Gets or sets whether the purchase was accepted by the offering party
@@ -17,5 +16,5 @@ public abstract class Purchase<TEntity, TVariant> : AuditableEntity<TEntity>
     /// <summary>
     /// Gets or sets the purchased variant
     /// </summary>
-    public TVariant Variant { get; set; } = null!;
+    public ProductVariant Variant { get; set; } = null!;
 }
