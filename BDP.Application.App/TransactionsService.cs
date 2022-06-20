@@ -1,6 +1,7 @@
 ﻿using BDP.Application.App.Exceptions;
 using BDP.Domain.Entities;
 using BDP.Domain.Repositories;
+using BDP.Domain.Repositories.Extensions;
 using BDP.Domain.Services;
 using System.Linq.Expressions;
 
@@ -28,6 +29,10 @@ public class TransactionsService : ITransactionsService
     #endregion Ctors
 
     #region Public methods
+
+    /// <inheritdoc/>
+    public IQueryBuilder<Transaction> GetByIdAsync(long id)
+        => _uow.Transactions.Query().Where(t => t.Id == id);
 
     /// <inheritdoc/>
     public IQueryBuilder<Transaction> ForUserAsync(User user)
