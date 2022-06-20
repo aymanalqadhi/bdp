@@ -73,3 +73,36 @@ public sealed class Repository<T, Validator> : IRepository<T>
 
     #endregion Public methods
 }
+
+/// <summary>
+/// A factory class to simplify the creation of repository instrances
+/// </summary>
+public static class RepositoryFactory
+{
+    /// <summary>
+    /// Creates a new <see cref="Repository{T, Validator}"/> instance
+    /// </summary>
+    /// <typeparam name="TEntity">The entity of the repository</typeparam>
+    /// <typeparam name="Validator">The validator to be used by the repository</typeparam>
+    /// <param name="set">The database set</param>
+    /// <returns>The created repository instance</returns>
+    public static IRepository<TEntity> Create<TEntity, Validator>(DbSet<TEntity> set)
+        where TEntity : AuditableEntity<TEntity>
+        where Validator : Validator<TEntity>, new()
+    {
+        return new Repository<TEntity, Validator>(set);
+    }
+
+    /// <summary>
+    /// Creates a new <see cref="Repository{T, Validator}"/> instance with a default
+    /// validator of <see cref="Validator{T}"/>
+    /// </summary>
+    /// <typeparam name="TEntity">The entity of the repository</typeparam>
+    /// <param name="set">The database set</param>
+    /// <returns>The created repository instance</returns>
+    public static IRepository<TEntity> Create<TEntity>(DbSet<TEntity> set)
+        where TEntity : AuditableEntity<TEntity>
+    {
+        return new Repository<TEntity, Validator<TEntity>>(set);
+    }
+}
