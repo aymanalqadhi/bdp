@@ -6,7 +6,7 @@ public class InsufficientBalanceException : Exception
 {
     #region Fields
 
-    private readonly Guid _userId;
+    private readonly EntityKey<User> _userId;
     private readonly decimal _amount;
 
     #endregion Fields
@@ -18,7 +18,7 @@ public class InsufficientBalanceException : Exception
     /// </summary>
     /// <param name="from">The user which requsted the specified amount</param>
     /// <param name="amount">The amount requsted</param>
-    public InsufficientBalanceException(Guid userId, decimal amount)
+    public InsufficientBalanceException(EntityKey<User> userId, decimal amount)
         : base($"user `{userId}' does not have {amount} in balance")
     {
         _userId = userId;
@@ -37,7 +37,7 @@ public class InsufficientBalanceException : Exception
     /// <summary>
     /// Gets the user who lacks sufficient balance
     /// </summary>
-    public Guid UserId => _userId;
+    public EntityKey<User> UserId => _userId;
 
     #endregion Properties
 }
