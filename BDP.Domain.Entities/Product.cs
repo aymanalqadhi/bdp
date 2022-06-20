@@ -1,5 +1,8 @@
 ﻿namespace BDP.Domain.Entities;
 
+/// <summary>
+/// A class to represent a product
+/// </summary>
 public sealed class Product : AuditableEntity<Product>
 {
     /// <summary>
@@ -21,6 +24,11 @@ public sealed class Product : AuditableEntity<Product>
     /// Gets or sets whether the sellable is available
     /// </summary>
     public bool IsAvailable { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets the collection of categories the product belongs to
+    /// </summary>
+    public ICollection<Category> Categories { get; set; } = new List<Category>();
 
     /// <summary>
     /// Gets or sets the collection of reviews
