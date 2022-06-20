@@ -36,7 +36,7 @@ public class FinancialRecordsService : IFinancialRecordsService
 
     /// <inheritdoc/>
     public IAsyncEnumerable<FinancialRecord> ForUserAsync(
-        Guid userId,
+        EntityKey<User> userId,
         Expression<Func<FinancialRecord, object>>[]? includes = null)
     {
         var query = _uow.FinancialRecords.Query();
@@ -50,7 +50,7 @@ public class FinancialRecordsService : IFinancialRecordsService
     }
 
     /// <inheritdoc/>
-    public IQueryBuilder<FinancialRecord> ForUserAsync(Guid userId)
+    public IQueryBuilder<FinancialRecord> ForUserAsync(EntityKey<User> userId)
         => _uow.FinancialRecords.Query().Where(f => f.MadeBy.Id == userId);
 
     /// <inheritdoc/>
@@ -58,7 +58,7 @@ public class FinancialRecordsService : IFinancialRecordsService
         => _uow.FinancialRecords.Query().Where(f => f.Verification == null);
 
     /// <inheritdoc/>
-    public async Task<decimal> TotalUsableAsync(Guid userId)
+    public async Task<decimal> TotalUsableAsync(EntityKey<User> userId)
     {
         decimal total = 0;
 
@@ -78,8 +78,8 @@ public class FinancialRecordsService : IFinancialRecordsService
 
     /// <inheritdoc/>
     public async Task<FinancialRecordVerification> VerifyAsync(
-        Guid userId,
-        Guid recordId,
+        EntityKey<User> userId,
+        EntityKey<FinancialRecord> recordId,
         FinancialRecordVerificationOutcome outcome,
         string? notes = null,
         IUploadFile? document = null)

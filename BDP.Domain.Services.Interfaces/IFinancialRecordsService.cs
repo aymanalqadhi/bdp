@@ -12,7 +12,7 @@ public interface IFinancialRecordsService
     /// </summary>
     /// <param name="userId">The id of the user to get financial records for</param>
     /// <returns></returns>
-    IQueryBuilder<FinancialRecord> ForUserAsync(Guid userId);
+    IQueryBuilder<FinancialRecord> ForUserAsync(EntityKey<User> userId);
 
     /// <summary>
     /// Asynchronously gets pending financial records for a specific user
@@ -25,7 +25,7 @@ public interface IFinancialRecordsService
     /// </summary>
     /// <param name="userId">The id of the user to get the total balance for</param>
     /// <returns></returns>
-    Task<decimal> TotalUsableAsync(Guid userId);
+    Task<decimal> TotalUsableAsync(EntityKey<User> userId);
 
     /// <summary>
     /// Asynchronously verifies a financial record
@@ -37,8 +37,8 @@ public interface IFinancialRecordsService
     /// <param name="notes">Addtional notes</param>
     /// <returns></returns>
     Task<FinancialRecordVerification> VerifyAsync(
-        Guid userId,
-        Guid recordId,
+        EntityKey<User> userId,
+        EntityKey<FinancialRecord> recordId,
         FinancialRecordVerificationOutcome outcome,
         string? notes = null,
         IUploadFile? document = null);
