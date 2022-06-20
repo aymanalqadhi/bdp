@@ -35,41 +35,16 @@ public class SellablesService : ISellablesService
         => _uow.Sellables.Query().FindAsync(id);
 
     /// <inheritdoc/>
-    public IAsyncEnumerable<Sellable> GetForAsync(User user, int page, int pageSize)
-    {
-        return _uow.Sellables
-            .Query()
-            .Where(s => s.OfferedBy.Id == user.Id)
-            .OrderByDescending(s => s.Id)
-            .Include(s => s.Attachments)
-            .Page(page, pageSize)
-            .AsAsyncEnumerable();
-    }
+    public IQueryBuilder<Sellable> GetForAsync(User user)
+        => _uow.Sellables.Query().Where(s => s.OfferedBy.Id == user.Id);
 
     /// <inheritdoc/>
-    public IAsyncEnumerable<Sellable> SearchForAsync(User user, string query, int page, int pageSize)
-    {
-        return _uow.Sellables
-            .Query()
-            .Where(s => s.OfferedBy.Id == user.Id && s.Title.ToLower().Contains(query.ToLower()))
-            .OrderByDescending(s => s.Id)
-            .Include(s => s.Attachments)
-            .Page(page, pageSize)
-            .AsAsyncEnumerable();
-    }
+    public IQueryBuilder<Sellable> SearchForAsync(User user, string query)
+        => _uow.Sellables.Query().Where(s => s.OfferedBy.Id == user.Id && s.Title.ToLower().Contains(query.ToLower()));
 
     /// <inheritdoc/>
-    public IAsyncEnumerable<Sellable> SearchAsync(string query, int page, int pageSize)
-    {
-        return _uow.Sellables
-            .Query()
-            .Where(s => s.Title.ToLower().Contains(query.ToLower()))
-            .OrderByDescending(s => s.Id)
-            .Include(s => s.Attachments)
-            .Include(s => s.OfferedBy)
-            .Page(page, pageSize)
-            .AsAsyncEnumerable();
-    }
+    public IQueryBuilder<Sellable> SearchAsync(string query)
+        => _uow.Sellables.Query().Where(s => s.Title.ToLower().Contains(query.ToLower()));
 
     #endregion Public methods
 }
