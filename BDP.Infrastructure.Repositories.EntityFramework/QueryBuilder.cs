@@ -91,15 +91,6 @@ public sealed class QueryBuilder<T> : IQueryBuilder<T> where T : class
     }
 
     /// <inheritdoc/>
-    public IQueryBuilder<T> IncludeAll(IEnumerable<Expression<Func<T, object>>> exprs)
-    {
-        foreach (var expr in exprs)
-            _query = _query.Include(expr);
-
-        return this;
-    }
-
-    /// <inheritdoc/>
     public IQueryBuilder<T> OrderBy(Expression<Func<T, object>> expr)
     {
         _query = _query.OrderBy(expr);
