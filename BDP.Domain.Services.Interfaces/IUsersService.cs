@@ -9,19 +9,8 @@ public interface IUsersService
     /// Asynchronously gets a user by username
     /// </summary>
     /// <param name="username">The username to look for</param>
-    /// <param name="includeGroups">whether to include groups or not</param>
-    /// <param name="includePhones">whether to include phone numbers or not</param>
     /// <returns>The matching user</returns>
-    Task<User> GetByUsernameAsync(string username, bool includePhones = false, bool includeGroups = false);
-
-    /// <summary>
-    /// Asynchronously gets a user by email
-    /// </summary>
-    /// <param name="email">The email to look for</param>
-    /// <param name="includeGroups">whether to include groups or not</param>
-    /// <param name="includePhones">whether to include phone numbers or not</param>
-    /// <returns>The matching user</returns>
-    Task<User> GetByEmailAsync(string email, bool includePhones = false, bool includeGroups = false);
+    IQueryBuilder<User> GetByUsername(string username);
 
     /// <summary>
     /// Asynchronsously searches for users

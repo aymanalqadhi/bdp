@@ -33,30 +33,8 @@ public class UsersService : IUsersService
     #region Public methods
 
     /// <inheritdoc/>
-    public async Task<User> GetByUsernameAsync(
-        string username, bool includePhones = false, bool includeGroups = false)
-    {
-        var includes = PrepareUserIncludes(includePhones, includeGroups);
-
-        var user = await _uow.Users.Query()
-            .IncludeAll(includes)
-            .FirstAsync(u => u.Username == username);
-
-        return user;
-    }
-
-    /// <inheritdoc/>
-    public async Task<User> GetByEmailAsync(
-        string email, bool includePhones = false, bool includeGroups = false)
-    {
-        var includes = PrepareUserIncludes(includePhones, includeGroups);
-
-        var user = await _uow.Users.Query()
-            .IncludeAll(includes)
-            .FirstAsync(u => u.Email == email);
-
-        return user;
-    }
+    public IQueryBuilder<User> GetByUsername(string username)
+        => _uow.Users.Query().Where(u => u.Username == username);
 
     /// <inheritdoc/>
     public IQueryBuilder<User> SearchAsync(string query)
@@ -108,7 +86,9 @@ public class UsersService : IUsersService
         string fullName,
         IUploadFile? profilePicture = null)
     {
-        var user = await GetByUsernameAsync(username, includeGroups: true);
+        var user = await GetByUsername(username)
+            .Include(u => u.Groups)
+            .FirstAsync();
 
         user.FullName = fullName ?? string.Empty;
 
@@ -121,28 +101,4 @@ public class UsersService : IUsersService
     }
 
     #endregion Public methods
-
-    #region Private methods
-
-    /// <summary>
-    /// Generates an "includes" array for user queries
-    /// </summary>
-    /// <param name="phones"></param>
-    /// <param name="groups"></param>
-    /// <returns></returns>
-    private static IEnumerable<Expression<Func<User, object>>> PrepareUserIncludes(bool phones, bool groups)
-    {
-#pragma warning disable CS8603 // Possible null reference return.
-        yield return u => u.ProfilePicture;
-        yield return u => u.CoverPicture;
-#pragma warning restore CS8603 // Possible null reference return.
-
-        if (phones)
-            yield return u => u.PhoneNumbers;
-
-        if (groups)
-            yield return u => u.Groups;
-    }
-
-    #endregion Private methods
 }
