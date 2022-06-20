@@ -9,4 +9,9 @@ public sealed class StockBatch : AuditableEntity<StockBatch>
     /// Gets or sets the quantity of the stock batch
     /// </summary>
     public uint Quantity { get; set; } = 0;
+
+    /// <summary>
+    /// Gets or sets the sellable variant to add the batch to
+    /// </summary>
+    public ProductVariant Variant { get; set; } = null!;
 }

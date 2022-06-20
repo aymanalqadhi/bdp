@@ -19,6 +19,11 @@ public sealed class ReservationWindow : AuditableEntity<ReservationWindow>
     /// Gets or sets the ending time of reservable product availability
     /// </summary>
     public TimeOnly End { get; set; }
+
+    /// <summary>
+    /// Gets or sets the reservable variant
+    /// </summary>
+    public ProductVariant Variant { get; set; } = null!;
 }
 
 /// <summary>
