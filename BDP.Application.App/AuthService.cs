@@ -95,7 +95,7 @@ public class AuthService : IAuthService
     }
 
     /// <inheritdoc/>
-    public Task<bool> IsTokenValidAsync(Guid userId, string token, string uniqueId)
+    public Task<bool> IsTokenValidAsync(EntityKey<User> userId, string token, string uniqueId)
         => _uow.RefreshTokens.Query().AnyAsync(
             r => r.Owner.Id == userId &&
             r.Token == token &&
@@ -103,7 +103,7 @@ public class AuthService : IAuthService
             r.ValidUntil > DateTime.Now);
 
     /// <inheritdoc/>
-    public async Task InvalidateTokenAsync(Guid userId, string token, string uniqueId)
+    public async Task InvalidateTokenAsync(EntityKey<User> userId, string token, string uniqueId)
     {
         var refreshToken = await _uow.RefreshTokens.Query().FirstAsync(r =>
            r.Owner.Id == userId &&
@@ -141,7 +141,7 @@ public class AuthService : IAuthService
     }
 
     /// <inheritdoc/>
-    public async Task<Confirmation> SendConfirmationMessage(Guid userId, string title)
+    public async Task<Confirmation> SendConfirmationMessage(EntityKey<User> userId, string title)
     {
         var user = await _uow.Users.Query().FindAsync(userId);
 

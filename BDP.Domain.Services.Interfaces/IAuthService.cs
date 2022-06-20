@@ -25,7 +25,7 @@ public interface IAuthService
     /// <param name="token">The token to check</param>
     /// <param name="uniqueId">The device unique id</param>
     /// <returns></returns>
-    Task<bool> IsTokenValidAsync(Guid userId, string token, string uniqueId);
+    Task<bool> IsTokenValidAsync(EntityKey<User> userId, string token, string uniqueId);
 
     /// <summary>
     /// Asynchronously invlidates a refresh token
@@ -34,7 +34,7 @@ public interface IAuthService
     /// <param name="token">The token to check</param>
     /// <param name="uniqueId">The device unique id</param>
     /// <returns></returns>
-    Task InvalidateTokenAsync(Guid userId, string token, string uniqueId);
+    Task InvalidateTokenAsync(EntityKey<User> userId, string token, string uniqueId);
 
     /// <summary>
     /// Asynchronously registers a user
@@ -51,7 +51,7 @@ public interface IAuthService
     /// <param name="userId">The id of the user to which to send the message</param>
     /// <param name="title">The title of the message</param>
     /// <returns>The sent message</returns>
-    Task<Confirmation> SendConfirmationMessage(Guid userId, string title);
+    Task<Confirmation> SendConfirmationMessage(EntityKey<User> userId, string title);
 
     /// <summary>
     /// Asynchrnously confirms a user account with otp
