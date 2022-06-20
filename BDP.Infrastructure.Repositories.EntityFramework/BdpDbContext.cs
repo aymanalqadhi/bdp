@@ -125,30 +125,7 @@ public class BdpDbContext : DbContext
     /// <param name="builder"></param>
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        // set decimal bakcend-type
-        builder.Entity<Product>()
-            .Property(s => s.Price)
-            .HasPrecision(18, 6);
-        builder.Entity<Service>()
-            .Property(s => s.Price)
-            .HasPrecision(18, 6);
-        builder.Entity<Transaction>()
-            .Property(s => s.Amount)
-            .HasPrecision(18, 6);
-        builder.Entity<FinancialRecord>()
-            .Property(s => s.Amount)
-            .HasPrecision(18, 6);
-
         // break cycles
-        builder.Entity<Transaction>()
-            .HasOne(t => t.From)
-            .WithMany()
-            .OnDelete(DeleteBehavior.Restrict);
-        builder.Entity<Transaction>()
-            .HasOne(t => t.To)
-            .WithMany()
-            .OnDelete(DeleteBehavior.Restrict);
-
         builder.Entity<FinancialRecord>()
             .HasOne(t => t.MadeBy)
             .WithMany()
@@ -162,11 +139,6 @@ public class BdpDbContext : DbContext
             .HasOne(r => r.Verification)
             .WithOne(v => v.FinancialRecord)
             .HasForeignKey<FinancialRecordVerification>(v => v.FinancialRecordId);
-
-        builder.Entity<Transaction>()
-            .HasOne(t => t.Confirmation)
-            .WithOne(c => c.Transaction)
-            .HasForeignKey<TransactionConfirmation>(t => t.TransactionId);
 
         builder.Entity<ProductReview>()
             .HasOne(r => r.LeftBy)
