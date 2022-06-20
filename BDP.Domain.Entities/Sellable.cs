@@ -4,9 +4,8 @@
 /// A class to represent a a base sellable item
 /// </summary>
 /// <typeparam name="TEntity">The </typeparam>
-public abstract class Sellable<TEntity, TReview> : AuditableEntity<TEntity>
+public abstract class Sellable<TEntity> : AuditableEntity<TEntity>
     where TEntity : class
-    where TReview : SellableReview<TEntity>
 {
     /// <summary>
     /// Gets or sets the title of the sellable
@@ -37,9 +36,4 @@ public abstract class Sellable<TEntity, TReview> : AuditableEntity<TEntity>
     /// Gets or sets the list of attachments attached to the sellable
     /// </summary>
     public ICollection<Attachment> Attachments { get; set; } = new List<Attachment>();
-
-    /// <summary>
-    /// Gets or sets the list of reviews left for this sellable item
-    /// </summary>
-    public ICollection<TReview> Reviews { get; set; } = new List<TReview>();
 }
