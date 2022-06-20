@@ -13,7 +13,7 @@ public sealed class FinancialRecordVerification : AuditableEntity<FinancialRecor
     /// <summary>
     /// Gets or sets the financial record id
     /// </summary>
-    public Guid FinancialRecordId { get; set; }
+    public EntityKey<FinancialRecord> FinancialRecordId { get; set; } = null!;
 
     /// <summary>
     /// Gets or sets the financial record this verification belongs to
