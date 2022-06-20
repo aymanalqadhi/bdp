@@ -17,5 +17,10 @@ public class ProductReviewTypeConfiguration : EntityTypeConfiguration<ProductRev
             .HasOne(r => r.LeftBy)
             .WithMany()
             .OnDelete(DeleteBehavior.NoAction);
+
+        builder
+            .HasOne(r => r.Product)
+            .WithMany()
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
