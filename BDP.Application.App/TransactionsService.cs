@@ -34,14 +34,6 @@ public class TransactionsService : ITransactionsService
         => _uow.Transactions.Query().Where(t => t.From.Id == user.Id || t.To.Id == user.Id);
 
     /// <inheritdoc/>
-    public IQueryBuilder<Transaction> SentByAsync(User user)
-        => _uow.Transactions.Query().Where(t => t.From.Id == user.Id);
-
-    /// <inheritdoc/>
-    public IQueryBuilder<Transaction> ReceivedByAsync(User user)
-        => _uow.Transactions.Query().Where(t => t.To.Id == user.Id);
-
-    /// <inheritdoc/>
     public Task<decimal> TotalInAsync(User user, bool confirmedOnly = false)
         => DoCalculateTotal(user, TransactionDirection.Incoming, confirmedOnly);
 
