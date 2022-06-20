@@ -1,5 +1,3 @@
-using BDP.Tests.Utils;
-
 using System.Linq;
 
 using Xunit;
