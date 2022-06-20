@@ -28,7 +28,7 @@ public class ProductsService : IProductsService
     }
 
     /// <inheritdoc/>
-    public Task<Product> GetByIdAsync(Guid id)
+    public Task<Product> GetByIdAsync(EntityKey<Product> id)
     {
         return _uow.Products
             .Query()
@@ -39,7 +39,7 @@ public class ProductsService : IProductsService
 
     /// <inheritdoc/>
     public async Task<Product> ListAsync(
-        Guid userid,
+        EntityKey<User> userid,
         string title,
         string description,
         decimal price,
@@ -75,7 +75,7 @@ public class ProductsService : IProductsService
 
     /// <inheritdoc/>
     public async Task<Product> UpdateAsync(
-        Guid productId,
+        EntityKey<Product> productId,
         string title,
         string description,
         decimal price)
@@ -96,10 +96,12 @@ public class ProductsService : IProductsService
     }
 
     /// <inheritdoc/>
-    public async Task UnlistAsync(Guid productId)
+    public async Task UnlistAsync(EntityKey<Product> productId)
     {
+        var sellableKey = new EntityKey<Sellable>(productId.Id);
+
         if (await _uow.ProductOrders.Query().AnyAsync(o =>
-            o.Product.Id == productId &&
+            o.Product.Id == sellableKey &&
             o.Transaction.Confirmation == null))
         {
             throw new PendingOrdersLeftException(productId);
@@ -112,14 +114,16 @@ public class ProductsService : IProductsService
     }
 
     /// <inheritdoc/>
-    public async Task<long> AvailableQuantityAsync(Guid productId)
+    public async Task<long> AvailableQuantityAsync(EntityKey<Product> productId)
     {
         // TODO:
         // Use transactions here
 
+        var sellableKey = new EntityKey<Sellable>(productId.Id);
+
         var product = await _uow.Products.Query().FindAsync(productId);
         var orderedQuantity = await _uow.ProductOrders.Query()
-            .Where(o => o.Product.Id == productId)
+            .Where(o => o.Product.Id == sellableKey)
             .Where(o => o.Transaction.Confirmation == null || o.Transaction.Confirmation.Outcome == TransactionConfirmationOutcome.Confirmed)
             .AsAsyncEnumerable()
             .SumAsync(o => o.Quantity);
@@ -131,11 +135,11 @@ public class ProductsService : IProductsService
     }
 
     /// <inheritdoc/>
-    public async Task<bool> IsAvailableAsync(Guid productId)
+    public async Task<bool> IsAvailableAsync(EntityKey<Product> productId)
         => await AvailableQuantityAsync(productId) > 0;
 
     /// <inheritdoc/>
-    public async Task<Product> SetAvailability(Guid productId, bool isAvailable)
+    public async Task<Product> SetAvailability(EntityKey<Product> productId, bool isAvailable)
     {
         var product = await _uow.Products.Query().FindAsync(productId);
 
@@ -151,7 +155,7 @@ public class ProductsService : IProductsService
     }
 
     /// <inheritdoc/>
-    public async Task<ProductOrder> OrderAsync(Guid userId, Guid productId, uint quantity)
+    public async Task<ProductOrder> OrderAsync(EntityKey<User> userId, EntityKey<Product> productId, uint quantity)
     {
         await using var tx = await _uow.BeginTransactionAsync();
 

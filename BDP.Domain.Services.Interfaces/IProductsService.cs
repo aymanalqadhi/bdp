@@ -9,7 +9,7 @@ public interface IProductsService
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    Task<Product> GetByIdAsync(Guid id);
+    Task<Product> GetByIdAsync(EntityKey<Product> id);
 
     /// <summary>
     /// Asynchronously lists a product
@@ -22,7 +22,7 @@ public interface IProductsService
     /// <param name="attachments">The file attachments of the product</param>
     /// <returns>The listed product</returns>
     Task<Product> ListAsync(
-        Guid userId,
+        EntityKey<User> userId,
         string title,
         string description,
         decimal price,
@@ -39,7 +39,7 @@ public interface IProductsService
     /// <param name="price">The new price of the product</param>
     /// <returns></returns>
     Task<Product> UpdateAsync(
-        Guid productId,
+        EntityKey<Product> productId,
         string title,
         string description,
         decimal price
@@ -50,21 +50,21 @@ public interface IProductsService
     /// </summary>
     /// <param name="productId">The id of the product to unlist</param>
     /// <returns></returns>
-    Task UnlistAsync(Guid productId);
+    Task UnlistAsync(EntityKey<Product> productId);
 
     /// <summary>
     /// Asynchrnously gets the available quantity of the product
     /// </summary>
     /// <param name="productId">The id of the product to check for</param>
     /// <returns>The available quantity</returns>
-    Task<long> AvailableQuantityAsync(Guid productId);
+    Task<long> AvailableQuantityAsync(EntityKey<Product> productId);
 
     /// <summary>
     /// Asynchrnously checks whether the product is available
     /// </summary>
     /// <param name="productId">The id of the product to check for</param>
     /// <returns>True if the product has an available qauntity, false otherwise</returns>
-    Task<bool> IsAvailableAsync(Guid productId);
+    Task<bool> IsAvailableAsync(EntityKey<Product> productId);
 
     /// <summary>
     /// Asynchronously changes the availability flag of a product
@@ -72,7 +72,7 @@ public interface IProductsService
     /// <param name="product">The product to change</param>
     /// <param name="isAvailable">The new availability value</param>
     /// <returns>The updated service</returns>
-    Task<Product> SetAvailability(Guid productId, bool isAvailable);
+    Task<Product> SetAvailability(EntityKey<Product> productId, bool isAvailable);
 
     /// <summary>
     /// Asynchronously creates an order for a product
@@ -81,5 +81,5 @@ public interface IProductsService
     /// <param name="productId">The id of the product to order</param>
     /// <param name="quantity">The ordered quantity</param>
     /// <returns>The created order</returns>
-    Task<ProductOrder> OrderAsync(Guid userId, Guid productId, uint quantity);
+    Task<ProductOrder> OrderAsync(EntityKey<User> userId, EntityKey<Product> productId, uint quantity);
 }
