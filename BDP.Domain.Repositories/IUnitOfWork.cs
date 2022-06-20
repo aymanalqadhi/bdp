@@ -12,6 +12,11 @@ public interface IUnitOfWork : IDisposable, IAsyncDisposable
     IRepository<Attachment> Attachments { get; }
 
     /// <summary>
+    /// Gets the categories repository
+    /// </summary>
+    IRepository<Category> Categories { get; }
+
+    /// <summary>
     /// Gets the confirmations repository
     /// </summary>
     IRepository<Confirmation> Confirmations { get; }
@@ -37,14 +42,19 @@ public interface IUnitOfWork : IDisposable, IAsyncDisposable
     IRepository<FinancialRecordVerification> FinancialRecordVerficiations { get; }
 
     /// <summary>
-    /// Gets the product orders repository
+    /// Gets the logs repository
     /// </summary>
-    IRepository<ProductOrder> ProductOrders { get; }
+    IRepository<Log> Logs { get; }
 
     /// <summary>
-    /// Gets the products repository
+    /// Gets the log tags repository
     /// </summary>
-    IRepository<Product> Products { get; }
+    IRepository<LogTag> LogTags { get; }
+
+    /// <summary>
+    /// Gets the product orders repository
+    /// </summary>
+    IRepository<Order> Orders { get; }
 
     /// <summary>
     /// Gets the product reviews repository
@@ -52,24 +62,29 @@ public interface IUnitOfWork : IDisposable, IAsyncDisposable
     IRepository<ProductReview> ProductReviews { get; }
 
     /// <summary>
+    /// Gets the products repository
+    /// </summary>
+    IRepository<Product> Products { get; }
+
+    /// <summary>
     /// Gets the refresh tokens repository
     /// </summary>
     IRepository<RefreshToken> RefreshTokens { get; }
 
     /// <summary>
-    /// Gets the service reservations repository
+    /// Gets the reservable product variants repository
     /// </summary>
-    IRepository<ServiceReservation> ServiceReservations { get; }
+    IRepository<ReservableVariant> ReservableVariants { get; }
 
     /// <summary>
-    /// Gets the services repository
+    /// Gets the reservations repository
     /// </summary>
-    IRepository<Service> Services { get; }
+    IRepository<Reservation> Reservations { get; }
 
     /// <summary>
-    /// Gets the services' reviews repository
+    /// Gets the sellable product variants repository
     /// </summary>
-    IRepository<ServiceReview> ServicesReviews { get; }
+    IRepository<SellableVariant> SellableVariants { get; }
 
     /// <summary>
     /// Gets the transaction confirmations repository
@@ -82,24 +97,14 @@ public interface IUnitOfWork : IDisposable, IAsyncDisposable
     IRepository<Transaction> Transactions { get; }
 
     /// <summary>
-    /// Gets the users repository
-    /// </summary>
-    IRepository<User> Users { get; }
-
-    /// <summary>
     /// Gets the user profiles repository
     /// </summary>
     IRepository<UserProfile> UserProfiles { get; }
 
     /// <summary>
-    /// Gets the logs repository
+    /// Gets the users repository
     /// </summary>
-    IRepository<Log> Logs { get; }
-
-    /// <summary>
-    /// Gets the log tags repository
-    /// </summary>
-    IRepository<LogTag> LogTags { get; }
+    IRepository<User> Users { get; }
 
     #endregion Properties
 
