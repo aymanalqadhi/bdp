@@ -11,8 +11,8 @@ public static class ClaimsPrincipalExtensions
     /// <summary>
     /// Gets the id from a claims principal
     /// </summary>
-    public static string GetUserId(this ClaimsPrincipal self)
-        => GetClaimValue(self, "id");
+    public static Guid GetId(this ClaimsPrincipal self)
+        => Guid.Parse(GetClaimValue(self, "id"));
 
     /// <summary>
     /// Gets the uesrname from a claims principal
