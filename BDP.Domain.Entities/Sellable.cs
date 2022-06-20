@@ -1,10 +1,12 @@
 ﻿namespace BDP.Domain.Entities;
 
 /// <summary>
-/// A class to represent a sellable item
+/// A class to represent a a base sellable item
 /// </summary>
-/// <typeparam name="TKey">The key type of the sellable item</typeparam>
-public class Sellable : AuditableEntity<Sellable>
+/// <typeparam name="TEntity">The </typeparam>
+public abstract class Sellable<TEntity, TReview> : AuditableEntity<TEntity>
+    where TEntity : class
+    where TReview : SellableReview<TEntity>
 {
     /// <summary>
     /// Gets or sets the title of the sellable
@@ -39,5 +41,5 @@ public class Sellable : AuditableEntity<Sellable>
     /// <summary>
     /// Gets or sets the list of reviews left for this sellable item
     /// </summary>
-    public ICollection<SellableReview> Reviews { get; set; } = new List<SellableReview>();
+    public ICollection<TReview> Reviews { get; set; } = new List<TReview>();
 }
