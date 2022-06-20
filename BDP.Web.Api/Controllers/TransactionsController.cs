@@ -64,7 +64,7 @@ public class TransactionsController : ControllerBase
 
     [HttpPost("{id}/[action]")]
     [Authorize]
-    public async Task<IActionResult> Cancel(Guid id)
+    public async Task<IActionResult> Cancel(EntityKey<Transaction> id)
     {
         var ret = await _transactionsSvc.CancelAsync(User.GetId(), id);
 
@@ -73,12 +73,12 @@ public class TransactionsController : ControllerBase
 
     [HttpGet("{id}/token")]
     [Authorize]
-    public async Task<IActionResult> GetConfirmationToken(Guid id)
+    public async Task<IActionResult> GetConfirmationToken(EntityKey<Transaction> id)
     {
         // TODO:
         // Move ownership validation to service
 
-        var tx = await _transactionsSvc.GetByIdAsync(id).FirstAsync();
+        var tx = await _transactionsSvc.GetById(id).FirstAsync();
 
         if (tx.From.Id != User.GetId())
             return Unauthorized(new { message = "you did not make the transaction" });
