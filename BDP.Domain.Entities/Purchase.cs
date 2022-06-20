@@ -1,6 +1,7 @@
 ﻿namespace BDP.Domain.Entities;
 
-public class Purchase : AuditableEntity<Purchase>
+public abstract class Purchase<TEnitity> : AuditableEntity<TEnitity>
+    where TEnitity : class
 {
     /// <summary>
     /// Gets or sets the transaction associated with this purchase
