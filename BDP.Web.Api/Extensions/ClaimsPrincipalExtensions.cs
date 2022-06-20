@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using BDP.Domain.Entities;
+using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 
 namespace BDP.Web.Api.Extensions;
@@ -11,8 +12,8 @@ public static class ClaimsPrincipalExtensions
     /// <summary>
     /// Gets the id from a claims principal
     /// </summary>
-    public static Guid GetId(this ClaimsPrincipal self)
-        => Guid.Parse(GetClaimValue(self, "id"));
+    public static EntityKey<User> GetId(this ClaimsPrincipal self)
+        => new EntityKey<User>(Guid.Parse(GetClaimValue(self, "id")));
 
     /// <summary>
     /// Gets the uesrname from a claims principal
