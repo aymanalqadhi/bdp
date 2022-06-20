@@ -1,14 +1,15 @@
 ﻿using BDP.Application.App;
+using BDP.Domain.Entities;
 using BDP.Domain.Repositories;
 using BDP.Domain.Services;
 using BDP.Infrastructure.Repositories.EntityFramework;
 using BDP.Infrastructure.Services;
-
 using BDP.Web.Api.Auth;
 using BDP.Web.Api.Auth.Jwt;
 using BDP.Web.Api.Auth.Requirements.Handlers;
 using BDP.Web.Api.Filters;
 using BDP.Web.Api.Services;
+using BDP.Web.Dtos.Converters;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -101,13 +102,12 @@ builder.Services.AddScoped<IUsersService, UsersService>();
 builder.Services.AddScoped<IFinancialRecordsService, FinancialRecordsService>();
 builder.Services.AddScoped<ITransactionsService, TransactionsService>();
 builder.Services.AddScoped<IFinanceService, FinanceService>();
-builder.Services.AddScoped<ISellablesService, SellablesService>();
-builder.Services.AddScoped<ISellableReviewsService, SellableReviewsService>();
+builder.Services.AddScoped<IProductReviewsService, ProductReviewsService>();
 builder.Services.AddScoped<IProductsService, ProductsService>();
-builder.Services.AddScoped<IServicesService, ServicesService>();
 builder.Services.AddScoped<IPurchasesService, PurchasesService>();
 builder.Services.AddScoped<ISearchSuggestionsService, SearchSuggestionsService>();
 builder.Services.AddScoped<IEventsService, EventsService>();
+builder.Services.AddScoped<ICategoriesService, CategoriesService>();
 
 // Autmapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -115,6 +115,32 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 // Requirement handlers
 builder.Services.AddSingleton<IAuthorizationHandler, HasAllRolesRequirementHandler>();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, PoliciesProvider>();
+
+// strongly-typed id
+builder.Services.AddControllers()
+        .AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.Converters.Add(new StronglyTypedIdJsonConverter<Attachment>());
+            options.JsonSerializerOptions.Converters.Add(new StronglyTypedIdJsonConverter<Category>());
+            options.JsonSerializerOptions.Converters.Add(new StronglyTypedIdJsonConverter<Confirmation>());
+            options.JsonSerializerOptions.Converters.Add(new StronglyTypedIdJsonConverter<Event>());
+            options.JsonSerializerOptions.Converters.Add(new StronglyTypedIdJsonConverter<EventType>());
+            options.JsonSerializerOptions.Converters.Add(new StronglyTypedIdJsonConverter<FinancialRecord>());
+            options.JsonSerializerOptions.Converters.Add(new StronglyTypedIdJsonConverter<FinancialRecordVerification>());
+            options.JsonSerializerOptions.Converters.Add(new StronglyTypedIdJsonConverter<Log>());
+            options.JsonSerializerOptions.Converters.Add(new StronglyTypedIdJsonConverter<LogTag>());
+            options.JsonSerializerOptions.Converters.Add(new StronglyTypedIdJsonConverter<Order>());
+            options.JsonSerializerOptions.Converters.Add(new StronglyTypedIdJsonConverter<Product>());
+            options.JsonSerializerOptions.Converters.Add(new StronglyTypedIdJsonConverter<ProductReview>());
+            options.JsonSerializerOptions.Converters.Add(new StronglyTypedIdJsonConverter<ProductVariant>());
+            options.JsonSerializerOptions.Converters.Add(new StronglyTypedIdJsonConverter<RefreshToken>());
+            options.JsonSerializerOptions.Converters.Add(new StronglyTypedIdJsonConverter<ReservationWindow>());
+            options.JsonSerializerOptions.Converters.Add(new StronglyTypedIdJsonConverter<StockBatch>());
+            options.JsonSerializerOptions.Converters.Add(new StronglyTypedIdJsonConverter<Transaction>());
+            options.JsonSerializerOptions.Converters.Add(new StronglyTypedIdJsonConverter<TransactionConfirmation>());
+            options.JsonSerializerOptions.Converters.Add(new StronglyTypedIdJsonConverter<User>());
+            options.JsonSerializerOptions.Converters.Add(new StronglyTypedIdJsonConverter<UserProfile>());
+        });
 
 #endregion Services
 
