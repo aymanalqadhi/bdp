@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace BDP.Infrastructure.Repositories.EntityFramework;
 
 public sealed class Repository<T, Validator> : IRepository<T>
-    where T : AuditableEntity
+    where T : AuditableEntity<T>
     where Validator : Validator<T>, new()
 {
     #region Private fields
