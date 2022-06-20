@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -12,8 +12,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BDP.Domain.Entities\BDP.Domain.Entities.csproj" />
+    <ProjectReference Include="..\BDP.Domain.Repositories.Extensions\BDP.Domain.Repositories.Extensions.csproj" />
+    <ProjectReference Include="..\BDP.Domain.Repositories\BDP.Domain.Repositories.csproj" />
     <ProjectReference Include="..\BDP.Domain.Services.Interfaces\BDP.Domain.Services.csproj" />
-    <ProjectReference Include="..\BDP.Shared.Interfaces\BDP.Domain.Repositories.csproj" />
   </ItemGroup>
 
 </Project>
