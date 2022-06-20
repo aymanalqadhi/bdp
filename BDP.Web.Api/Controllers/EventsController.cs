@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BDP.Domain.Entities;
+using BDP.Domain.Repositories.Extensions;
 using BDP.Domain.Services;
 using BDP.Web.Api.Auth.Attributes;
 using BDP.Web.Api.Extensions;
@@ -56,26 +57,29 @@ public class EventsController : ControllerBase
     [HttpGet("types")]
     [Authorize]
     public async Task<IActionResult> GetEventTypes()
-        => Ok((await _eventsSvc.GetEventTypes().ToListAsync()).Select(_mapper.Map<EventTypeDto>));
+    {
+        var ret = _eventsSvc.GetEventTypes()
+            .AsAsyncEnumerable()
+            .Select(_mapper.Map<EventTypeDto>);
+
+        return Ok(await ret.ToListAsync());
+    }
 
     [HttpGet]
     [Authorize]
     public async Task<IActionResult> GetEvents([Required] string username, [Required] int page)
     {
         var user = await _usersSvc.GetByUsernameAsync(username);
-        var ret = await _eventsSvc.ForUserAsync(
-            page,
-            _pageSize,
-            user,
-            includes: new Expression<Func<Event, object>>[]
-            {
-                e => e.Pictures,
-                e => e.Type,
-                e => e.CreatedBy,
-            }
-        ).ToListAsync();
+        var ret = _eventsSvc.ForUserAsync(user)
+            .OrderDescending()
+            .Page(page, _pageSize)
+            .Include(e => e.Pictures)
+            .Include(e => e.Type)
+            .Include(e => e.CreatedBy)
+            .AsAsyncEnumerable()
+            .Select(_mapper.Map<EventDto>);
 
-        return Ok(ret.Select(_mapper.Map<EventDto>));
+        return Ok(await ret.ToListAsync());
     }
 
     [HttpPost]
