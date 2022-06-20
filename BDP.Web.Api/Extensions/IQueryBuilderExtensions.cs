@@ -20,4 +20,19 @@ public static class IQueryBuilderExtensions
     {
         return source.Select(i => mapper.Map<V>(i));
     }
+
+    /// <summary>
+    /// A utility method to map a <see cref="IQueryBuilder{T}"/> using AutoMapper. This method
+    /// returns a runtime-polymorhpic object
+    /// </summary>
+    /// <typeparam name="T">The source type</typeparam>
+    /// <param name="source">The source query builder</param>
+    /// <param name="mapper">The mapper object</param>
+    /// <param name="dstType">The destination type</param>
+    /// <returns>The modified query builder object</returns>
+    public static IQueryBuilder<object> Map<T>(this IQueryBuilder<T> source, IMapper mapper, Type dstType)
+        where T : class
+    {
+        return source.Select(i => mapper.Map(i, i.GetType(), dstType));
+    }
 }
