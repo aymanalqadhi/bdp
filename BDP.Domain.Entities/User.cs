@@ -1,21 +1,10 @@
 ﻿namespace BDP.Domain.Entities;
 
 /// <summary>
-/// A recrod to represent keys for the <see cref="User"/> entity
-/// </summary>
-/// <param name="Id">The id field of the key</param>
-public sealed record UserKey(Guid Id) : EntityKey<User>(Id);
-
-/// <summary>
 /// A class to represent a user of the system
 /// </summary>
-public sealed class User : AuditableEntity
+public sealed class User : AuditableEntity<User>
 {
-    /// <summary>
-    /// Gets or sets the id of the user
-    /// </summary>
-    public UserKey Id { get; set; } = new UserKey(Guid.NewGuid());
-
     /// <summary>
     /// Gets or sets the username of the user
     /// </summary>
