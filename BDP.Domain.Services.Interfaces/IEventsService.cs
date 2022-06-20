@@ -5,6 +5,9 @@ using System.Linq.Expressions;
 
 namespace BDP.Domain.Services;
 
+/// <summary>
+/// A service to manage the events of users
+/// </summary>
 public interface IEventsService
 {
     #region Public Methods
@@ -34,31 +37,23 @@ public interface IEventsService
         DateTime takesPlaceAt);
 
     /// <summary>
-    /// Asynchronosly gets events for a user, limited with pagination
+    /// Gets events for a user, limited with pagination
     /// </summary>
     /// <param name="userId">The id of the user which to get the events for</param>
     /// <returns></returns>
-    IQueryBuilder<Event> ForUserAsync(EntityKey<User> userId);
+    IQueryBuilder<Event> ForUser(EntityKey<User> userId);
 
     /// <summary>
-    /// Asynchronously gets an event by id
+    /// Gets all events
     /// </summary>
-    /// <param name="id">The id of the event</param>
     /// <returns></returns>
-    Task<Event> GetByIdAsync(EntityKey<Event> id);
+    Task<Event> GetEvents();
 
     /// <summary>
-    /// Asynchronously gets event types
+    /// Gets event types
     /// </summary>
     /// <returns></returns>
     IQueryBuilder<EventType> GetEventTypes();
-
-    /// <summary>
-    /// Asynchronously gets an event type by id
-    /// </summary>
-    /// <param name="id">The id of the event type</param>
-    /// <returns></returns>
-    Task<EventType> GetTypeByIdAsync(EntityKey<EventType> id);
 
     /// <summary>
     /// Asynchronously removes an event
