@@ -2,6 +2,10 @@
 
 namespace BDP.Domain.Repositories;
 
+/// <summary>
+/// A generic repositroy
+/// </summary>
+/// <typeparam name="T">The type the repository works on</typeparam>
 public interface IRepository<T> where T : AuditableEntity<T>
 {
     #region Public Methods

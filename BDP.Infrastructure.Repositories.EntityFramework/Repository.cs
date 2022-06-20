@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BDP.Infrastructure.Repositories.EntityFramework;
 
+/// <inheritdoc/>
 public sealed class Repository<T, Validator> : IRepository<T>
     where T : AuditableEntity<T>
     where Validator : IValidator<T>, new()
