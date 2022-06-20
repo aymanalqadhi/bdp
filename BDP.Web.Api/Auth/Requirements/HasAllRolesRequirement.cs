@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using BDP.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BDP.Web.Api.Auth.Requirements;
 
@@ -8,11 +9,11 @@ public class HasAllRolesRequirement : IAuthorizationRequirement
     /// Default constructor
     /// </summary>
     /// <param name="roles">The allowed roles</param>
-    public HasAllRolesRequirement(params string[] roles)
+    public HasAllRolesRequirement(params UserRole[] roles)
         => Roles = roles;
 
     /// <summary>
-    /// Gets or sets the required role
+    /// Gets or sets the required roles
     /// </summary>
-    public string[] Roles { get; init; }
+    public UserRole[] Roles { get; init; }
 }

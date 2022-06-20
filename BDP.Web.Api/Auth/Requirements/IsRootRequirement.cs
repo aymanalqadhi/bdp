@@ -1,11 +1,13 @@
-﻿namespace BDP.Web.Api.Auth.Requirements;
+﻿using BDP.Domain.Entities;
+
+namespace BDP.Web.Api.Auth.Requirements;
 
 public class IsRootRequirement : HasAllRolesRequirement
 {
     /// <summary>
     /// Default constructor
     /// </summary>
-    public IsRootRequirement() : base(UserRoles.Root)
+    public IsRootRequirement() : base(UserRole.Root)
     {
     }
 }
