@@ -10,7 +10,7 @@ public interface ISellablesService
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    Task<Sellable> GetByIdAsync(long id);
+    Task<Sellable> GetByIdAsync(Guid id);
 
     /// <summary>
     /// Asynchronosly gets sellables for a user, limited with pagination

@@ -12,7 +12,7 @@ public interface IPurchasesService
     /// </summary>
     /// <param name="id">The id of the purchase</param>
     /// <returns></returns>
-    Task<Purchase> GetById(long id);
+    Task<Purchase> GetById(Guid id);
 
     /// <summary>
     /// Asynchronosly gets purchases for a user, limited with pagination

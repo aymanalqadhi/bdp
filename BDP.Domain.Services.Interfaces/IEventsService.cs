@@ -12,14 +12,14 @@ public interface IEventsService
     /// </summary>
     /// <param name="id">The id of the event</param>
     /// <returns></returns>
-    Task<Event> GetByIdAsync(long id);
+    Task<Event> GetByIdAsync(Guid id);
 
     /// <summary>
     /// Asynchronously gets an event type by id
     /// </summary>
     /// <param name="id">The id of the event type</param>
     /// <returns></returns>
-    Task<EventType> GetTypeByIdAsync(long id);
+    Task<EventType> GetTypeByIdAsync(Guid id);
 
     /// <summary>
     /// Asynchronously gets event types

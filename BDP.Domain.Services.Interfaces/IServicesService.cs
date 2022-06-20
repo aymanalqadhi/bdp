@@ -9,7 +9,7 @@ public interface IServicesService
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    Task<Service> GetByIdAsync(long id);
+    Task<Service> GetByIdAsync(Guid id);
 
     /// <summary>
     /// Asynchronously lists a service

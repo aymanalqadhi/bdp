@@ -22,7 +22,7 @@ public class SearchSuggestion
     /// <summary>
     /// Gets or sets the id that the suggestion id
     /// </summary>
-    public double ItemId { get; set; }
+    public Guid ItemId { get; set; }
 
     /// <summary>
     /// Gets or sets the title of the suggestion

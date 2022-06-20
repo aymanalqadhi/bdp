@@ -37,7 +37,7 @@ public interface IFinancialRecordsService
     /// <param name="notes">Addtional notes</param>
     /// <returns></returns>
     Task<FinancialRecordVerification> VerifyAsync(
-        int recordId,
+        Guid recordId,
         User verifiedBy,
         FinancialRecordVerificationOutcome outcome,
         string? notes = null,

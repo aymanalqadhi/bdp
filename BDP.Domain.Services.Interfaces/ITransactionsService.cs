@@ -12,7 +12,7 @@ public interface ITransactionsService
     /// </summary>
     /// <param name="id">The id of the transaction</param>
     /// <returns>The transaction with the passed id</returns>
-    IQueryBuilder<Transaction> GetByIdAsync(long id);
+    IQueryBuilder<Transaction> GetByIdAsync(Guid id);
 
     /// <summary>
     /// Asynchrnously gets transactions that a user has either sent or recieved
@@ -59,5 +59,5 @@ public interface ITransactionsService
     /// <param name="receiver">The receiver of the transaction</param>
     /// <param name="transactionId">The id of the transaction to cancel</param>
     /// <returns>The canceled transaction confirmation</returns>
-    Task<TransactionConfirmation> CancelAsync(User receiver, long transactionId);
+    Task<TransactionConfirmation> CancelAsync(User receiver, Guid transactionId);
 }

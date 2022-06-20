@@ -9,7 +9,7 @@ public interface IProductsService
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    Task<Product> GetByIdAsync(long id);
+    Task<Product> GetByIdAsync(Guid id);
 
     /// <summary>
     /// Asynchronously lists a product
