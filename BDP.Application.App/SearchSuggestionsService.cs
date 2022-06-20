@@ -39,7 +39,7 @@ public class SearchSuggestionsService : ISearchSuggestionsService
         if (includeUsers)
         {
             var items = _usersSvc
-                .SearchAsync(query)
+                .Search(query)
                 .Page(1, length)
                 .AsAsyncEnumerable()
                 .Select(u => new SearchSuggestion

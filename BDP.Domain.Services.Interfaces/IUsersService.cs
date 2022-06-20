@@ -17,7 +17,7 @@ public interface IUsersService
     /// </summary>
     /// <param name="query">The query to search for</param>
     /// <returns></returns>
-    IQueryBuilder<User> SearchAsync(string query);
+    IQueryBuilder<User> Search(string query);
 
     /// <summary>
     /// Asynchronously adds a user to a specific group
@@ -26,14 +26,6 @@ public interface IUsersService
     /// <param name="groupName">The group which to add the user to</param>
     /// <returns></returns>
     Task AddUserToGroupAsync(User user, string groupName);
-
-    /// <summary>
-    /// Asynchronously updates a user's full name
-    /// </summary>
-    /// <param name="user">The user which to update his/her name</param>
-    /// <param name="fullName">The new full name</param>
-    /// <returns></returns>
-    Task<User> UpdateFullNameAsync(User user, string fullName);
 
     /// <summary>
     /// Asynchronously sets reqiured fileds for a profile to be complete

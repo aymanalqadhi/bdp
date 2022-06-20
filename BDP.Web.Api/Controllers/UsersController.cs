@@ -48,7 +48,7 @@ public class UsersController : ControllerBase
     [HttpGet("search")]
     public IAsyncEnumerable<UserDto> Search(string query, [FromQuery] PagingParameters paging)
     {
-        return _usersSvc.SearchAsync(query)
+        return _usersSvc.Search(query)
             .Page(paging.Page, paging.PageLength)
             .Map<User, UserDto>(_mapper)
             .AsAsyncEnumerable();

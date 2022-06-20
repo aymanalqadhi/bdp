@@ -37,7 +37,7 @@ public class UsersService : IUsersService
         => _uow.Users.Query().Where(u => u.Username == username);
 
     /// <inheritdoc/>
-    public IQueryBuilder<User> SearchAsync(string query)
+    public IQueryBuilder<User> Search(string query)
     {
         return _uow.Users
             .Query()
@@ -69,14 +69,6 @@ public class UsersService : IUsersService
         _uow.Users.Update(user);
 
         await _uow.CommitAsync();
-    }
-
-    /// <inheritdoc/>
-    public async Task<User> UpdateFullNameAsync(User user, string fullName)
-    {
-        user.FullName = fullName;
-        await _uow.CommitAsync();
-        return user;
     }
 
     /// <inheritdoc/>
