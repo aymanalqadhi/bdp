@@ -31,15 +31,8 @@ public class SellablesService : ISellablesService
     #region Public methods
 
     /// <inheritdoc/>
-    public async Task<Sellable> GetByIdAsync(long id)
-    {
-        var ret = await _uow.Sellables.Query().FindOrDefaultAsync(id);
-
-        if (ret is null)
-            throw new NotFoundException($"no sellables were found with id #{id}");
-
-        return ret;
-    }
+    public Task<Sellable> GetByIdAsync(long id)
+        => _uow.Sellables.Query().FindAsync(id);
 
     /// <inheritdoc/>
     public IAsyncEnumerable<Sellable> GetForAsync(User user, int page, int pageSize)

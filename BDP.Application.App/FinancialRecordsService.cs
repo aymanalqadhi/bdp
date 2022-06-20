@@ -114,11 +114,7 @@ public class FinancialRecordsService : IFinancialRecordsService
     {
         await using var tx = await _uow.BeginTransactionAsync();
 
-        if (await _uow.FinancialRecords.Query().FindOrDefaultAsync(recordId) is var record &&
-            record is null)
-        {
-            throw new NotFoundException($"no records were found with the id {recordId}");
-        }
+        var record = await _uow.FinancialRecords.Query().FindAsync(recordId);
 
         if (await _uow.FinancialRecordVerficiations.Query().AnyAsync(v => v.FinancialRecord.Id == record.Id))
             throw new FinancialRecordAlreadyVerifiedException(record);

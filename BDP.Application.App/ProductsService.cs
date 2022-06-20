@@ -27,18 +27,13 @@ public class ProductsService : IProductsService
     }
 
     /// <inheritdoc/>
-    public async Task<Product> GetByIdAsync(long id)
+    public Task<Product> GetByIdAsync(long id)
     {
-        var product = await _uow.Products
+        return _uow.Products
             .Query()
             .Include(p => p.OfferedBy)
             .Include(p => p.Attachments)
-            .FindOrDefaultAsync(id);
-
-        if (product is null)
-            throw new NotFoundException($"no products were found with id #{id}");
-
-        return product;
+            .FindAsync(id);
     }
 
     /// <inheritdoc/>

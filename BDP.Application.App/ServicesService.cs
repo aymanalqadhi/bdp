@@ -26,18 +26,13 @@ public class ServicesService : IServicesService
     }
 
     /// <inheritdoc/>
-    public async Task<Service> GetByIdAsync(long id)
+    public Task<Service> GetByIdAsync(long id)
     {
-        var service = await _uow.Services
+        return _uow.Services
             .Query()
             .Include(s => s.Attachments)
             .Include(s => s.OfferedBy)
-            .FindOrDefaultAsync(id);
-
-        if (service is null)
-            throw new NotFoundException($"no services were found with id #{id}");
-
-        return service;
+            .FindAsync(id);
     }
 
     /// <inheritdoc/>

@@ -36,24 +36,14 @@ public class EventsService : IEventsService
             .Include(e => e.Pictures)
             .Include(e => e.Type)
             .Include(e => e.CreatedBy)
-            .FirstOrNullAsync(e => e.Id == id);
-
-        if (@event == null)
-            throw new NotFoundException($"no events were found with id #{id}");
+            .FirstAsync(e => e.Id == id);
 
         return @event;
     }
 
     /// <inheritdoc/>
-    public async Task<EventType> GetTypeByIdAsync(long id)
-    {
-        var ret = await _uow.EventTypes.Query().FirstOrNullAsync(e => e.Id == id);
-
-        if (ret == null)
-            throw new NotFoundException($"no event types were found with id #{id}");
-
-        return ret;
-    }
+    public Task<EventType> GetTypeByIdAsync(long id)
+        => _uow.EventTypes.Query().FirstAsync(e => e.Id == id);
 
     /// <inheritdoc/>
     public IAsyncEnumerable<EventType> GetEventTypes()

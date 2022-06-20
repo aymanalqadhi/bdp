@@ -40,10 +40,7 @@ public class UsersService : IUsersService
 
         var user = await _uow.Users.Query()
             .IncludeAll(includes)
-            .FirstOrNullAsync(u => u.Username == username);
-
-        if (user is null)
-            throw new NotFoundException($"no users were found with usrename `{username}'");
+            .FirstAsync(u => u.Username == username);
 
         return user;
     }
@@ -56,10 +53,7 @@ public class UsersService : IUsersService
 
         var user = await _uow.Users.Query()
             .IncludeAll(includes)
-            .FirstOrNullAsync(u => u.Email == email);
-
-        if (user is null)
-            throw new NotFoundException($"no users were found with email `{email}'");
+            .FirstAsync(u => u.Email == email);
 
         return user;
     }
@@ -123,9 +117,6 @@ public class UsersService : IUsersService
         IUploadFile? profilePicture = null)
     {
         var user = await GetByUsernameAsync(username, includeGroups: true);
-
-        if (user is null)
-            throw new NotFoundException();
 
         user.FullName = fullName ?? string.Empty;
 
