@@ -15,7 +15,7 @@ public class UserProfile : AuditableEntity<UserProfile>
     /// <summary>
     /// Gets or sets the location of the user
     /// </summary>
-    public string? Location { get; set; }
+    public string? Address { get; set; }
 
     /// <summary>
     /// Gets or sets the phone number of the user
