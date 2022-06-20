@@ -1,5 +1,4 @@
-﻿using BDP.Domain.Entities;
-using BDP.Domain.Repositories;
+﻿using BDP.Domain.Repositories;
 using BDP.Domain.Repositories.Exceptions;
 
 using Microsoft.EntityFrameworkCore;

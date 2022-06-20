@@ -1,5 +1,4 @@
-﻿using BDP.Domain.Entities;
-using BDP.Domain.Repositories.Extensions;
+﻿using BDP.Domain.Repositories.Extensions;
 using BDP.Domain.Services;
 
 namespace BDP.Application.App;

@@ -4,8 +4,6 @@ using BDP.Domain.Repositories.Extensions;
 using BDP.Domain.Services;
 using BDP.Domain.Services.Exceptions;
 
-using System.Linq.Expressions;
-
 namespace BDP.Application.App;
 
 /// <inheritdoc/>

@@ -1,6 +1,4 @@
-﻿using BDP.Domain.Entities;
-
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 
 namespace BDP.Domain.Repositories;
 

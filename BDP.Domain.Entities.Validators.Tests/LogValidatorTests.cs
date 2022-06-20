@@ -1,6 +1,4 @@
-﻿using BDP.Domain.Entities;
-using BDP.Domain.Entities.Validators;
-using BDP.Tests.Util;
+﻿using BDP.Tests.Util;
 
 using FluentValidation.TestHelper;
 

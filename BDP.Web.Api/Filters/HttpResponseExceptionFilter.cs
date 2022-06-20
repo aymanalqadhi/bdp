@@ -1,8 +1,6 @@
-﻿using BDP.Application.App.Exceptions;
-using BDP.Domain.Entities.Validators;
-using BDP.Domain.Repositories.Exceptions;
+﻿using BDP.Domain.Repositories.Exceptions;
 using BDP.Domain.Repositories.Extensions.Exceptions;
-
+using BDP.Domain.Services.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.IdentityModel.Tokens;
@@ -52,7 +50,7 @@ public class HttpResponseExceptionFilter : IActionFilter, IOrderedFilter
             InvalidQuantityException => StatusCodes.Status409Conflict,
             PendingRequestExistsException => StatusCodes.Status409Conflict,
             PendingOrdersLeftException => StatusCodes.Status409Conflict,
-            PendingReservationsLeftException => StatusCodes.Status409Conflict,
+            PendingPurchasesLeftException => StatusCodes.Status409Conflict,
             ItemAlreadyReviewedException => StatusCodes.Status409Conflict,
 
             // 500 - Internal error

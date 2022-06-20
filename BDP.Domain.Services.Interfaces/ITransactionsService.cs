@@ -2,8 +2,6 @@
 using BDP.Domain.Repositories;
 using BDP.Domain.Services.Exceptions;
 
-using System.Linq.Expressions;
-
 namespace BDP.Domain.Services;
 
 public interface ITransactionsService

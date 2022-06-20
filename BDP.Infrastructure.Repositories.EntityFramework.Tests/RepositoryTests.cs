@@ -1,7 +1,6 @@
 ﻿using BDP.Domain.Entities.Validators.Tests;
 using BDP.Domain.Repositories;
 using BDP.Infrastructure.Repositories.EntityFramework;
-using BDP.Domain.Entities.Validators;
 using BDP.Tests.Util;
 using BDP.Tests.Infrastructure.Repositories.EntityFramework.Util;
 
