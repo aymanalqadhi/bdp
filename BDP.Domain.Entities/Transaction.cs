@@ -1,21 +1,10 @@
 ﻿namespace BDP.Domain.Entities;
 
 /// <summary>
-/// A recrod to represent keys for the <see cref="Transaction"/> entity
-/// </summary>
-/// <param name="Id">The id field of the key</param>
-public sealed record TransactionKey(Guid Id) : EntityKey<Transaction>(Id);
-
-/// <summary>
 /// A class to represent a transaction made between two users
 /// </summary>
-public sealed class Transaction : AuditableEntity
+public sealed class Transaction : AuditableEntity<Transaction>
 {
-    /// <summary>
-    /// Gets or sets the id of the transaction
-    /// </summary>
-    public TransactionKey Id { get; set; } = new TransactionKey(Guid.NewGuid());
-
     /// <summary>
     /// Gets or sets the amount associated with the transaction
     /// </summary>
