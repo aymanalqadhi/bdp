@@ -27,6 +27,14 @@ public interface IQueryBuilder<T> where T : class
     Task<bool> AnyAsync(Expression<Func<T, bool>> pred, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Asynchronously gets whether the query results in any items or not
+    /// passed expression
+    /// </summary>
+    /// <param name="cancellationToken">The task cancellation cancellationToken</param>
+    /// <returns>True if any of items in the query match, false otherise</returns>
+    Task<bool> AnyAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Asynchronously gets all items in the query
     /// </summary>
     /// <returns>The IAsyncEnumerable item of the items in query</returns>
