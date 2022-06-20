@@ -60,7 +60,7 @@ public class TransactionsService : ITransactionsService
             .Include(t => t.Confirmation!)
             .FirstAsync(t => t.ConfirmationToken == confirmationToken && t.To.Id == userId);
 
-        return await DoCreateConfirmation(transaction, TransactionConfirmationOutcome.Confirmed, tx);
+        return await DoCreateConfirmation(transaction, true, tx);
     }
 
     /// <inheritdoc/>
@@ -73,7 +73,7 @@ public class TransactionsService : ITransactionsService
             .Include(t => t.Confirmation!)
             .FirstAsync(t => t.Id == transactionId && t.To.Id == userId);
 
-        return await DoCreateConfirmation(transaction, TransactionConfirmationOutcome.Declined, tx);
+        return await DoCreateConfirmation(transaction, false, tx);
     }
 
     #endregion Public methods
@@ -91,11 +91,11 @@ public class TransactionsService : ITransactionsService
                 ? _uow.Transactions
                     .Query()
                     .Where(t => t.Confirmation != null)
-                    .Where(t => t.Confirmation!.Outcome == TransactionConfirmationOutcome.Confirmed && t.From.Id == userId)
+                    .Where(t => t.Confirmation!.IsAccepted && t.From.Id == userId)
                 : _uow.Transactions
                     .Query()
                     .Where(t => t.Confirmation != null)
-                    .Where(t => t.Confirmation!.Outcome == TransactionConfirmationOutcome.Confirmed && t.To.Id == userId);
+                    .Where(t => t.Confirmation!.IsAccepted && t.To.Id == userId);
 
             return await res.AsAsyncEnumerable().SumAsync(t => t.Amount);
         }
@@ -111,7 +111,7 @@ public class TransactionsService : ITransactionsService
 
     private async Task<TransactionConfirmation> DoCreateConfirmation(
         Transaction transaction,
-        TransactionConfirmationOutcome outcome,
+        bool isAccepted,
         IAsyncDatabaseTransaction tx)
     {
         if (transaction.Confirmation != null)
@@ -120,7 +120,7 @@ public class TransactionsService : ITransactionsService
         var confirmation = new TransactionConfirmation
         {
             Transaction = transaction,
-            Outcome = outcome,
+            IsAccepted = isAccepted,
         };
 
         _uow.TransactionConfirmations.Add(confirmation);
