@@ -5,7 +5,7 @@ public class UserProfile : AuditableEntity<UserProfile>
     /// <summary>
     /// Gets or sets the full name of the user
     /// </summary>
-    public string? FullName { get; set; }
+    public string FullName { get; set; } = null!;
 
     /// <summary>
     /// Gets or sets the user's bio
