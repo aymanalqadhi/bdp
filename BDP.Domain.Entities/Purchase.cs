@@ -1,16 +1,21 @@
 ﻿namespace BDP.Domain.Entities;
 
-public abstract class Purchase<TEnitity, TSellable> : AuditableEntity<TEnitity>
-    where TEnitity : class
-    where TSellable : Sellable<TSellable>
+public abstract class Purchase<TEntity, TVariant> : AuditableEntity<TEntity>
+    where TEntity : class
+    where TVariant : ProductVariant<TVariant>
 {
     /// <summary>
-    /// Gets or sets the transaction associated with this purchase
+    /// Gets or sets whether the purchase was accepted by the offering party
     /// </summary>
-    public Transaction Transaction { get; set; } = null!;
+    public bool IsEarlyAccepted { get; set; } = false;
 
     /// <summary>
-    /// Gets or sets the purchased item
+    /// Gets or sets the payment transaction of the purchase
     /// </summary>
-    public TSellable Item { get; set; } = null!;
+    public Transaction Payment { get; set; } = null!;
+
+    /// <summary>
+    /// Gets or sets the purchased variant
+    /// </summary>
+    public TVariant Variant { get; set; } = null!;
 }
