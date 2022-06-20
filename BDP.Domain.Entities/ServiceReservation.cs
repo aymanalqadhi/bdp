@@ -3,7 +3,7 @@
 /// <summary>
 /// A class to represent a service reservation
 /// </summary>
-public sealed class ServiceReservation : Purchase
+public sealed class ServiceReservation : Purchase<ServiceReservation>
 {
     /// <summary>
     /// Gets or sets the service of the reservation

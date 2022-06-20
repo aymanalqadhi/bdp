@@ -3,7 +3,7 @@
 /// <summary>
 /// A class to represent a product order
 /// </summary>
-public sealed class ProductOrder : Purchase
+public sealed class ProductOrder : Purchase<ProductOrder>
 {
     /// <summary>
     /// Gets or sets the product of the order
