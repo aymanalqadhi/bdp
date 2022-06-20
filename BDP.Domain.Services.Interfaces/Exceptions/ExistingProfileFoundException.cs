@@ -1,6 +1,6 @@
 ﻿using BDP.Domain.Entities;
 
-namespace BDP.Application.App.Exceptions;
+namespace BDP.Domain.Services.Exceptions;
 
 /// <summary>
 /// An exception to be thrown when a user tries to create a profile

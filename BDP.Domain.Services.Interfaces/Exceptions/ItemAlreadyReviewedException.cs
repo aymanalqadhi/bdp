@@ -1,4 +1,4 @@
-﻿namespace BDP.Application.App.Exceptions;
+﻿namespace BDP.Domain.Services.Exceptions;
 
 public class ItemAlreadyReviewedException : Exception
 {

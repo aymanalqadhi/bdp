@@ -1,6 +1,6 @@
 ﻿using BDP.Domain.Entities;
 
-namespace BDP.Application.App.Exceptions;
+namespace BDP.Domain.Services.Exceptions;
 
 public sealed class TransactionAlreadyConfirmedException : Exception
 {
