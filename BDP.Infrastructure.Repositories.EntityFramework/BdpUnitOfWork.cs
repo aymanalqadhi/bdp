@@ -79,20 +79,25 @@ public sealed class BdpUnitOfWork : IUnitOfWork, IDisposable, IAsyncDisposable
         => RepositoryFactory.Create(_ctx.Products);
 
     /// <inheritdoc/>
-    public IRepository<RefreshToken> RefreshTokens
-        => RepositoryFactory.Create(_ctx.RefreshTokens);
+    public IRepository<ProductVariant> ProductVariants
+        => new Repository<ProductVariant, ProductVariantValidator>(_ctx.ProductVariants);
 
     /// <inheritdoc/>
-    public IRepository<ReservableVariant> ReservableVariants
-        => new Repository<ReservableVariant, ReservableVariantValidator>(_ctx.ReservableVariants);
+    public IRepository<RefreshToken> RefreshTokens
+        => RepositoryFactory.Create(_ctx.RefreshTokens);
 
     /// <inheritdoc/>
     public IRepository<Reservation> Reservations
         => new Repository<Reservation, ReservationValidator>(_ctx.Reservations);
 
     /// <inheritdoc/>
-    public IRepository<SellableVariant> SellableVariants
-        => new Repository<SellableVariant, SellableVariantValidator>(_ctx.SellableVariants);
+    public IRepository<ReservationWindow> ReservationWindows
+        => new Repository<ReservationWindow, ReservationWindowValidator>(_ctx.ReservationWindows);
+
+    /// <inheritdoc/>
+    public IRepository<StockBatch> StockBatches
+
+        => new Repository<StockBatch, StockBatchValidator>(_ctx.StockBatches);
 
     /// <inheritdoc/>
     public IRepository<TransactionConfirmation> TransactionConfirmations
