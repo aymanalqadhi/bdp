@@ -1,85 +1,123 @@
 ﻿using BDP.Domain.Entities;
+using BDP.Domain.Repositories;
 
 namespace BDP.Domain.Services;
 
 public interface IProductsService
 {
-    /// <summary>
-    /// Asynchronously gets a product by its id
-    /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
-    Task<Product> GetByIdAsync(EntityKey<Product> id);
+    #region Public Methods
 
     /// <summary>
-    /// Asynchronously lists a product
+    /// Asynchronously adds a product
     /// </summary>
-    /// <param name="userId">The id of the user which to list the product for</param>
+    /// <param name="userId">The id of the user to add the product for</param>
     /// <param name="title">The title of the product</param>
     /// <param name="description">The description of the product</param>
-    /// <param name="price">The price of the product</param>
-    /// <param name="quantity">The available quantity</param>
-    /// <param name="attachments">The file attachments of the product</param>
-    /// <returns>The listed product</returns>
-    Task<Product> ListAsync(
+    /// <param name="categoryIds">An array of ids of categories to add the product for</param>
+    /// <returns>The created product</returns>
+    Task<Product> AddAsync(
         EntityKey<User> userId,
         string title,
         string description,
-        decimal price,
-        uint quantity,
-        IEnumerable<IUploadFile>? attachments = null
-    );
+        params EntityKey<Category>[] categoryIds);
 
     /// <summary>
-    /// Asynchronsoulsy updates a product
+    /// Asynchronously adds a reservable product variant
     /// </summary>
-    /// <param name="productId">The id of the product to update</param>
-    /// <param name="title">The new title of the product</param>
-    /// <param name="description">The new description of the product</param>
-    /// <param name="price">The new price of the product</param>
-    /// <returns></returns>
-    Task<Product> UpdateAsync(
+    /// <param name="productId">The product to add the variant to</param>
+    /// <param name="title">The title of the variant</param>
+    /// <param name="description">The description of the variant</param>
+    /// <param name="price">The price of the variant</param>
+    /// <param name="attachments">The attachments of the variant</param>
+    /// <returns>The created variant object</returns>
+    Task<ProductVariant> AddReservableVariantAsync(
         EntityKey<Product> productId,
         string title,
-        string description,
-        decimal price
-    );
+        string? description,
+        decimal price,
+        IEnumerable<IUploadFile>? attachments = null
+     );
 
     /// <summary>
-    /// Asynchrnously unlists a product
+    /// Asynchronously adds a sellable product variant
     /// </summary>
-    /// <param name="productId">The id of the product to unlist</param>
+    /// <param name="productId">The product to add the variant to</param>
+    /// <param name="title">The title of the variant</param>
+    /// <param name="description">The description of the variant</param>
+    /// <param name="price">The price of the variant</param>
+    /// <param name="attachments">The attachments of the variant</param>
+    /// <returns>The created variant object</returns>
+    Task<ProductVariant> AddSellableVariantAsync(
+        EntityKey<Product> productId,
+        string title,
+        string? description,
+        decimal price,
+        IEnumerable<IUploadFile>? attachments = null
+     );
+
+    /// <summary>
+    /// Asynchronously gets the available quantity for a sellable product variant
+    /// </summary>
+    /// <param name="variantId">The id of the sellable product variant</param>
+    /// <returns>The avaiable quantity</returns>
+    Task<uint> AvailableSellableVariantQuantityAsync(EntityKey<ProductVariant> variantId);
+
+    /// <summary>
+    /// Gets products by category
+    /// </summary>
+    /// <param name="categoryId">The id of the category to get products in</param>
+    /// <returns>A query builder for products in the specified category</returns>
+    IQueryBuilder<Product> GetByCategory(EntityKey<Category> categoryId);
+
+    /// <summary>
+    /// Gets products
+    /// </summary>
+    /// <returns>A query builder for products</returns>
+    IQueryBuilder<Product> GetProducts();
+
+    /// <summary>
+    /// Asynchronously checks if a product variant is available or not
+    /// </summary>
+    /// <param name="variantId">The id of the product to check for</param>
+    /// <returns>True if the product variant is available, false otherwise</returns>
+    Task<bool> IsAvailableAsync(EntityKey<ProductVariant> variantId);
+
+    /// <summary>
+    /// Asynchronously makes an order for a sellable product variant
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="variantId"></param>
+    /// <param name="quantity"></param>
     /// <returns></returns>
-    Task UnlistAsync(EntityKey<Product> productId);
+    Task<Order> OrderAsync(
+        EntityKey<User> userId,
+        EntityKey<ProductVariant> variantId,
+        uint quantity);
 
     /// <summary>
-    /// Asynchrnously gets the available quantity of the product
+    /// Asynchronously removes a product
     /// </summary>
-    /// <param name="productId">The id of the product to check for</param>
-    /// <returns>The available quantity</returns>
-    Task<long> AvailableQuantityAsync(EntityKey<Product> productId);
+    /// <param name="productId">The id of the product to remove</param>
+    /// <param name="cancelPurchases">If true, cancel all pending purchases of the product</param>
+    /// <returns></returns>
+    Task RemoveAsync(EntityKey<Product> productId, bool cancelPurchases = false);
 
     /// <summary>
-    /// Asynchrnously checks whether the product is available
+    /// Asynchronously removes a product variant
     /// </summary>
-    /// <param name="productId">The id of the product to check for</param>
-    /// <returns>True if the product has an available qauntity, false otherwise</returns>
-    Task<bool> IsAvailableAsync(EntityKey<Product> productId);
+    /// <param name="variantid">The id of the product variant to be removed</param>
+    /// <returns></returns>
+    Task RemoveVariantAsync(EntityKey<ProductVariant> variantid);
 
     /// <summary>
-    /// Asynchronously changes the availability flag of a product
+    /// Asynchronously makes a reservation for a reservable product variant
     /// </summary>
-    /// <param name="product">The product to change</param>
-    /// <param name="isAvailable">The new availability value</param>
-    /// <returns>The updated service</returns>
-    Task<Product> SetAvailability(EntityKey<Product> productId, bool isAvailable);
+    /// <param name="userId"></param>
+    /// <param name="variantId"></param>
+    /// <returns></returns>
+    Task<Order> ReserveAsync(
+        EntityKey<User> userId,
+        EntityKey<ProductVariant> variantId);
 
-    /// <summary>
-    /// Asynchronously creates an order for a product
-    /// </summary>
-    /// <param name="userId">The id of the user which to create the order for</param>
-    /// <param name="productId">The id of the product to order</param>
-    /// <param name="quantity">The ordered quantity</param>
-    /// <returns>The created order</returns>
-    Task<ProductOrder> OrderAsync(EntityKey<User> userId, EntityKey<Product> productId, uint quantity);
+    #endregion Public Methods
 }
