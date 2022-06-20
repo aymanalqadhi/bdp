@@ -8,7 +8,7 @@ using System.Linq.Expressions;
 
 namespace BDP.Infrastructure.Repositories.EntityFramework;
 
-public sealed class QueryBuilder<T> : IQueryBuilder<T> where T : AuditableEntity
+public sealed class QueryBuilder<T> : IQueryBuilder<T> where T : class
 {
     #region Fields
 
@@ -138,6 +138,10 @@ public sealed class QueryBuilder<T> : IQueryBuilder<T> where T : AuditableEntity
 
         return this;
     }
+
+    /// <inheritdoc/>
+    public IQueryBuilder<V> Select<V>(Expression<Func<T, V>> selector) where V : class
+        => new QueryBuilder<V>(_query.Select(selector));
 
     #endregion Public Methods
 }
