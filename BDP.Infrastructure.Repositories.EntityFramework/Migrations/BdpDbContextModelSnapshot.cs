@@ -161,42 +161,42 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("485f4dda-6d83-4159-bfdc-c039cc1ef5b8"),
+                            Id = new Guid("2a487690-f070-4056-ac83-a214779cd9fa"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Wedding"
                         },
                         new
                         {
-                            Id = new Guid("e408c1d0-7409-41d0-9964-09ee5d3424d6"),
+                            Id = new Guid("bd8df582-4645-449f-8694-b04bc0e64ab7"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Birth Day"
                         },
                         new
                         {
-                            Id = new Guid("170fb84e-37c2-4b2e-b385-e0abbf95c256"),
+                            Id = new Guid("dce7bfa9-54e1-4386-9938-902c9d656916"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Engagement Party"
                         },
                         new
                         {
-                            Id = new Guid("2f46669a-75f9-4eec-a5be-2f49697a50e3"),
+                            Id = new Guid("ca6c9eaa-7538-4559-bb03-410f0712788f"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Graduation Ceremony"
                         },
                         new
                         {
-                            Id = new Guid("e11de04c-5ce4-4a75-87dd-faaddb62da56"),
+                            Id = new Guid("3ee383a0-04ab-4573-8ff0-c296c9c92fac"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Graduation Party"
                         },
                         new
                         {
-                            Id = new Guid("4931f454-22f6-4407-a212-fa54a12302c2"),
+                            Id = new Guid("2c8261c7-a1f6-4289-8970-a74f0fb39111"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Other"

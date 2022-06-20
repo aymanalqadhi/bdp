@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
 {
     [DbContext(typeof(BdpDbContext))]
-    [Migration("20220528020533_UsePurchasesInsteadOfOrdersAndReservations")]
-    partial class UsePurchasesInsteadOfOrdersAndReservations
+    [Migration("20220609212515_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -26,17 +26,15 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
 
             modelBuilder.Entity("BDP.Domain.Entities.Attachment", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<long?>("EventId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid?>("EventId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Filename")
                         .IsRequired()
@@ -53,8 +51,8 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<long?>("SellableId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid?>("SellableId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<long>("Size")
                         .HasColumnType("bigint");
@@ -70,17 +68,15 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
 
             modelBuilder.Entity("BDP.Domain.Entities.Confirmation", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("ForUserId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("ForUserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("datetime2");
@@ -105,14 +101,15 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
 
             modelBuilder.Entity("BDP.Domain.Entities.Event", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -121,6 +118,9 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<double>("Progress")
+                        .HasColumnType("float");
+
                     b.Property<DateTime>("TakesPlaceAt")
                         .HasColumnType("datetime2");
 
@@ -128,10 +128,12 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("TypeId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("TypeId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
 
                     b.HasIndex("TypeId");
 
@@ -140,11 +142,9 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
 
             modelBuilder.Entity("BDP.Domain.Entities.EventType", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -163,48 +163,53 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1L,
+                            Id = new Guid("2a487690-f070-4056-ac83-a214779cd9fa"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Wedding"
                         },
                         new
                         {
-                            Id = 2L,
+                            Id = new Guid("bd8df582-4645-449f-8694-b04bc0e64ab7"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Birth Day"
                         },
                         new
                         {
-                            Id = 3L,
+                            Id = new Guid("dce7bfa9-54e1-4386-9938-902c9d656916"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Engagement Party"
                         },
                         new
                         {
-                            Id = 4L,
+                            Id = new Guid("ca6c9eaa-7538-4559-bb03-410f0712788f"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Graduation Ceremony"
                         },
                         new
                         {
-                            Id = 5L,
+                            Id = new Guid("3ee383a0-04ab-4573-8ff0-c296c9c92fac"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Graduation Party"
+                        },
+                        new
+                        {
+                            Id = new Guid("2c8261c7-a1f6-4289-8970-a74f0fb39111"),
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Other"
                         });
                 });
 
             modelBuilder.Entity("BDP.Domain.Entities.FinancialRecord", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Amount")
                         .HasPrecision(18, 6)
@@ -213,8 +218,8 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("MadeById")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("MadeById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("datetime2");
@@ -231,20 +236,18 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
 
             modelBuilder.Entity("BDP.Domain.Entities.FinancialRecordVerification", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<long?>("DocumentId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid?>("DocumentId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<long>("FinancialRecordId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("FinancialRecordId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("datetime2");
@@ -255,8 +258,8 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                     b.Property<int>("Outcome")
                         .HasColumnType("int");
 
-                    b.Property<long>("VerifiedById")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("VerifiedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -270,13 +273,59 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                     b.ToTable("FinancialRecordVerifications");
                 });
 
+            modelBuilder.Entity("BDP.Domain.Entities.Log", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Severity")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("TimeStamp")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Logs");
+                });
+
+            modelBuilder.Entity("BDP.Domain.Entities.LogTag", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LogTags");
+                });
+
             modelBuilder.Entity("BDP.Domain.Entities.PhoneNumber", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -288,8 +337,8 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long?>("UserId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -300,11 +349,9 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
 
             modelBuilder.Entity("BDP.Domain.Entities.Purchase", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -313,14 +360,14 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long?>("EventId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid?>("EventId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("TransactionId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("TransactionId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -335,11 +382,9 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
 
             modelBuilder.Entity("BDP.Domain.Entities.RefreshToken", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -360,8 +405,8 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("OwnerId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Token")
                         .IsRequired()
@@ -383,11 +428,9 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
 
             modelBuilder.Entity("BDP.Domain.Entities.Sellable", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -406,8 +449,8 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("OfferedById")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("OfferedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Price")
                         .HasPrecision(18, 6)
@@ -428,11 +471,9 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
 
             modelBuilder.Entity("BDP.Domain.Entities.SellableReview", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Comment")
                         .HasColumnType("nvarchar(max)");
@@ -440,11 +481,11 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("ItemId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("ItemId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<long>("LeftById")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("LeftById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("datetime2");
@@ -463,11 +504,9 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
 
             modelBuilder.Entity("BDP.Domain.Entities.Transaction", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Amount")
                         .HasPrecision(18, 6)
@@ -480,14 +519,14 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("FromId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("FromId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("ToId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("ToId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -503,11 +542,9 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
 
             modelBuilder.Entity("BDP.Domain.Entities.TransactionConfirmation", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -518,8 +555,8 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                     b.Property<int>("Outcome")
                         .HasColumnType("int");
 
-                    b.Property<long>("TransactionId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("TransactionId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -531,17 +568,15 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
 
             modelBuilder.Entity("BDP.Domain.Entities.User", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Bio")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long?>("CoverPictureId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid?>("CoverPictureId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -572,8 +607,8 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long?>("ProfilePictureId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid?>("ProfilePictureId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -596,11 +631,9 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
 
             modelBuilder.Entity("BDP.Domain.Entities.UserGroup", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -620,13 +653,28 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                     b.ToTable("UserGroups");
                 });
 
+            modelBuilder.Entity("LogLogTag", b =>
+                {
+                    b.Property<Guid>("LogsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("TagsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("LogsId", "TagsId");
+
+                    b.HasIndex("TagsId");
+
+                    b.ToTable("LogLogTag");
+                });
+
             modelBuilder.Entity("UserUserGroup", b =>
                 {
-                    b.Property<long>("GroupsId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("GroupsId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<long>("UsersId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("UsersId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("GroupsId", "UsersId");
 
@@ -649,8 +697,8 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                 {
                     b.HasBaseType("BDP.Domain.Entities.Purchase");
 
-                    b.Property<long>("ProductId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<long>("Quantity")
                         .HasColumnType("bigint");
@@ -677,8 +725,8 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                 {
                     b.HasBaseType("BDP.Domain.Entities.Purchase");
 
-                    b.Property<long>("ServiceId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("ServiceId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasIndex("ServiceId");
 
@@ -709,11 +757,19 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
 
             modelBuilder.Entity("BDP.Domain.Entities.Event", b =>
                 {
+                    b.HasOne("BDP.Domain.Entities.User", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("BDP.Domain.Entities.EventType", "Type")
                         .WithMany()
                         .HasForeignKey("TypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("CreatedBy");
 
                     b.Navigation("Type");
                 });
@@ -860,6 +916,21 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                     b.Navigation("CoverPicture");
 
                     b.Navigation("ProfilePicture");
+                });
+
+            modelBuilder.Entity("LogLogTag", b =>
+                {
+                    b.HasOne("BDP.Domain.Entities.Log", null)
+                        .WithMany()
+                        .HasForeignKey("LogsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BDP.Domain.Entities.LogTag", null)
+                        .WithMany()
+                        .HasForeignKey("TagsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("UserUserGroup", b =>
