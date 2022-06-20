@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BDP.Domain.Repositories.Extensions;
 using BDP.Domain.Services;
 using BDP.Web.Api.Auth.Attributes;
 using BDP.Web.Api.Extensions;
@@ -49,32 +50,42 @@ public class SellablesController : ControllerBase
     public async Task<IActionResult> GetByUserPaged(string username, int page)
     {
         var user = await _usersSvc.GetByUsernameAsync(username);
-        var ret = await _sellablesSvc.GetForAsync(user, page, _pageSize).ToListAsync();
+        var ret = _sellablesSvc.GetForAsync(user)
+            .OrderDescending()
+            .Page(page, _pageSize)
+            .AsAsyncEnumerable();
 
-        return Ok(ret.Select((s) => _mapper.Map(s, s.GetType(), typeof(SellableDto))));
+        return Ok(await ret.Select((s) =>
+        {
+            return _mapper.Map(s, s.GetType(), typeof(SellableDto));
+        }).ToListAsync());
     }
 
     [HttpGet("[action]")]
     public async Task<IActionResult> Search(string query, int page, string? username)
     {
         var ret = username != null
-            ? await _sellablesSvc.SearchForAsync(
-                 await _usersSvc.GetByUsernameAsync(username),
-                 query,
-                 page,
-                 _pageSize).ToListAsync()
-            : await _sellablesSvc.SearchAsync(query, page, _pageSize).ToListAsync();
+            ? _sellablesSvc.SearchForAsync(await _usersSvc.GetByUsernameAsync(username), query)
+            : _sellablesSvc.SearchAsync(query);
 
-        return Ok(ret.Select((s) => _mapper.Map(s, s.GetType(), typeof(SellableDto))));
+        return Ok(await ret
+            .Page(page, _pageSize)
+            .AsAsyncEnumerable()
+            .Select((s) => _mapper.Map(s, s.GetType(), typeof(SellableDto)))
+            .ToListAsync());
     }
 
     [HttpGet("{id}/reviews/{page}")]
     public async Task<IActionResult> GetReviewsPaged(int id, int page)
     {
         var item = await _sellablesSvc.GetByIdAsync(id);
-        var ret = await _sellableReviewsSvc.GetForAsync(item, page, _pageSize).ToListAsync();
+        var ret = _sellableReviewsSvc.GetForAsync(item)
+            .OrderDescending()
+            .Page(page, _pageSize)
+            .AsAsyncEnumerable()
+            .Select(_mapper.Map<SellableReviewDto>);
 
-        return Ok(ret.Select(_mapper.Map<SellableReviewDto>));
+        return Ok(await ret.ToListAsync());
     }
 
     [HttpGet("{id}/my-review")]
