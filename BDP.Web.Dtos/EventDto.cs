@@ -1,12 +1,12 @@
-﻿namespace BDP.Web.Dtos;
+﻿using BDP.Domain.Entities;
 
-public class EventDto
+namespace BDP.Web.Dtos;
+
+/// <summary>
+/// A data-transfer object for <see cref="Event"/>
+/// </summary>
+public sealed class EventDto : MutableEntityDto<Event>
 {
-    /// <summary>
-    /// Gets or sets the id of the event
-    /// </summary>
-    public Guid Id { get; set; }
-
     /// <summary>
     /// Gets or sets the event title
     /// </summary>
@@ -28,27 +28,12 @@ public class EventDto
     public DateTime TakesPlaceAt { get; set; }
 
     /// <summary>
-    /// Gets or sets the collection of picture urls of this event
+    /// Gets or sets the collection of pictures of this event
     /// </summary>
-    public IEnumerable<string> Pictures { get; set; } = new List<string>();
+    public ICollection<Uri> Pictures { get; set; } = new List<Uri>();
 
     /// <summary>
     /// Gets or sets the type of the event
     /// </summary>
     public EventTypeDto Type { get; set; } = null!;
-
-    /// <summary>
-    /// Gets or sets the user who created the event
-    /// </summary>
-    public UserDto CreatedBy { get; set; } = null!;
-
-    /// <summary>
-    /// Gets or sets the creation date of the event
-    /// </summary>
-    public DateTime CreatedAt { get; set; }
-
-    /// <summary>
-    /// Gets or sets the
-    /// </summary>
-    public DateTime ModifiedAt { get; set; }
 }

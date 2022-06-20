@@ -1,19 +1,14 @@
-﻿namespace BDP.Web.Dtos;
+﻿using BDP.Domain.Entities;
 
-public class EventTypeDto
+namespace BDP.Web.Dtos;
+
+/// <summary>
+/// A data-transfer object for <see cref="EventType"/>
+/// </summary>
+public sealed class EventTypeDto : EntityDto<EventType>
 {
-    /// <summary>
-    /// Gets or sets the id of the event type
-    /// </summary>
-    public Guid Id { get; set; }
-
     /// <summary>
     /// Gets or sets the name of the event type
     /// </summary>
     public string Name { get; set; } = null!;
-
-    /// <summary>
-    /// Gets or sets the creation date of the event type
-    /// </summary>
-    public DateTime CreatedAt { get; set; }
 }
