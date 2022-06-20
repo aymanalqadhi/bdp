@@ -1,19 +1,19 @@
 ﻿namespace BDP.Domain.Services;
 
-public interface ISearchSuggestionService
+public interface ISearchSuggestionsService
 {
     /// <summary>
     /// Asynchronsously fetches suggestion for a query
     /// </summary>
     /// <param name="query">The query to search for</param>
     /// <param name="includeUsers">Whether to include user values or not</param>
-    /// <param name="includeSellables">Whether to include sellable values or not</param>
+    /// <param name="inclueProducts">Whether to include sellable values or not</param>
     /// <returns></returns>
     Task<IEnumerable<SearchSuggestion>> FindSuggestionsAsync(
         string query,
         int length = 8,
         bool includeUsers = true,
-        bool includeSellables = true
+        bool inclueProducts = true
     );
 }
 
