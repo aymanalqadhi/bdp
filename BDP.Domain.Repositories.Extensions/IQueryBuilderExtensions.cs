@@ -9,14 +9,14 @@ public static class IQueryBuilderExtensions
     /// Orders the current query ascendingly
     /// </summary>
     /// <returns>The modified query builder</returns>
-    public static IQueryBuilder<T> Order<T>(this IQueryBuilder<T> source) where T : AuditableEntity
+    public static IQueryBuilder<T> Order<T>(this IQueryBuilder<T> source) where T : AuditableEntity<T>
         => source.OrderBy(x => x.CreatedAt);
 
     /// <summary>
     /// Orders the current query descendingly
     /// </summary>
     /// <returns>The modified query builder</returns>
-    public static IQueryBuilder<T> OrderDescending<T>(this IQueryBuilder<T> source) where T : AuditableEntity
+    public static IQueryBuilder<T> OrderDescending<T>(this IQueryBuilder<T> source) where T : AuditableEntity<T>
         => source.OrderByDescending(x => x.CreatedAt);
 
     /// <summary>
@@ -27,7 +27,7 @@ public static class IQueryBuilderExtensions
     /// <returns>The modified query builder</returns>
     /// <exception cref="InvalidPaginationParametersException"></exception>
     public static IQueryBuilder<T> Page<T>(this IQueryBuilder<T> source, int page, int pageLength)
-        where T : AuditableEntity
+        where T : AuditableEntity<T>
     {
         if (page <= 0 || pageLength <= 0)
             throw new InvalidPaginationParametersException(page, pageLength);
@@ -46,7 +46,7 @@ public static class IQueryBuilderExtensions
     /// <returns>The modified query builder</returns>
     /// <exception cref="InvalidPaginationParametersException"></exception>
     public static IQueryBuilder<T> PageDescending<T>(this IQueryBuilder<T> source, int page, int pageLength)
-        where T : AuditableEntity
+        where T : AuditableEntity<T>
     {
         return source
             .OrderDescending()
