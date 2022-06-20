@@ -28,7 +28,7 @@ public class ProductsService : IProductsService
     }
 
     /// <inheritdoc/>
-    public Task<Product> GetByIdAsync(long id)
+    public Task<Product> GetByIdAsync(Guid id)
     {
         return _uow.Products
             .Query()

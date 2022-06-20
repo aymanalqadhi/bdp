@@ -78,7 +78,7 @@ public class FinancialRecordsService : IFinancialRecordsService
 
     /// <inheritdoc/>
     public async Task<FinancialRecordVerification> VerifyAsync(
-        int recordId,
+        Guid recordId,
         User verifiedBy,
         FinancialRecordVerificationOutcome outcome,
         string? notes = null,

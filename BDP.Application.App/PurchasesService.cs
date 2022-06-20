@@ -32,7 +32,7 @@ public class PurchasesService : IPurchasesService
     #region Public method
 
     /// <inheritdoc/>
-    public Task<Purchase> GetById(long id)
+    public Task<Purchase> GetById(Guid id)
         => _uow.Purchases.Query().FindAsync(id);
 
     /// <inheritdoc/>

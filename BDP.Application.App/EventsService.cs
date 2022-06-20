@@ -29,7 +29,7 @@ public class EventsService : IEventsService
     #region Public methods
 
     /// <inheritdoc/>
-    public async Task<Event> GetByIdAsync(long id)
+    public async Task<Event> GetByIdAsync(Guid id)
     {
         var @event = await _uow.Events.Query()
             .Include(e => e.Purchases)
@@ -42,7 +42,7 @@ public class EventsService : IEventsService
     }
 
     /// <inheritdoc/>
-    public Task<EventType> GetTypeByIdAsync(long id)
+    public Task<EventType> GetTypeByIdAsync(Guid id)
         => _uow.EventTypes.Query().FirstAsync(e => e.Id == id);
 
     /// <inheritdoc/>

@@ -32,7 +32,7 @@ public class SellablesService : ISellablesService
     #region Public methods
 
     /// <inheritdoc/>
-    public Task<Sellable> GetByIdAsync(long id)
+    public Task<Sellable> GetByIdAsync(Guid id)
         => _uow.Sellables.Query().FindAsync(id);
 
     /// <inheritdoc/>

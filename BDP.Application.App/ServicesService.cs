@@ -38,7 +38,7 @@ public class ServicesService : IServicesService
     #region Public Methods
 
     /// <inheritdoc/>
-    public Task<Service> GetByIdAsync(long id)
+    public Task<Service> GetByIdAsync(Guid id)
     {
         return _uow.Services
             .Query()

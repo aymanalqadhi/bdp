@@ -31,7 +31,7 @@ public class TransactionsService : ITransactionsService
     #region Public methods
 
     /// <inheritdoc/>
-    public IQueryBuilder<Transaction> GetByIdAsync(long id)
+    public IQueryBuilder<Transaction> GetByIdAsync(Guid id)
         => _uow.Transactions.Query().Where(t => t.Id == id);
 
     /// <inheritdoc/>
@@ -64,7 +64,7 @@ public class TransactionsService : ITransactionsService
     }
 
     /// <inheritdoc/>
-    public async Task<TransactionConfirmation> CancelAsync(User receiver, long transactionId)
+    public async Task<TransactionConfirmation> CancelAsync(User receiver, Guid transactionId)
     {
         await using var tx = await _uow.BeginTransactionAsync();
 
