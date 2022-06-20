@@ -204,39 +204,7 @@ public class BdpDbContext : DbContext
                      new() { Name = "Graduation Party" },
                      new() { Name = "Other" }
                     );
-
-        // strong-typed identifiers
-        SetIdConversion<Attachment>(builder);
-        SetIdConversion<Confirmation>(builder);
-        SetIdConversion<Event>(builder);
-        SetIdConversion<EventType>(builder);
-        SetIdConversion<FinancialRecord>(builder);
-        SetIdConversion<FinancialRecordVerification>(builder);
-        SetIdConversion<Log>(builder);
-        SetIdConversion<LogTag>(builder);
-        SetIdConversion<Product>(builder);
-        SetIdConversion<ProductOrder>(builder);
-        SetIdConversion<ProductReview>(builder);
-        SetIdConversion<Service>(builder);
-        SetIdConversion<ServiceReservation>(builder);
-        SetIdConversion<ServiceReview>(builder);
-        SetIdConversion<RefreshToken>(builder);
-        SetIdConversion<Transaction>(builder);
-        SetIdConversion<TransactionConfirmation>(builder);
-        SetIdConversion<User>(builder);
-        SetIdConversion<UserProfile>(builder);
     }
 
     #endregion Protected Methods
-
-    #region Private Methods
-
-    private static void SetIdConversion<T>(ModelBuilder builder) where T : AuditableEntity<T>
-    {
-        builder.Entity<T>()
-            .Property(e => e.Id)
-            .HasConversion(i => i.Id, g => new EntityKey<T>(g));
-    }
-
-    #endregion Private Methods
 }
