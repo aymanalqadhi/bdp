@@ -1,4 +1,4 @@
-﻿namespace BDP.Domain.Repositories.Exceptions;
+﻿namespace BDP.Domain.Repositories.Extensions.Exceptions;
 
 public class InvalidPaginationParametersException : Exception
 {
