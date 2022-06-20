@@ -36,6 +36,11 @@ public sealed class User : AuditableEntity<User>
     public string? Location { get; set; }
 
     /// <summary>
+    /// Gets or sets the phone number of the user
+    /// </summary>
+    public string? PhoneNumber { get; set; }
+
+    /// <summary>
     /// Gets or sets whether the user is active or not
     /// </summary>
     public bool IsActive { get; set; } = false;
@@ -64,11 +69,6 @@ public sealed class User : AuditableEntity<User>
     /// Gets or sets the cover picture of the user
     /// </summary>
     public Attachment? CoverPicture { get; set; }
-
-    /// <summary>
-    /// Gets or sets the list of phone numbers of the user
-    /// </summary>
-    public ICollection<PhoneNumber> PhoneNumbers { get; set; } = new List<PhoneNumber>();
 }
 
 /// <summary>
