@@ -4,7 +4,7 @@
 /// A class to represent a service offered by a user
 /// </summary>
 /// <typeparam name="TKey">The key type of the service</typeparam>
-public sealed class Service : Sellable
+public sealed class Service : Sellable<Service, ServiceReview>
 {
     /// <summary>
     /// Gets or sets the availability begining time of the service
