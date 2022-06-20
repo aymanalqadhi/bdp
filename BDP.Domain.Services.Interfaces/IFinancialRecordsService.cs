@@ -5,6 +5,9 @@ using System.Linq.Expressions;
 
 namespace BDP.Domain.Services;
 
+/// <summary>
+/// A service to manage application financial records (deposits & withdraws)
+/// </summary>
 public interface IFinancialRecordsService
 {
     /// <summary>
@@ -12,13 +15,13 @@ public interface IFinancialRecordsService
     /// </summary>
     /// <param name="userId">The id of the user to get financial records for</param>
     /// <returns></returns>
-    IQueryBuilder<FinancialRecord> ForUserAsync(EntityKey<User> userId);
+    IQueryBuilder<FinancialRecord> ForUser(EntityKey<User> userId);
 
     /// <summary>
     /// Asynchronously gets pending financial records for a specific user
     /// </summary>
     /// <returns></returns>
-    IQueryBuilder<FinancialRecord> PendingAsync();
+    IQueryBuilder<FinancialRecord> Pending();
 
     /// <summary>
     /// Asynchrnounsly gets the total balance from financial records
