@@ -50,7 +50,6 @@ public class TransactionsController : ControllerBase
             .Include(t => t.From)
             .Include(t => t.To)
             .Include(t => t.Confirmation!)
-            .Select(t => t.ConcealConfirmationTokenIf(t.From.Id != User.GetId()))
             .Map<Transaction, TransactionDto>(_mapper)
             .AsAsyncEnumerable();
 
