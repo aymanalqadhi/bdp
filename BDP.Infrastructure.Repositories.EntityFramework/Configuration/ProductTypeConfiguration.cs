@@ -11,9 +11,9 @@ public class ProductTypeConfiguration : EntityTypeConfiguration<Product>
     {
         base.Configure(builder);
 
-        // field precision
+        // relationships
         builder
-            .Property(s => s.Price)
-            .HasPrecision(18, 6);
+            .HasMany<Category>()
+            .WithMany(p => p.Products);
     }
 }
