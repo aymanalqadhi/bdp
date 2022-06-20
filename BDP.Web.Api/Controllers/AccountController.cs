@@ -1,5 +1,5 @@
 ﻿using BDP.Domain.Entities;
-using BDP.Domain.Services.Interfaces;
+using BDP.Domain.Services;
 using BDP.Web.Api.Auth;
 using BDP.Web.Api.Extensions;
 using BDP.Web.Dtos.Requests;
@@ -14,18 +14,19 @@ namespace BDP.Web.Api.Controllers;
 public class AccountController : ControllerBase
 {
     #region Private fields
-    
+
     private readonly IUsersService _usersSvc;
 
-    #endregion
+    #endregion Private fields
 
     #region Ctors
+
     public AccountController(IUsersService usersSvc)
     {
         _usersSvc = usersSvc;
     }
 
-    #endregion
+    #endregion Ctors
 
     #region Actions
 
@@ -57,5 +58,5 @@ public class AccountController : ControllerBase
         });
     }
 
-    #endregion
+    #endregion Actions
 }

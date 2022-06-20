@@ -1,4 +1,4 @@
-﻿using BDP.Domain.Services.Interfaces;
+﻿using BDP.Domain.Services;
 using Microsoft.AspNetCore.Http;
 
 namespace BDP.Web.Dtos.Requests;

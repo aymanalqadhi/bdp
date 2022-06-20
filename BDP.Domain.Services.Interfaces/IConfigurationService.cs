@@ -1,4 +1,4 @@
-﻿namespace BDP.Domain.Services.Interfaces;
+﻿namespace BDP.Domain.Services;
 
 public interface IConfigurationService
 {

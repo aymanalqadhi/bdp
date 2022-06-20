@@ -1,9 +1,9 @@
 ﻿using BDP.Domain.Entities;
-using BDP.Domain.Services.Interfaces;
 using System.Runtime.InteropServices;
 using System;
 using BDP.Domain.Repositories;
 using Winista.Mime;
+using BDP.Domain.Services;
 
 namespace BDP.Infrastructure.Services;
 

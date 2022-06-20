@@ -1,6 +1,6 @@
-﻿ using BDP.Domain.Entities;
+﻿using BDP.Domain.Entities;
 
-namespace BDP.Domain.Services.Interfaces;
+namespace BDP.Domain.Services;
 
 public interface IUsersService
 {

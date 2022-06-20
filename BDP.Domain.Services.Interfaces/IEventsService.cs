@@ -1,7 +1,7 @@
 ﻿using BDP.Domain.Entities;
 using System.Linq.Expressions;
 
-namespace BDP.Domain.Services.Interfaces;
+namespace BDP.Domain.Services;
 
 public interface IEventsService
 {

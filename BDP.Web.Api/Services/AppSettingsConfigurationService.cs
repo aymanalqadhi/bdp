@@ -1,4 +1,4 @@
-﻿using BDP.Domain.Services.Interfaces;
+﻿using BDP.Domain.Services;
 
 namespace BDP.Web.Api.Services;
 

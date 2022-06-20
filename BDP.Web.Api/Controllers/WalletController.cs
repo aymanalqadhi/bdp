@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using BDP.Domain.Entities;
-using BDP.Domain.Services.Interfaces;
+using BDP.Domain.Services;
 using BDP.Web.Api.Extensions;
 using BDP.Web.Dtos;
 using BDP.Web.Dtos.Requests;
