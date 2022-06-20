@@ -8,16 +8,17 @@ using System.Linq.Expressions;
 
 namespace BDP.Application.App;
 
+/// <inheritdoc/>
 public class FinancialRecordsService : IFinancialRecordsService
 {
-    #region Private fields
+    #region Fields
 
-    private readonly IUnitOfWork _uow;
     private readonly IAttachmentsService _attachmentsSvc;
+    private readonly IUnitOfWork _uow;
 
-    #endregion Private fields
+    #endregion Fields
 
-    #region Ctors
+    #region Public Constructors
 
     /// <summary>
     /// Default constructor
@@ -30,86 +31,97 @@ public class FinancialRecordsService : IFinancialRecordsService
         _attachmentsSvc = attachmentsSvc;
     }
 
-    #endregion Ctors
+    #endregion Public Constructors
 
-    #region Public mehtods
+    #region Public Methods
 
     /// <inheritdoc/>
-    public IAsyncEnumerable<FinancialRecord> ForUserAsync(
+    public Task<FinancialRecordVerification> DeclineAsync(
         EntityKey<User> userId,
-        Expression<Func<FinancialRecord, object>>[]? includes = null)
+        EntityKey<FinancialRecord>
+        recordId, string? notes = null,
+        IUploadFile? document = null)
     {
-        var query = _uow.FinancialRecords.Query();
-
-        if (includes is not null)
-            query = query.IncludeAll(includes);
-
-        return query
-            .Where(f => f.MadeBy.Id == userId)
-            .AsAsyncEnumerable();
+        return FinalizeRecordAsync(userId, recordId, false, notes, document);
     }
 
     /// <inheritdoc/>
-    public IQueryBuilder<FinancialRecord> ForUserAsync(EntityKey<User> userId)
+    public IQueryBuilder<FinancialRecord> ForUser(EntityKey<User> userId)
         => _uow.FinancialRecords.Query().Where(f => f.MadeBy.Id == userId);
 
     /// <inheritdoc/>
-    public IQueryBuilder<FinancialRecord> PendingAsync()
+    public IQueryBuilder<FinancialRecord> Pending()
         => _uow.FinancialRecords.Query().Where(f => f.Verification == null);
 
     /// <inheritdoc/>
     public async Task<decimal> TotalUsableAsync(EntityKey<User> userId)
     {
-        decimal total = 0;
-
-        await foreach (var record in ForUserAsync(
-            userId,
-            includes: new Expression<Func<FinancialRecord, object>>[] { r => r.Verification! }))
-        {
-            if (record.Verification?.Outcome == FinancialRecordVerificationOutcome.Accepted
-                || record.Verification is null && record.Amount < 0)
-            {
-                total += record.Amount;
-            }
-        }
-
-        return total;
+        return await ForUser(userId)
+            .Include(r => r.Verification!)
+            .Where(r => (r.Verification != null && r.Verification!.IsApproved)
+                      || r.Verification == null && r.Amount < 0)
+            .AsAsyncEnumerable()
+            .SumAsync(r => r.Amount);
     }
 
     /// <inheritdoc/>
-    public async Task<FinancialRecordVerification> VerifyAsync(
+    public Task<FinancialRecordVerification> VerifyAsync(
         EntityKey<User> userId,
         EntityKey<FinancialRecord> recordId,
-        FinancialRecordVerificationOutcome outcome,
         string? notes = null,
         IUploadFile? document = null)
     {
-        // TODO:
-        // Check permissions here
+        return FinalizeRecordAsync(userId, recordId, true, notes, document);
+    }
 
+    #endregion Public Methods
+
+    #region Private Methods
+
+    /// <inheritdoc/>
+    private async Task<FinancialRecordVerification> FinalizeRecordAsync(
+        EntityKey<User> userId,
+        EntityKey<FinancialRecord> recordId,
+        bool isApproved,
+        string? note = null,
+        IUploadFile? document = null)
+    {
         await using var tx = await _uow.BeginTransactionAsync();
-
-        var record = await _uow.FinancialRecords.Query().FindAsync(recordId);
-
-        if (await _uow.FinancialRecordVerficiations.Query().AnyAsync(v => v.FinancialRecord.Id == record.Id))
-            throw new FinancialRecordAlreadyVerifiedException(record);
 
         var user = await _uow.Users.Query().FindAsync(userId);
 
+        if (user.Role != UserRole.Admin)
+        {
+            throw new InsufficientPermissionsException(
+                userId,
+                $"user #{userId} is not an admin to confirm financial record #{recordId}");
+        }
+
+        var record = await _uow.FinancialRecords.Query()
+            .Include(r => r.Verification!)
+            .FindAsync(recordId);
+
+        if (record.Verification is not null)
+            throw new FinancialRecordAlreadyVerifiedException(record);
+
         var verification = new FinancialRecordVerification
         {
-            Outcome = outcome,
+            IsApproved = isApproved,
             FinancialRecord = record,
             VerifiedBy = user,
             Document = document is not null ? await _attachmentsSvc.SaveAsync(document) : null,
-            Notes = notes,
+            Note = note,
         };
 
+        record.Verification = verification;
+
         _uow.FinancialRecordVerficiations.Add(verification);
+        _uow.FinancialRecords.Update(record);
+
         await _uow.CommitAsync(tx);
 
         return verification;
     }
 
-    #endregion Public mehtods
+    #endregion Private Methods
 }
