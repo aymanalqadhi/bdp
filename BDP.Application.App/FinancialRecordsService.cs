@@ -49,41 +49,12 @@ public class FinancialRecordsService : IFinancialRecordsService
     }
 
     /// <inheritdoc/>
-    public IAsyncEnumerable<FinancialRecord> ForUserAsync(
-        int page,
-        int pageSize,
-        User user,
-        bool descOrder = false,
-        Expression<Func<FinancialRecord, object>>[]? includes = null)
-    {
-        var query = _uow.FinancialRecords.Query();
-
-        if (includes is not null)
-            query = query.IncludeAll(includes);
-
-        return query
-            .Where(f => f.MadeBy.Id == user.Id)
-            .Page(page, pageSize)
-            .AsAsyncEnumerable();
-    }
+    public IQueryBuilder<FinancialRecord> ForUserAsync(User user)
+        => _uow.FinancialRecords.Query().Where(f => f.MadeBy.Id == user.Id);
 
     /// <inheritdoc/>
-    public IAsyncEnumerable<FinancialRecord> PendingAsync(
-        int page,
-        int pageSize,
-        bool descOrder = false,
-        Expression<Func<FinancialRecord, object>>[]? includes = null)
-    {
-        var query = _uow.FinancialRecords.Query();
-
-        if (includes is not null)
-            query = query.IncludeAll(includes);
-
-        return query
-            .Where(f => f.Verification == null)
-            .Page(page, pageSize)
-            .AsAsyncEnumerable();
-    }
+    public IQueryBuilder<FinancialRecord> PendingAsync()
+        => _uow.FinancialRecords.Query().Where(f => f.Verification == null);
 
     /// <inheritdoc/>
     public async Task<decimal> TotalUsableAsync(User user)
