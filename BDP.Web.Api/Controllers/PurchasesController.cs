@@ -21,7 +21,6 @@ public class PurchasesController : ControllerBase
 {
     #region Private fields
 
-    private readonly IUsersService _usersSvc;
     private readonly IPurchasesService _purchasesSvc;
     private readonly IMapper _mapper;
 
@@ -30,11 +29,9 @@ public class PurchasesController : ControllerBase
     #region Ctors
 
     public PurchasesController(
-        IUsersService usersSvc,
         IPurchasesService purchasesSvc,
         IMapper mapper)
     {
-        _usersSvc = usersSvc;
         _purchasesSvc = purchasesSvc;
         _mapper = mapper;
     }
@@ -45,16 +42,15 @@ public class PurchasesController : ControllerBase
 
     [HttpGet]
     [Authorize]
-    public async Task<IActionResult> MyPurchases([FromQuery] PagingParameters paging)
+    public IAsyncEnumerable<object> MyPurchases([FromQuery] PagingParameters paging)
     {
-        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
-        var ret = _purchasesSvc.ForUserAsync(user)
+        var ret = _purchasesSvc.ForUserAsync(User.GetId())
             .PageDescending(paging.Page, paging.PageLength)
             .Include(p => p.Transaction)
             .Map(_mapper, typeof(PurchaseDto))
             .AsAsyncEnumerable();
 
-        return Ok(ret);
+        return ret;
     }
 
     #endregion Actions

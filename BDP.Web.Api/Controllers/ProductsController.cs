@@ -50,9 +50,9 @@ public class ProductsController : ControllerBase
     [IsProvider]
     public async Task<IActionResult> Create([FromForm] CreateProductRequest form)
     {
-        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var product = await _productsSvc.ListAsync(
-            user, form.Title,
+            User.GetId(),
+            form.Title,
             form.Description,
             form.Price,
             form.AvailableQuantity,
@@ -69,13 +69,16 @@ public class ProductsController : ControllerBase
     [IsProvider]
     public async Task<IActionResult> Update([FromBody] UpdateProductRequest form, Guid id)
     {
+        // TODO:
+        // Move ownership verification to services
+
         var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var product = await _productsSvc.GetByIdAsync(id);
 
         if (user.Id != product.OfferedBy.Id)
             return Unauthorized(new { message = "you do not own the product" });
 
-        await _productsSvc.UpdateAsync(product, form.Title, form.Description, form.Price);
+        await _productsSvc.UpdateAsync(id, form.Title, form.Description, form.Price);
         return Ok();
     }
 
@@ -83,31 +86,29 @@ public class ProductsController : ControllerBase
     [IsProvider]
     public async Task<IActionResult> Delete(Guid id)
     {
-        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
+        // TODO:
+        // Move ownership verification to services
+
         var product = await _productsSvc.GetByIdAsync(id);
 
-        if (user.Id != product.OfferedBy.Id)
+        if (product.OfferedBy.Id != User.GetId())
             return Unauthorized(new { message = "you do not own the product" });
 
-        await _productsSvc.UnlistAsync(product);
+        await _productsSvc.UnlistAsync(id);
         return Ok();
     }
 
     [HttpGet("{id}/quantity")]
     public async Task<IActionResult> AvailableQuantity(Guid id)
     {
-        var product = await _productsSvc.GetByIdAsync(id);
-
-        return Ok(new { quantity = await _productsSvc.AvailableQuantityAsync(product) });
+        return Ok(new { quantity = await _productsSvc.AvailableQuantityAsync(id) });
     }
 
     [HttpPost("{id}/[action]")]
     [IsCustomer]
     public async Task<IActionResult> Order([FromBody] OrderProductRequest form, Guid id)
     {
-        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
-        var product = await _productsSvc.GetByIdAsync(id);
-        var order = await _productsSvc.OrderAsync(user, product, form.Quantity);
+        var order = await _productsSvc.OrderAsync(User.GetId(), id, form.Quantity);
 
         return Ok(_mapper.Map<OrderDto>(order));
     }

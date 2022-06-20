@@ -63,10 +63,9 @@ public class EventsController : ControllerBase
 
     [HttpGet]
     [Authorize]
-    public async Task<IActionResult> GetEvents([Required] string username, [FromQuery] PagingParameters paging)
+    public IAsyncEnumerable<EventDto> GetEvents([Required] Guid userId, [FromQuery] PagingParameters paging)
     {
-        var user = await _usersSvc.GetByUsername(username).FirstAsync();
-        var ret = _eventsSvc.ForUserAsync(user)
+        var ret = _eventsSvc.ForUserAsync(userId)
             .PageDescending(paging.Page, paging.PageLength)
             .Include(e => e.Pictures)
             .Include(e => e.Type)
@@ -74,17 +73,19 @@ public class EventsController : ControllerBase
             .Map<Event, EventDto>(_mapper)
             .AsAsyncEnumerable();
 
-        return Ok(ret);
+        return ret;
     }
 
     [HttpPost]
     [IsCustomer]
     public async Task<IActionResult> Create([FromBody] CreateEventRequest form)
     {
-        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
-        var type = await _eventsSvc.GetTypeByIdAsync(form.EventTypeId);
         var ret = await _eventsSvc.CreateAsync(
-            user, type, form.Title, form.Description, form.TakesPlaceAt);
+            User.GetId(),
+            form.EventTypeId,
+            form.Title,
+            form.Description,
+            form.TakesPlaceAt);
 
         return Ok(_mapper.Map<EventDto>(ret));
     }
@@ -93,16 +94,15 @@ public class EventsController : ControllerBase
     [IsCustomer]
     public async Task<IActionResult> Update(Guid id, [FromBody] UpdateEventRequest form)
     {
-        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var @event = await _eventsSvc.GetByIdAsync(id);
 
-        if (@event.CreatedBy.Id != user.Id)
+        if (@event.CreatedBy.Id != User.GetId())
             return Unauthorized(new { message = "you do not own the event" });
 
         var type = await _eventsSvc.GetTypeByIdAsync(form.EventTypeId);
         var ret = await _eventsSvc.UpdateAsync(
-            @event,
-            type,
+            @event.Id,
+            type.Id,
             form.Title,
             form.Description,
             form.TakesPlaceAt
@@ -118,13 +118,12 @@ public class EventsController : ControllerBase
         // TODO:
         // move ownership logic to the service
 
-        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var @event = await _eventsSvc.GetByIdAsync(id);
 
-        if (@event.CreatedBy.Id != user.Id)
+        if (@event.CreatedBy.Id != User.GetId())
             return Unauthorized(new { message = "you do not own the event" });
 
-        await _eventsSvc.RemoveAsync(@event);
+        await _eventsSvc.RemoveAsync(@event.Id);
 
         return Ok();
     }
@@ -151,18 +150,17 @@ public class EventsController : ControllerBase
         // TODO:
         // move ownership logic to the service
 
-        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var @event = await _eventsSvc.GetByIdAsync(id);
 
-        if (@event.CreatedBy.Id != user.Id)
+        if (@event.CreatedBy.Id != User.GetId())
             return Unauthorized(new { message = "you do not own the event" });
 
         var purchase = await _puchasesSvc.GetById(form.PurchaseId);
 
-        if (purchase.Transaction.From.Id != user.Id)
+        if (purchase.Transaction.From.Id != User.GetId())
             return Unauthorized(new { message = "you did not make the purchase" });
 
-        await _eventsSvc.AssociatePurchaseAsync(@event, purchase);
+        await _eventsSvc.AssociatePurchaseAsync(@event.Id, purchase.Id);
 
         return Ok();
     }
@@ -174,16 +172,15 @@ public class EventsController : ControllerBase
         // TODO:
         // move ownership logic to the service
 
-        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var @event = await _eventsSvc.GetByIdAsync(id);
 
-        if (@event.CreatedBy.Id != user.Id)
+        if (@event.CreatedBy.Id != User.GetId())
             return Unauthorized(new { message = "you do not own the event" });
 
         if (@event.Pictures.Count >= 12)
             return Unauthorized(new { message = "you have reached the limit of images" });
 
-        await _eventsSvc.AddImageAsync(@event, new WebUploadFile(form.Image));
+        await _eventsSvc.AddImageAsync(@event.Id, new WebUploadFile(form.Image));
 
         return Ok();
     }
@@ -197,13 +194,12 @@ public class EventsController : ControllerBase
         // TODO:
         // move ownership logic to the service
 
-        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var @event = await _eventsSvc.GetByIdAsync(id);
 
-        if (@event.CreatedBy.Id != user.Id)
+        if (@event.CreatedBy.Id != User.GetId())
             return Unauthorized(new { message = "you do not own the event" });
 
-        await _eventsSvc.UpdateProgressAsync(@event, form.Progress);
+        await _eventsSvc.UpdateProgressAsync(@event.Id, form.Progress);
 
         return Ok();
     }

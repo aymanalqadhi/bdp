@@ -19,7 +19,6 @@ public class FinancialRecordsController : ControllerBase
 {
     #region Private fields
 
-    private readonly IUsersService _usersSvc;
     private readonly IFinancialRecordsService _financialRecordsSvc;
     private readonly IMapper _mapper;
 
@@ -28,11 +27,9 @@ public class FinancialRecordsController : ControllerBase
     #region Ctors
 
     public FinancialRecordsController(
-        IUsersService usersSvc,
         IFinancialRecordsService financialRecordsSvc,
         IMapper mapper)
     {
-        _usersSvc = usersSvc;
         _mapper = mapper;
         _financialRecordsSvc = financialRecordsSvc;
     }
@@ -85,11 +82,9 @@ public class FinancialRecordsController : ControllerBase
         string? note,
         IFormFile? document)
     {
-        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
-
         return await _financialRecordsSvc.VerifyAsync(
+            User.GetId(),
             recordId,
-            user,
             outcome,
             note,
             document is not null ? new WebUploadFile(document) : null

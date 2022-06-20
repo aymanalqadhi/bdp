@@ -5,6 +5,7 @@ using BDP.Web.Dtos;
 using BDP.Web.Dtos.Requests;
 using BDP.Web.Dtos.Responses;
 using BDP.Domain.Repositories.Extensions;
+using BDP.Web.Dtos.Parameters;
 
 using AutoMapper;
 
@@ -12,7 +13,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using System.Linq.Expressions;
-using BDP.Web.Dtos.Parameters;
 
 namespace BDP.Web.Api.Controllers;
 
@@ -23,7 +23,6 @@ public class WalletController : ControllerBase
     #region Private fields
 
     private readonly IMapper _mapper;
-    private readonly IUsersService _usersSvc;
     private readonly IFinancialRecordsService _financialRecordsSvc;
     private readonly IFinanceService _financeSvc;
 
@@ -33,12 +32,10 @@ public class WalletController : ControllerBase
 
     public WalletController(
         IMapper mapper,
-        IUsersService usersSvc,
         IFinancialRecordsService financialRecordsSvc,
         IFinanceService financeSvc)
     {
         _mapper = mapper;
-        _usersSvc = usersSvc;
         _financialRecordsSvc = financialRecordsSvc;
         _financeSvc = financeSvc;
     }
@@ -49,27 +46,24 @@ public class WalletController : ControllerBase
 
     [HttpGet]
     [Authorize]
-    public async Task<IActionResult> Records([FromQuery] PagingParameters paging)
+    public IAsyncEnumerable<FinancialRecordDto> Records([FromQuery] PagingParameters paging)
     {
-        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
-        var ret = _financialRecordsSvc.ForUserAsync(user)
+        var ret = _financialRecordsSvc.ForUserAsync(User.GetId())
             .PageDescending(paging.Page, paging.PageLength)
             .Include(r => r.Verification!)
             .Include(r => r.Verification!.Document!)
             .Map<FinancialRecord, FinancialRecordDto>(_mapper)
             .AsAsyncEnumerable();
 
-        return Ok(ret);
+        return ret;
     }
 
     [HttpGet("[action]")]
     [Authorize]
     public async Task<IActionResult> Balance()
     {
-        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
-
-        var virtualBalance = await _financeSvc.TotalVirtualAsync(user);
-        var usableBalance = await _financeSvc.TotalUsableAsync(user);
+        var virtualBalance = await _financeSvc.TotalVirtualAsync(User.GetId());
+        var usableBalance = await _financeSvc.TotalUsableAsync(User.GetId());
 
         return Ok(new BalanceResponse(virtualBalance, usableBalance));
     }
@@ -78,8 +72,10 @@ public class WalletController : ControllerBase
     [Authorize]
     public async Task<IActionResult> Deposit([FromBody] DepositRequest form)
     {
-        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
-        await _financeSvc.DepositAsync(user, form.Amount, form.Note);
+        // TODO:
+        // Return financial record data
+
+        await _financeSvc.DepositAsync(User.GetId(), form.Amount, form.Note);
 
         return Ok();
     }
@@ -88,8 +84,10 @@ public class WalletController : ControllerBase
     [Authorize]
     public async Task<IActionResult> Withdraw([FromBody] WithdrawRequest form)
     {
-        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
-        await _financeSvc.WithdrawAsync(user, form.Amount, form.Note);
+        // TODO:
+        // Return financial record data
+
+        await _financeSvc.WithdrawAsync(User.GetId(), form.Amount, form.Note);
 
         return Ok();
     }

@@ -47,9 +47,9 @@ public class ServicesController : ControllerBase
     [IsProvider]
     public async Task<IActionResult> Create([FromForm] CreateServiceRequest form)
     {
-        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var service = await _servicesService.ListAsync(
-            user, form.Title,
+            User.GetId(),
+            form.Title,
             form.Description,
             form.Price,
             form.AvailableBegin,
@@ -65,16 +65,18 @@ public class ServicesController : ControllerBase
 
     [HttpPatch("{id}")]
     [IsProvider]
-    public async Task<IActionResult> Update([FromBody] UpdateServiceRequest form, Guid id)
+    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateServiceRequest form)
     {
-        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
+        // TODO:
+        // Move ownership logic to services
+
         var service = await _servicesService.GetByIdAsync(id);
 
-        if (user.Id != service.OfferedBy.Id)
+        if (service.OfferedBy.Id != service.Id)
             return Unauthorized(new { message = "you do not own the service" });
 
         await _servicesService.UpdateAsync(
-            service,
+            id,
             form.Title,
             form.Description,
             form.Price,
@@ -88,13 +90,15 @@ public class ServicesController : ControllerBase
     [IsProvider]
     public async Task<IActionResult> Delete(Guid id)
     {
-        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
+        // TODO:
+        // Move ownership logic to services
+
         var service = await _servicesService.GetByIdAsync(id);
 
-        if (user.Id != service.OfferedBy.Id)
+        if (service.OfferedBy.Id != User.GetId())
             return Unauthorized(new { message = "you do not own the service" });
 
-        await _servicesService.UnlistAsync(service);
+        await _servicesService.UnlistAsync(id);
         return Ok();
     }
 
@@ -102,9 +106,7 @@ public class ServicesController : ControllerBase
     [IsCustomer]
     public async Task<IActionResult> Reserve(Guid id)
     {
-        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
-        var service = await _servicesService.GetByIdAsync(id);
-        var order = await _servicesService.ReserveAsync(user, service);
+        var order = await _servicesService.ReserveAsync(User.GetId(), id);
 
         return Ok(_mapper.Map<ReservationDto>(order));
     }

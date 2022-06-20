@@ -22,7 +22,6 @@ public class TransactionsController : ControllerBase
 {
     #region Private fields
 
-    private readonly IUsersService _usersSvc;
     private readonly ITransactionsService _transactionsSvc;
     private readonly IMapper _mapper;
 
@@ -31,11 +30,9 @@ public class TransactionsController : ControllerBase
     #region Ctors
 
     public TransactionsController(
-        IUsersService usersSvc,
         ITransactionsService transactionsSvc,
         IMapper mapper)
     {
-        _usersSvc = usersSvc;
         _transactionsSvc = transactionsSvc;
         _mapper = mapper;
     }
@@ -46,27 +43,25 @@ public class TransactionsController : ControllerBase
 
     [HttpGet]
     [Authorize]
-    public async Task<IActionResult> MyTransactions([FromQuery] PagingParameters paging)
+    public IAsyncEnumerable<TransactionDto> MyTransactions([FromQuery] PagingParameters paging)
     {
-        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
-        var ret = _transactionsSvc.ForUserAsync(user)
+        var ret = _transactionsSvc.ForUserAsync(User.GetId())
             .PageDescending(paging.Page, paging.PageLength)
             .Include(t => t.From)
             .Include(t => t.To)
             .Include(t => t.Confirmation!)
-            .Select(t => t.ConcealConfirmationTokenIf(t.From.Id != user.Id))
+            .Select(t => t.ConcealConfirmationTokenIf(t.From.Id != User.GetId()))
             .Map<Transaction, TransactionDto>(_mapper)
             .AsAsyncEnumerable();
 
-        return Ok(ret);
+        return ret;
     }
 
     [HttpPost("[action]")]
     [Authorize]
     public async Task<IActionResult> Confirm([FromBody] ConfirmTransactionRequest form)
     {
-        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
-        var ret = await _transactionsSvc.ConfirmAsync(user, form.Token);
+        var ret = await _transactionsSvc.ConfirmAsync(User.GetId(), form.Token);
 
         return Ok(_mapper.Map<TransactionConfirmationDto>(ret));
     }
@@ -75,8 +70,7 @@ public class TransactionsController : ControllerBase
     [Authorize]
     public async Task<IActionResult> Cancel(Guid id)
     {
-        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
-        var ret = await _transactionsSvc.CancelAsync(user, id);
+        var ret = await _transactionsSvc.CancelAsync(User.GetId(), id);
 
         return Ok(_mapper.Map<TransactionConfirmationDto>(ret));
     }
@@ -85,10 +79,12 @@ public class TransactionsController : ControllerBase
     [Authorize]
     public async Task<IActionResult> GetConfirmationToken(Guid id)
     {
-        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
+        // TODO:
+        // Move ownership validation to service
+
         var tx = await _transactionsSvc.GetByIdAsync(id).FirstAsync();
 
-        if (tx.From.Id != user.Id)
+        if (tx.From.Id != User.GetId())
             return Unauthorized(new { message = "you did not make the transaction" });
 
         return Ok(new { token = tx.ConfirmationToken });

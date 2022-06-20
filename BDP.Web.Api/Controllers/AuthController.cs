@@ -79,8 +79,7 @@ public class AuthController : ControllerBase
         if (!JwtUtils.ValidateRefreshToken(form.RefreshToken, _jwt))
             throw new SecurityTokenException("invalid refresh token");
 
-        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
-        await _authSvc.InvalidateTokenAsync(user, form.RefreshToken, form.UniqueIdentifier);
+        await _authSvc.InvalidateTokenAsync(User.GetId(), form.RefreshToken, form.UniqueIdentifier);
 
         return Ok();
     }
@@ -97,7 +96,7 @@ public class AuthController : ControllerBase
             .Include(u => u.Groups)
             .FirstAsync();
 
-        if (!await _authSvc.IsTokenValidAsync(user, form.RefreshToken, form.UniqueIdentifier))
+        if (!await _authSvc.IsTokenValidAsync(user.Id, form.RefreshToken, form.UniqueIdentifier))
             throw new SecurityTokenException("invalid refresh token");
 
         return Ok(new
