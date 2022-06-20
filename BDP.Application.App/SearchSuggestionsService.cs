@@ -44,7 +44,7 @@ public class SearchSuggestionsService : ISearchSuggestionsService
                 .AsAsyncEnumerable()
                 .Select(u => new SearchSuggestion
                 {
-                    ItemId = u.Id,
+                    ItemId = u.Id.Id,
                     Title = u.FullName ?? u.Username,
                     Type = $"user - @{u.Username}"
                 });
@@ -60,7 +60,7 @@ public class SearchSuggestionsService : ISearchSuggestionsService
                 .AsAsyncEnumerable()
                 .Select(s => new SearchSuggestion
                 {
-                    ItemId = s.Id,
+                    ItemId = s.Id.Id,
                     Title = s.Title,
                     Type = s is Service ? "service" : "product"
                 });

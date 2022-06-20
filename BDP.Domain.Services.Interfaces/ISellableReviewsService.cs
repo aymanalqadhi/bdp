@@ -10,7 +10,7 @@ public interface ISellableReviewsService
     /// </summary>
     /// <param name="sellableId">The id of the item which to get reviews for</param>
     /// <returns></returns>
-    IQueryBuilder<SellableReview> GetForAsync(Guid sellableId);
+    IQueryBuilder<SellableReview> GetForAsync(EntityKey<Sellable> sellableId);
 
     /// <summary>
     /// Asynchronously gets the review for an item for a specific
@@ -19,7 +19,7 @@ public interface ISellableReviewsService
     /// <param name="userId">the id of the user to get the review for</param>
     /// <param name="itemId">The id of the item to get the review for</param>
     /// <returns></returns>
-    Task<SellableReview?> GetReviewForUserAsync(Guid userId, Guid itemId);
+    Task<SellableReview?> GetReviewForUserAsync(EntityKey<User> userId, EntityKey<Sellable> itemId);
 
     /// <summary>
     /// Asynchronously adds a review to a sellable item
@@ -29,14 +29,14 @@ public interface ISellableReviewsService
     /// <param name="rating">The rating value (between 1 and 5)</param>
     /// <param name="comment">An optional comment string</param>
     /// <returns>The created review</returns>
-    Task<SellableReview> ReviewAsync(Guid userId, Guid itemId, double rating, string? comment = null);
+    Task<SellableReview> ReviewAsync(EntityKey<User> userId, EntityKey<Sellable> itemId, double rating, string? comment = null);
 
     /// <summary>
     /// Asynchronously Gets the review info for a specific item
     /// </summary>
     /// <param name="itemId">The id of the item which to get the info for</param>
     /// <returns></returns>
-    Task<SellableReviewInfo> ReviewInfoForAsync(Guid itemId);
+    Task<SellableReviewInfo> ReviewInfoForAsync(EntityKey<Sellable> itemId);
 
     /// <summary>
     /// Asynchronously gets whether a user can review the item or not
@@ -44,7 +44,7 @@ public interface ISellableReviewsService
     /// <param name="userId">The id of the reviewing user</param>
     /// <param name="itemId">The id of the item to check for</param>
     /// <returns></returns>
-    Task<bool> CanReviewAsync(Guid userId, Guid itemId);
+    Task<bool> CanReviewAsync(EntityKey<User> userId, EntityKey<Sellable> itemId);
 }
 
 public record SellableReviewInfo(double AverageRating, int ReviewsCount);
