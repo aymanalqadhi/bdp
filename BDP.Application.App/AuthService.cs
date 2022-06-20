@@ -1,6 +1,7 @@
 ﻿using BDP.Application.App.Exceptions;
 using BDP.Domain.Entities;
 using BDP.Domain.Repositories;
+using BDP.Domain.Repositories.Extensions;
 using BDP.Domain.Services;
 
 using System.Linq.Expressions;
@@ -94,18 +95,18 @@ public class AuthService : IAuthService
     }
 
     /// <inheritdoc/>
-    public Task<bool> IsTokenValidAsync(User user, string token, string uniqueId)
+    public Task<bool> IsTokenValidAsync(Guid userId, string token, string uniqueId)
         => _uow.RefreshTokens.Query().AnyAsync(
-            r => r.Owner.Id == user.Id &&
+            r => r.Owner.Id == userId &&
             r.Token == token &&
             r.UniqueIdentifier == uniqueId &&
             r.ValidUntil > DateTime.Now);
 
     /// <inheritdoc/>
-    public async Task InvalidateTokenAsync(User user, string token, string uniqueId)
+    public async Task InvalidateTokenAsync(Guid userId, string token, string uniqueId)
     {
         var refreshToken = await _uow.RefreshTokens.Query().FirstAsync(r =>
-           r.Owner.Id == user.Id &&
+           r.Owner.Id == userId &&
            r.Token == token &&
            r.UniqueIdentifier == uniqueId);
 
@@ -134,14 +135,16 @@ public class AuthService : IAuthService
         _uow.Users.Add(user);
 
         await _uow.CommitAsync();
-        await SendConfirmationMessage(user, "Confirm your account");
+        await SendConfirmationMessage(user.Id, "Confirm your account");
 
         return user;
     }
 
     /// <inheritdoc/>
-    public async Task<Confirmation> SendConfirmationMessage(User user, string title)
+    public async Task<Confirmation> SendConfirmationMessage(Guid userId, string title)
     {
+        var user = await _uow.Users.Query().FindAsync(userId);
+
         var confirmation = new Confirmation
         {
             OneTimePassword = _rngSvc.RandomString(_settings.ConfirmationOtpLength, RandomStringKind.AlphaNum),
@@ -150,14 +153,14 @@ public class AuthService : IAuthService
             ValidFor = _settings.ConfirmationValidity,
         };
 
-        _uow.Confirmations.Add(confirmation);
-        await _uow.CommitAsync();
-
         await _emailSvc.SendEmail(
             user.Email,
             title,
             BuildConfirmationHtmlEmail(confirmation),
             EmailOption.HasHtmlBody);
+
+        _uow.Confirmations.Add(confirmation);
+        await _uow.CommitAsync();
 
         return confirmation;
     }
