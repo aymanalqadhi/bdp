@@ -4,12 +4,12 @@ namespace BDP.Application.App.Exceptions;
 
 public sealed class PendingOrdersLeftException : Exception
 {
-    private readonly Guid _productId;
+    private readonly EntityKey<Product> _productId;
 
     /// <summary>
     /// Default constructor
     /// </summary>
-    public PendingOrdersLeftException(Guid productId)
+    public PendingOrdersLeftException(EntityKey<Product> productId)
         : base($"product #{productId} still has pending orders")
     {
         _productId = productId;
@@ -18,5 +18,5 @@ public sealed class PendingOrdersLeftException : Exception
     /// <summary>
     /// Gets the id of the product associated with this exception
     /// </summary>
-    public Guid ProductId => _productId;
+    public EntityKey<Product> ProductId => _productId;
 }
