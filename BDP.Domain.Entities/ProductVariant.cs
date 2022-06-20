@@ -1,7 +1,6 @@
 ﻿namespace BDP.Domain.Entities;
 
-public abstract class ProductVariant<TEntity> : AuditableEntity<TEntity>
-    where TEntity : class
+public sealed class ProductVariant : AuditableEntity<ProductVariant>
 {
     /// <summary>
     /// Gets or sets the name of the variant
@@ -19,6 +18,11 @@ public abstract class ProductVariant<TEntity> : AuditableEntity<TEntity>
     public decimal Price { get; set; }
 
     /// <summary>
+    /// Gets or sets the type of the product variant
+    /// </summary>
+    public ProductVariantType Type { get; set; }
+
+    /// <summary>
     /// Gets the parent product of the variant
     /// </summary>
     public Product Product { get; set; } = null!;
@@ -27,4 +31,13 @@ public abstract class ProductVariant<TEntity> : AuditableEntity<TEntity>
     /// Gets or sets the list of attachments of the variant
     /// </summary>
     public ICollection<Attachment> Attachments { get; set; } = new List<Attachment>();
+}
+
+/// <summary>
+/// An enum to represent product variant types
+/// </summary>
+public enum ProductVariantType
+{
+    Sellable,
+    Reservable,
 }
