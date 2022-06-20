@@ -143,5 +143,9 @@ public sealed class QueryBuilder<T> : IQueryBuilder<T> where T : class
     public IQueryBuilder<V> Select<V>(Expression<Func<T, V>> selector) where V : class
         => new QueryBuilder<V>(_query.Select(selector));
 
+    /// <inheritdoc/>
+    public Task<bool> AnyAsync(CancellationToken cancellationToken = default)
+        => _query.AnyAsync(cancellationToken);
+
     #endregion Public Methods
 }
