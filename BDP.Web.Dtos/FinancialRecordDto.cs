@@ -1,12 +1,12 @@
-﻿namespace BDP.Web.Dtos;
+﻿using BDP.Domain.Entities;
 
-public class FinancialRecordDto
+namespace BDP.Web.Dtos;
+
+/// <summary>
+/// A data-transfer object for <see cref="FinancialRecord"/>
+/// </summary>
+public class FinancialRecordDto : EntityDto<FinancialRecord>
 {
-    /// <summary>
-    /// Gets or sets the financial record id
-    /// </summary>
-    public Guid Id { get; set; }
-
     /// <summary>
     /// Gets or sets the amount associated with the financial record
     /// </summary>
@@ -20,15 +20,10 @@ public class FinancialRecordDto
     /// <summary>
     /// Gets or sets the user associated with the financial record
     /// </summary>
-    public UserDto? MadeBy { get; set; }
+    public UserDto MadeBy { get; set; } = null!;
 
     /// <summary>
     /// An optinal note set by the user
     /// </summary>
     public string? Note { get; set; }
-
-    /// <summary>
-    /// Gets or sets the creation date/time of this record
-    /// </summary>
-    public DateTime CreatedAt { get; set; }
 }

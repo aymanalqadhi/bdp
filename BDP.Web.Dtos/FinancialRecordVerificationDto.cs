@@ -1,12 +1,12 @@
-﻿namespace BDP.Web.Dtos;
+﻿using BDP.Domain.Entities;
 
-public class FinancialRecordVerificationDto
+namespace BDP.Web.Dtos;
+
+/// <summary>
+/// A data-transfer object for <see cref="FinancialRecordVerification"/>
+/// </summary>
+public sealed class FinancialRecordVerificationDto : EntityDto<FinancialRecordVerification>
 {
-    /// <summary>
-    /// Gets or sets the id of the verification
-    /// </summary>
-    public Guid Id { get; set; }
-
     /// <summary>
     /// Gets or sets whether the record has been accepted
     /// </summary>
@@ -15,15 +15,10 @@ public class FinancialRecordVerificationDto
     /// <summary>
     /// Gets or sets the document of the record verification
     /// </summary>
-    public string? Document { get; set; } = null!;
+    public Uri? Document { get; set; } = null!;
 
     /// <summary>
     /// Gets or sets additional notes on verifications
     /// </summary>
     public string? Notes { get; set; }
-
-    /// <summary>
-    /// Gets or sets the creation date/time of this verification
-    /// </summary>
-    public DateTime CreatedAt { get; set; }
 }
