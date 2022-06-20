@@ -33,7 +33,7 @@ public class ProductsService : IProductsService
             .Query()
             .Include(p => p.OfferedBy)
             .Include(p => p.Attachments)
-            .GetOrNullAsync(id);
+            .FindOrDefaultAsync(id);
 
         if (product is null)
             throw new NotFoundException($"no products were found with id #{id}");

@@ -76,11 +76,11 @@ public sealed class QueryBuilder<T> : IQueryBuilder<T> where T : AuditableEntity
     }
 
     /// <inheritdoc/>
-    public Task<T> GetAsync(long id)
+    public Task<T> FindAsync(long id)
         => FirstAsync(i => i.Id == id);
 
     /// <inheritdoc/>
-    public Task<T?> GetOrNullAsync(long id)
+    public Task<T?> FindOrDefaultAsync(long id)
         => FirstOrNullAsync(i => i.Id == id);
 
     /// <inheritdoc/>

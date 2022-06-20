@@ -33,7 +33,7 @@ public class SellablesService : ISellablesService
     /// <inheritdoc/>
     public async Task<Sellable> GetByIdAsync(long id)
     {
-        var ret = await _uow.Sellables.Query().GetOrNullAsync(id);
+        var ret = await _uow.Sellables.Query().FindOrDefaultAsync(id);
 
         if (ret is null)
             throw new NotFoundException($"no sellables were found with id #{id}");

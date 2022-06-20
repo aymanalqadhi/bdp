@@ -88,7 +88,7 @@ public interface IQueryBuilder<T> where T : AuditableEntity
     /// </summary>
     /// <param name="id">The id of the item to get</param>
     /// <returns>The matched item</returns>
-    Task<T> GetAsync(long id);
+    Task<T> FindAsync(long id);
 
     /// <summary>
     /// Asynchronously gets an item by id from the backing store. If the item is not
@@ -96,7 +96,7 @@ public interface IQueryBuilder<T> where T : AuditableEntity
     /// </summary>
     /// <param name="id">The id of the item to get</param>
     /// <returns>The matched item if found, null otherwise</returns>
-    Task<T?> GetOrNullAsync(long id);
+    Task<T?> FindOrDefaultAsync(long id);
 
     /// <summary>
     /// Asynchronously gets whether the query has no items
