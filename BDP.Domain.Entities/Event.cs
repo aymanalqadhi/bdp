@@ -31,11 +31,6 @@ public class Event : AuditableEntity<Event>
     public ICollection<Attachment> Pictures { get; set; } = new List<Attachment>();
 
     /// <summary>
-    /// Gets or sets the collection of purchases associated with this event
-    /// </summary>
-    public ICollection<Purchase> Purchases { get; set; } = new List<Purchase>();
-
-    /// <summary>
     /// Gets or sets the type of the event
     /// </summary>
     public EventType Type { get; set; } = null!;
