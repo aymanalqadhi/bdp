@@ -244,12 +244,12 @@ public class BdpDbContext : DbContext
 
         // seed data
         builder.Entity<EventType>()
-            .HasData(new() { Id = 1, Name = "Wedding" },
-                     new() { Id = 2, Name = "Birth Day" },
-                     new() { Id = 3, Name = "Engagement Party" },
-                     new() { Id = 4, Name = "Graduation Ceremony" },
-                     new() { Id = 5, Name = "Graduation Party" },
-                     new() { Id = 6, Name = "Other" }
+            .HasData(new() { Name = "Wedding" },
+                     new() { Name = "Birth Day" },
+                     new() { Name = "Engagement Party" },
+                     new() { Name = "Graduation Ceremony" },
+                     new() { Name = "Graduation Party" },
+                     new() { Name = "Other" }
                     );
     }
 
