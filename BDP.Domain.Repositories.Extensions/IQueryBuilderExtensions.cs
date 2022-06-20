@@ -10,14 +10,14 @@ public static class IQueryBuilderExtensions
     /// </summary>
     /// <returns>The modified query builder</returns>
     public static IQueryBuilder<T> Order<T>(this IQueryBuilder<T> source) where T : AuditableEntity
-        => source.OrderBy(x => x.Id);
+        => source.OrderBy(x => x.CreatedAt);
 
     /// <summary>
     /// Orders the current query descendingly
     /// </summary>
     /// <returns>The modified query builder</returns>
     public static IQueryBuilder<T> OrderDescending<T>(this IQueryBuilder<T> source) where T : AuditableEntity
-        => source.OrderByDescending(x => x.Id);
+        => source.OrderByDescending(x => x.CreatedAt);
 
     /// <summary>
     /// Fetches the page with index <see cref="page"/> and size <see cref="pageLength"/>
