@@ -1,7 +1,21 @@
 ﻿namespace BDP.Domain.Entities;
 
+/// <summary>
+/// A recrod to represent keys for the <see cref="RefreshToken"/> entity
+/// </summary>
+/// <param name="Id">The id field of the key</param>
+public sealed record RefreshTokenKey(Guid Id) : EntityKey<RefreshToken>(Id);
+
+/// <summary>
+/// A class to represent a user refresh token
+/// </summary>
 public sealed class RefreshToken : AuditableEntity
 {
+    /// <summary>
+    /// Gets or sets the id of the refresh token
+    /// </summary>
+    public RefreshTokenKey Id { get; set; } = new RefreshTokenKey(Guid.NewGuid());
+
     /// <summary>
     /// Gets or sets the device unique identifier
     /// </summary>
