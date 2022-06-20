@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using System.Linq.Expressions;
+using BDP.Web.Dtos.Parameters;
 
 namespace BDP.Web.Api.Controllers;
 
@@ -20,8 +21,6 @@ namespace BDP.Web.Api.Controllers;
 public class WalletController : ControllerBase
 {
     #region Private fields
-
-    private readonly int _pageSize;
 
     private readonly IMapper _mapper;
     private readonly IUsersService _usersSvc;
@@ -34,7 +33,6 @@ public class WalletController : ControllerBase
 
     public WalletController(
         IMapper mapper,
-        IConfigurationService configurationSvc,
         IUsersService usersSvc,
         IFinancialRecordsService financialRecordsSvc,
         IFinanceService financeSvc)
@@ -43,8 +41,6 @@ public class WalletController : ControllerBase
         _usersSvc = usersSvc;
         _financialRecordsSvc = financialRecordsSvc;
         _financeSvc = financeSvc;
-
-        _pageSize = configurationSvc.GetInt("QuerySettings:DefaultPageSize");
     }
 
     #endregion Ctors
@@ -53,11 +49,11 @@ public class WalletController : ControllerBase
 
     [HttpGet]
     [Authorize]
-    public async Task<IActionResult> Records(int page)
+    public async Task<IActionResult> Records([FromQuery] PagingParameters paging)
     {
         var user = await _usersSvc.GetByUsernameAsync(User.GetUsername());
         var ret = _financialRecordsSvc.ForUserAsync(user)
-            .PageDescending(page, _pageSize)
+            .PageDescending(paging.Page, paging.PageLength)
             .Include(r => r.Verification!)
             .Include(r => r.Verification!.Document!)
             .AsAsyncEnumerable()

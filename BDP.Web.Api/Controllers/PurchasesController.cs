@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
+using BDP.Web.Dtos.Parameters;
 
 namespace BDP.Web.Api.Controllers;
 
@@ -19,8 +20,6 @@ namespace BDP.Web.Api.Controllers;
 public class PurchasesController : ControllerBase
 {
     #region Private fields
-
-    private readonly int _pageSize;
 
     private readonly IUsersService _usersSvc;
     private readonly IPurchasesService _purchasesSvc;
@@ -31,12 +30,10 @@ public class PurchasesController : ControllerBase
     #region Ctors
 
     public PurchasesController(
-        IConfigurationService configurationSvc,
         IUsersService usersSvc,
         IPurchasesService purchasesSvc,
         IMapper mapper)
     {
-        _pageSize = configurationSvc.GetInt("QuerySettings:DefaultPageSize");
         _usersSvc = usersSvc;
         _purchasesSvc = purchasesSvc;
         _mapper = mapper;
@@ -48,11 +45,11 @@ public class PurchasesController : ControllerBase
 
     [HttpGet]
     [Authorize]
-    public async Task<IActionResult> MyPurchases([Required] int page)
+    public async Task<IActionResult> MyPurchases([FromQuery] PagingParameters paging)
     {
         var user = await _usersSvc.GetByUsernameAsync(User.GetUsername());
         var ret = _purchasesSvc.ForUserAsync(user)
-            .PageDescending(page, _pageSize)
+            .PageDescending(paging.Page, paging.PageLength)
             .Include(p => p.Transaction)
             .Map(_mapper, typeof(PurchaseDto))
             .AsAsyncEnumerable();

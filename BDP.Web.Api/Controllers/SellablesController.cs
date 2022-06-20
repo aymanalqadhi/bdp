@@ -4,9 +4,11 @@ using BDP.Domain.Services;
 using BDP.Web.Api.Auth.Attributes;
 using BDP.Web.Api.Extensions;
 using BDP.Web.Dtos;
+using BDP.Web.Dtos.Parameters;
 using BDP.Web.Dtos.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace BDP.Web.Api.Controllers;
 
@@ -15,8 +17,6 @@ namespace BDP.Web.Api.Controllers;
 public class SellablesController : ControllerBase
 {
     #region Private fileds
-
-    private readonly int _pageSize;
 
     private readonly IUsersService _usersSvc;
     private readonly ISellablesService _sellablesSvc;
@@ -28,7 +28,6 @@ public class SellablesController : ControllerBase
     #region Ctors
 
     public SellablesController(
-        IConfigurationService configurationSvc,
         IUsersService usersSvc,
         ISellablesService sellablesSvc,
         ISellableReviewsService sellableReviewsSvc,
@@ -38,20 +37,18 @@ public class SellablesController : ControllerBase
         _usersSvc = usersSvc;
         _sellableReviewsSvc = sellableReviewsSvc;
         _mapper = mapper;
-
-        _pageSize = configurationSvc.GetInt("QuerySettings:DefaultPageSize");
     }
 
     #endregion Ctors
 
     #region Actions
 
-    [HttpGet("page/{page}")]
-    public async Task<IActionResult> GetByUserPaged(string username, int page)
+    [HttpGet]
+    public async Task<IActionResult> GetByUserPaged([Required] string username, [FromQuery] PagingParameters paging)
     {
         var user = await _usersSvc.GetByUsernameAsync(username);
         var ret = _sellablesSvc.GetForAsync(user)
-            .PageDescending(page, _pageSize)
+            .PageDescending(paging.Page, paging.PageLength)
             .AsAsyncEnumerable();
 
         return Ok(await ret.Select((s) =>
@@ -61,25 +58,25 @@ public class SellablesController : ControllerBase
     }
 
     [HttpGet("[action]")]
-    public async Task<IActionResult> Search(string query, int page, string? username)
+    public async Task<IActionResult> Search([Required] string query, string? username, [FromQuery] PagingParameters paging)
     {
         var ret = username != null
             ? _sellablesSvc.SearchForAsync(await _usersSvc.GetByUsernameAsync(username), query)
             : _sellablesSvc.SearchAsync(query);
 
         return Ok(await ret
-            .Page(page, _pageSize)
+            .Page(paging.Page, paging.PageLength)
             .AsAsyncEnumerable()
             .Select((s) => _mapper.Map(s, s.GetType(), typeof(SellableDto)))
             .ToListAsync());
     }
 
-    [HttpGet("{id}/reviews/{page}")]
-    public async Task<IActionResult> GetReviewsPaged(int id, int page)
+    [HttpGet("{id}/reviews")]
+    public async Task<IActionResult> GetReviewsPaged(int id, [FromQuery] PagingParameters paging)
     {
         var item = await _sellablesSvc.GetByIdAsync(id);
         var ret = _sellableReviewsSvc.GetForAsync(item)
-            .PageDescending(page, _pageSize)
+            .PageDescending(paging.Page, paging.PageLength)
             .AsAsyncEnumerable()
             .Select(_mapper.Map<SellableReviewDto>);
 
