@@ -11,14 +11,14 @@ public sealed class FinancialRecord : AuditableEntity<FinancialRecord>
     public decimal Amount { get; set; }
 
     /// <summary>
-    /// Gets or sets the user associated with the financial record
-    /// </summary>
-    public User MadeBy { get; set; } = null!;
-
-    /// <summary>
     /// Gets or sets the note left by the user
     /// </summary>
     public string? Note { get; set; }
+
+    /// <summary>
+    /// Gets or sets the user associated with the financial record
+    /// </summary>
+    public User MadeBy { get; set; } = null!;
 
     /// <summary>
     /// Gets or sets the verification of the record
