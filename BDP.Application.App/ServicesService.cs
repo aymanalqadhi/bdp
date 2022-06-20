@@ -1,16 +1,24 @@
 ﻿using BDP.Application.App.Exceptions;
 using BDP.Domain.Entities;
 using BDP.Domain.Repositories;
+using BDP.Domain.Repositories.Extensions;
 using BDP.Domain.Services;
+
 using System.Linq.Expressions;
 
 namespace BDP.Application.App;
 
 public class ServicesService : IServicesService
 {
-    private readonly IUnitOfWork _uow;
+    #region Fields
+
     private readonly IAttachmentsService _attachmentsSvc;
     private readonly IFinanceService _financeSvc;
+    private readonly IUnitOfWork _uow;
+
+    #endregion Fields
+
+    #region Public Constructors
 
     /// <summary>
     /// Default constructor
@@ -25,6 +33,10 @@ public class ServicesService : IServicesService
         _financeSvc = financeSvc;
     }
 
+    #endregion Public Constructors
+
+    #region Public Methods
+
     /// <inheritdoc/>
     public Task<Service> GetByIdAsync(long id)
     {
@@ -34,6 +46,10 @@ public class ServicesService : IServicesService
             .Include(s => s.OfferedBy)
             .FindAsync(id);
     }
+
+    /// <inheritdoc/>
+    public Task<bool> IsAvailableAsync(Service service)
+        => Task.FromResult(service.IsAvailable);
 
     /// <inheritdoc/>
     public async Task<Service> ListAsync(
@@ -69,6 +85,52 @@ public class ServicesService : IServicesService
     }
 
     /// <inheritdoc/>
+    public async Task<ServiceReservation> ReserveAsync(User by, Service service)
+    {
+        await using var tx = await _uow.BeginTransactionAsync();
+
+        if (await _financeSvc.CalculateTotalUsableAsync(by) < service.Price)
+            throw new InsufficientBalanceException(by, service.Price);
+
+        var transaction = await _financeSvc.TransferUncomittedAsync(by, service.OfferedBy, service.Price);
+        var reservation = new ServiceReservation
+        {
+            Service = service,
+            Transaction = transaction,
+        };
+
+        _uow.ServiceReservations.Add(reservation);
+        await _uow.CommitAsync(tx);
+
+        return reservation;
+    }
+
+    /// <inheritdoc/>
+    public async Task<Service> SetAvailability(Service service, bool isAvailable)
+    {
+        if (service.IsAvailable == isAvailable)
+            return service;
+
+        service.IsAvailable = isAvailable;
+
+        _uow.Services.Update(service);
+        await _uow.CommitAsync();
+
+        return service;
+    }
+
+    /// <inheritdoc/>
+    public async Task UnlistAsync(Service service)
+    {
+        if (await _uow.ServiceReservations.Query().AnyAsync(
+            o => o.Service.Id == service.Id && o.Transaction.Confirmation == null))
+            throw new PendingReservationsLeftException(service);
+
+        _uow.Services.Remove(service);
+        await _uow.CommitAsync();
+    }
+
+    /// <inheritdoc/>
     public async Task<Service> UpdateAsync(
         Service service,
         string title,
@@ -92,53 +154,5 @@ public class ServicesService : IServicesService
         return service;
     }
 
-    /// <inheritdoc/>
-    public async Task UnlistAsync(Service service)
-    {
-        if (await _uow.ServiceReservations.Query().AnyAsync(
-            o => o.Service.Id == service.Id && o.Transaction.Confirmation == null))
-            throw new PendingReservationsLeftException(service);
-
-        _uow.Services.Remove(service);
-        await _uow.CommitAsync();
-    }
-
-    /// <inheritdoc/>
-    public Task<bool> IsAvailableAsync(Service service)
-        => Task.FromResult(service.IsAvailable);
-
-    /// <inheritdoc/>
-    public async Task<Service> SetAvailability(Service service, bool isAvailable)
-    {
-        if (service.IsAvailable == isAvailable)
-            return service;
-
-        service.IsAvailable = isAvailable;
-
-        _uow.Services.Update(service);
-        await _uow.CommitAsync();
-
-        return service;
-    }
-
-    /// <inheritdoc/>
-    public async Task<ServiceReservation> ReserveAsync(User by, Service service)
-    {
-        await using var tx = await _uow.BeginTransactionAsync();
-
-        if (await _financeSvc.CalculateTotalUsableAsync(by) < service.Price)
-            throw new InsufficientBalanceException(by, service.Price);
-
-        var transaction = await _financeSvc.TransferUncomittedAsync(by, service.OfferedBy, service.Price);
-        var reservation = new ServiceReservation
-        {
-            Service = service,
-            Transaction = transaction,
-        };
-
-        _uow.ServiceReservations.Add(reservation);
-        await _uow.CommitAsync(tx);
-
-        return reservation;
-    }
+    #endregion Public Methods
 }

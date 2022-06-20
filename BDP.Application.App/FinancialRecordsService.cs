@@ -1,6 +1,7 @@
 ﻿using BDP.Application.App.Exceptions;
 using BDP.Domain.Entities;
 using BDP.Domain.Repositories;
+using BDP.Domain.Repositories.Extensions;
 using BDP.Domain.Services;
 
 using System.Linq.Expressions;
