@@ -51,7 +51,7 @@ public interface IAuthService
     /// <param name="userId">The id of the user to which to send the message</param>
     /// <param name="title">The title of the message</param>
     /// <returns>The sent message</returns>
-    Task<Confirmation> SendConfirmationMessage(EntityKey<User> userId, string title);
+    Task<Confirmation> SendConfirmationMessageAsync(EntityKey<User> userId, string title);
 
     /// <summary>
     /// Asynchrnously confirms a user account with otp
