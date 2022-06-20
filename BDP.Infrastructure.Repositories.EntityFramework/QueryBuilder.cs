@@ -66,7 +66,7 @@ public sealed class QueryBuilder<T> : IQueryBuilder<T> where T : AuditableEntity
         }
         catch (InvalidOperationException ex)
         {
-            throw new NotFoundException($"no items were found", ex);
+            throw new NotFoundException("no items were found", ex);
         }
     }
 
@@ -84,7 +84,16 @@ public sealed class QueryBuilder<T> : IQueryBuilder<T> where T : AuditableEntity
 
     /// <inheritdoc/>
     public Task<T> FindAsync(long id)
-        => FirstAsync(i => i.Id == id);
+    {
+        try
+        {
+            return _query.FirstAsync(i => i.Id == id);
+        }
+        catch (InvalidOperationException ex)
+        {
+            throw new NotFoundException($"no items were found with id #{id}", ex);
+        }
+    }
 
     /// <inheritdoc/>
     public Task<T?> FindOrDefaultAsync(long id)
