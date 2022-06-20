@@ -1,5 +1,5 @@
 ﻿using BDP.Infrastructure.Repositories.EntityFramework;
-using BDP.Tests.Utils;
+using BDP.Tests.Util;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
