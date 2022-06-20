@@ -6,9 +6,9 @@
 public sealed class FinancialRecordVerification : AuditableEntity<FinancialRecordVerification>
 {
     /// <summary>
-    /// Gets or sets the outcome of the financial record verification
+    /// Gets or sets whether the financial record was approved or not
     /// </summary>
-    public FinancialRecordVerificationOutcome Outcome { get; set; }
+    public bool IsApproved { get; set; }
 
     /// <summary>
     /// Gets or sets the financial record id
@@ -34,13 +34,4 @@ public sealed class FinancialRecordVerification : AuditableEntity<FinancialRecor
     /// Gets or sets additional notes on verifications
     /// </summary>
     public string? Notes { get; set; }
-}
-
-/// <summary>
-/// An enum to represent the outcome of a financial record verification
-/// </summary>
-public enum FinancialRecordVerificationOutcome
-{
-    Rejected,
-    Accepted,
 }
