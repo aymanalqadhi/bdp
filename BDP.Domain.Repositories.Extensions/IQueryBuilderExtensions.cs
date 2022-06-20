@@ -6,12 +6,26 @@ namespace BDP.Domain.Repositories.Extensions;
 public static class IQueryBuilderExtensions
 {
     /// <summary>
+    /// Orders the current query ascendingly
+    /// </summary>
+    /// <returns>The modified query builder</returns>
+    public static IQueryBuilder<T> Order<T>(this IQueryBuilder<T> source) where T : AuditableEntity
+        => source.OrderBy(x => x.Id);
+
+    /// <summary>
+    /// Orders the current query descendingly
+    /// </summary>
+    /// <returns>The modified query builder</returns>
+    public static IQueryBuilder<T> OrderDescending<T>(this IQueryBuilder<T> source) where T : AuditableEntity
+        => source.OrderByDescending(x => x.Id);
+
+    /// <summary>
     /// Fetches the page with index <see cref="page"/> and size <see cref="pageSize"/>
     /// </summary>
     /// <param name="page">The index of the page (starts at 1)</param>
     /// <param name="pageLength">The length of the page</param>
     /// <returns>The modified query builder</returns>
-    /// <exception cref="Exceptions.InvalidPaginationParametersException"></exception>
+    /// <exception cref="InvalidPaginationParametersException"></exception>
     public static IQueryBuilder<T> Page<T>(this IQueryBuilder<T> source, int page, int pageLength)
         where T : AuditableEntity
     {
