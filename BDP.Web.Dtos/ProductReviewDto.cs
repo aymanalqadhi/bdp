@@ -1,12 +1,12 @@
-﻿namespace BDP.Web.Dtos;
+﻿using BDP.Domain.Entities;
 
-public class SellableReviewDto
+namespace BDP.Web.Dtos;
+
+/// <summary>
+/// A data-transfer object for <see cref="ProductReview"/>
+/// </summary>
+public sealed class ProductReviewDto : MutableEntityDto<ProductReview>
 {
-    /// <summary>
-    /// Gets or sets the id of the review
-    /// </summary>
-    public Guid Id { get; set; }
-
     /// <summary>
     /// Gets or sets teh rating value
     /// </summary>
@@ -21,9 +21,4 @@ public class SellableReviewDto
     /// Gets or sets the user who left the review
     /// </summary>
     public UserDto LeftBy { get; set; } = null!;
-
-    /// <summary>
-    /// Gets or sets the date at which the review was left
-    /// </summary>
-    public DateTime CreatedAt { get; set; }
 }
