@@ -204,6 +204,9 @@ public class BdpDbContext : DbContext
                      new() { Name = "Graduation Party" },
                      new() { Name = "Other" }
                     );
+
+        // model configuration
+        builder.ApplyConfigurationsFromAssembly(typeof(BdpDbContext).Assembly);
     }
 
     #endregion Protected Methods
