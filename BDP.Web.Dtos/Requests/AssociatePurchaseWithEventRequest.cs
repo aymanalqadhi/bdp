@@ -8,5 +8,5 @@ public class AssociatePurchaseWithEventRequest
     /// Gets or sets the id of the purchase to associate
     /// </summary>
     [Required]
-    public long PurchaseId { get; set; }
+    public Guid PurchaseId { get; set; }
 }

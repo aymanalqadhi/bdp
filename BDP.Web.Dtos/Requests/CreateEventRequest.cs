@@ -26,5 +26,5 @@ public class CreateEventRequest
     /// The id of the event type
     /// </summary>
     [Required]
-    public long EventTypeId { get; set; }
+    public Guid EventTypeId { get; set; }
 }

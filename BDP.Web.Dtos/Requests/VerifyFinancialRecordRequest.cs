@@ -8,7 +8,7 @@ public class VerifyFinancialRecordRequest
     /// <summary>
     /// Gets or sets the id of the record to verify
     /// </summary>
-    public int RecordId { get; set; }
+    public Guid RecordId { get; set; }
 
     /// <summary>
     /// Gets or sets optional notes to be attached to the vلاerification
