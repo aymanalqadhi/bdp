@@ -48,10 +48,9 @@ public class AuthService : IAuthService
     {
         var user = await _uow.Users
             .Query()
-            .Include(u => u.Groups)
             .FirstOrDefaultAsync(u => u.Username == username);
 
-        if (user == null || !_passwordHashingSvc.Verify(password, user.PasswordHash))
+        if (user is null || !_passwordHashingSvc.Verify(password, user.PasswordHash))
             throw new InvalidUsernameOrPasswordException();
 
         if (await _uow.RefreshTokens.Query().FirstOrDefaultAsync(
@@ -78,13 +77,11 @@ public class AuthService : IAuthService
         {
             Owner = user,
             Token = tokenGenerator(),
-
             UniqueIdentifier = deviceInfo.UniqueIdentifier,
             LastIpAddress = deviceInfo.LastIpAddress,
             LastLogin = DateTime.Now,
             HostName = deviceInfo.HostName,
             DeviceName = deviceInfo.DeviceName,
-
             ValidUntil = DateTime.Now.Add(_settings.RefreshTokenValidity),
         };
 
@@ -135,13 +132,13 @@ public class AuthService : IAuthService
         _uow.Users.Add(user);
 
         await _uow.CommitAsync();
-        await SendConfirmationMessage(user.Id, "Confirm your account");
+        await SendConfirmationMessageAsync(user.Id, "Confirm your account");
 
         return user;
     }
 
     /// <inheritdoc/>
-    public async Task<Confirmation> SendConfirmationMessage(EntityKey<User> userId, string title)
+    public async Task<Confirmation> SendConfirmationMessageAsync(EntityKey<User> userId, string title)
     {
         var user = await _uow.Users.Query().FindAsync(userId);
 
