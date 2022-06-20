@@ -76,6 +76,22 @@ public sealed class QueryBuilder<T> : IQueryBuilder<T> where T : AuditableEntity
     }
 
     /// <inheritdoc/>
+    public Task<T> SingleAsync(
+        Expression<Func<T, bool>> pred,
+        CancellationToken cancellationToken = default)
+    {
+        return _query.SingleAsync(pred, cancellationToken);
+    }
+
+    /// <inheritdoc/>
+    public Task<T?> SingleOrNullAsync(
+        Expression<Func<T, bool>> pred,
+        CancellationToken cancellationToken = default)
+    {
+        return _query.SingleOrDefaultAsync(pred, cancellationToken);
+    }
+
+    /// <inheritdoc/>
     public Task<T> FindAsync(long id)
         => FirstAsync(i => i.Id == id);
 
