@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Linq.Async" Version="6.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\BDP.Domain.Entities\BDP.Domain.Entities.csproj" />
     <ProjectReference Include="..\BDP.Domain.Services.Interfaces\BDP.Domain.Services.csproj" />
     <ProjectReference Include="..\BDP.Shared.Interfaces\BDP.Domain.Repositories.csproj" />

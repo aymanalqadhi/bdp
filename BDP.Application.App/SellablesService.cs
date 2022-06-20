@@ -1,7 +1,7 @@
-﻿using BDP.Domain.Entities;
+﻿using BDP.Application.App.Exceptions;
+using BDP.Domain.Entities;
 using BDP.Domain.Repositories;
-using BDP.Domain.Services.Exceptions;
-using BDP.Domain.Services.Interfaces;
+using BDP.Domain.Services;
 
 using System.Linq.Expressions;
 
@@ -13,7 +13,7 @@ public class SellablesService : ISellablesService
 
     private readonly IUnitOfWork _uow;
 
-    #endregion
+    #endregion Private fields
 
     #region Ctors
 
@@ -26,7 +26,7 @@ public class SellablesService : ISellablesService
         _uow = uow;
     }
 
-    #endregion
+    #endregion Ctors
 
     #region Public methods
 
@@ -86,5 +86,5 @@ public class SellablesService : ISellablesService
         );
     }
 
-    #endregion
+    #endregion Public methods
 }

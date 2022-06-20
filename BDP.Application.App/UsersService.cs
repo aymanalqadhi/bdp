@@ -1,7 +1,7 @@
-﻿using BDP.Domain.Entities;
+﻿using BDP.Application.App.Exceptions;
+using BDP.Domain.Entities;
 using BDP.Domain.Repositories;
-using BDP.Domain.Services.Exceptions;
-using BDP.Domain.Services.Interfaces;
+using BDP.Domain.Services;
 
 using System.Linq.Expressions;
 
@@ -14,7 +14,7 @@ public class UsersService : IUsersService
     private readonly IUnitOfWork _uow;
     private readonly IAttachmentsService _attachmentsSvc;
 
-    #endregion
+    #endregion Private fields
 
     #region Ctors
 
@@ -28,7 +28,7 @@ public class UsersService : IUsersService
         _attachmentsSvc = attachmentsSvc;
     }
 
-    #endregion
+    #endregion Ctors
 
     #region Public methods
 
@@ -79,7 +79,6 @@ public class UsersService : IUsersService
             includes: includes.ToArray(),
             descOrder: true);
     }
-
 
     /// <inheritdoc/>
     public async Task AddUserToGroupAsync(User user, string groupName)
@@ -133,7 +132,7 @@ public class UsersService : IUsersService
         return user;
     }
 
-    #endregion
+    #endregion Public methods
 
     #region Private methods
 
@@ -157,5 +156,5 @@ public class UsersService : IUsersService
             yield return u => u.Groups;
     }
 
-    #endregion
+    #endregion Private methods
 }
