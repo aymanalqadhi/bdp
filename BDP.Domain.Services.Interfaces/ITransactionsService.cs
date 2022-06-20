@@ -12,7 +12,7 @@ public interface ITransactionsService
     /// </summary>
     /// <param name="id">The id of the transaction</param>
     /// <returns>The transaction with the passed id</returns>
-    IQueryBuilder<Transaction> GetByIdAsync(EntityKey<Transaction> id);
+    IQueryBuilder<Transaction> GetById(EntityKey<Transaction> id);
 
     /// <summary>
     /// Asynchrnously gets transactions that a user has either sent or recieved
