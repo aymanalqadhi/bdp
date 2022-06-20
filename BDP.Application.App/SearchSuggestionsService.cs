@@ -9,8 +9,8 @@ public class SearchSuggestionsService : ISearchSuggestionsService
 {
     #region Private fields
 
-    private readonly IUsersService _usersSvc;
-    private readonly ISellablesService _sellablesSvc;
+    private readonly IUserProfilesService _userProfilesSvc;
+    private readonly IProductsService _productsSvc;
 
     #endregion Private fields
 
@@ -19,10 +19,12 @@ public class SearchSuggestionsService : ISearchSuggestionsService
     /// <summary>
     /// Default constructor
     /// </summary>
-    public SearchSuggestionsService(IUsersService usersSvc, ISellablesService sellablesSvc)
+    public SearchSuggestionsService(
+        IUserProfilesService userProfilesSvc,
+        IProductsService productsSvc)
     {
-        _usersSvc = usersSvc;
-        _sellablesSvc = sellablesSvc;
+        _userProfilesSvc = userProfilesSvc;
+        _productsSvc = productsSvc;
     }
 
     #endregion Ctors
@@ -32,38 +34,39 @@ public class SearchSuggestionsService : ISearchSuggestionsService
         string query,
         int length = 8,
         bool includeUsers = true,
-        bool includeSellables = true)
+        bool includeProducts = true)
     {
         var ret = new List<SearchSuggestion>();
 
         if (includeUsers)
         {
-            var items = _usersSvc
+            var items = _userProfilesSvc
                 .Search(query)
+                .Include(u => u.User)
                 .Page(1, length)
-                .AsAsyncEnumerable()
                 .Select(u => new SearchSuggestion
                 {
                     ItemId = u.Id.Id,
-                    Title = u.FullName ?? u.Username,
-                    Type = $"user - @{u.Username}"
-                });
+                    Title = u.FullName,
+                    Type = $"user - @{u.User.Username}",
+                })
+                .AsAsyncEnumerable();
 
             ret.AddRange(await items.ToListAsync());
         }
 
-        if (includeSellables)
+        if (includeProducts)
         {
-            var items = _sellablesSvc
-                .SearchAsync(query)
+            var items = _productsSvc
+                .Search(query)
                 .Page(1, length)
-                .AsAsyncEnumerable()
                 .Select(s => new SearchSuggestion
                 {
                     ItemId = s.Id.Id,
                     Title = s.Title,
-                    Type = s is Service ? "service" : "product"
-                });
+                    Type = "product",
+                })
+                .AsAsyncEnumerable();
 
             ret.AddRange(await items.ToListAsync());
         }
