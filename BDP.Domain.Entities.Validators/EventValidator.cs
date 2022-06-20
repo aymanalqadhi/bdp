@@ -23,5 +23,9 @@ public sealed class EventValidator : Validator<Event>
         RuleFor(e => e.Progress)
             .Must(p => p <= 1 && p >= 0)
             .WithMessage("invalid progress value");
+
+        RuleFor(e => e.TakesPlaceAt)
+            .GreaterThan(DateTime.Now)
+            .WithMessage("event date cannot be in the past");
     }
 }
