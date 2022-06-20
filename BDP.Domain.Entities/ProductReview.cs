@@ -3,5 +3,6 @@
 /// <summary>
 /// A class to represent a product review
 /// </summary>
-public sealed class ProductReview : SellableReview<Product>
-{ }
+public sealed class ProductReview : SellableReview<ProductReview, Product>
+{
+}
