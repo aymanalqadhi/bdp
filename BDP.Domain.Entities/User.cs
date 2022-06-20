@@ -51,6 +51,11 @@ public sealed class User : AuditableEntity<User>
     public bool IsVerified { get; set; } = false;
 
     /// <summary>
+    /// Gets or sets the role of the user
+    /// </summary>
+    public UserRole Role { get; set; } = UserRole.None;
+
+    /// <summary>
     /// Gets or sets the profile picture of the user
     /// </summary>
     public Attachment? ProfilePicture { get; set; }
@@ -64,9 +69,16 @@ public sealed class User : AuditableEntity<User>
     /// Gets or sets the list of phone numbers of the user
     /// </summary>
     public ICollection<PhoneNumber> PhoneNumbers { get; set; } = new List<PhoneNumber>();
+}
 
-    /// <summary>
-    /// Gets or sets the list of user groups that the user is enrolled in
-    /// </summary>
-    public ICollection<UserGroup> Groups { get; set; } = new List<UserGroup>();
+/// <summary>
+/// An enum to represent user roles
+/// </summary>
+public enum UserRole : uint
+{
+    None = 0,
+    Customer = 1,
+    Provider = 2,
+    Admin = 4,
+    Root = 0xFFFFFFFF,
 }
