@@ -1,4 +1,5 @@
-﻿using BDP.Domain.Services;
+﻿using BDP.Domain.Entities;
+using BDP.Domain.Services;
 using Microsoft.AspNetCore.Authorization;
 
 namespace BDP.Web.Api.Auth.Requirements.Handlers;
@@ -21,10 +22,14 @@ public class HasAllRolesRequirementHandler : AuthorizationHandler<HasAllRolesReq
         AuthorizationHandlerContext context,
         HasAllRolesRequirement requirement)
     {
-        if (context.User.IsInRole(UserRoles.Root) && _configSvc.GetBool("EnableRoot", false))
+        if ((context.User.IsInRole(UserRoleConverter.FromRole(UserRole.Root)) &&
+                _configSvc.GetBool("EnableRoot", false)) ||
+            requirement.Roles
+                .Select(UserRoleConverter.FromRole)
+                .All(context.User.IsInRole))
+        {
             context.Succeed(requirement);
-        else if (requirement.Roles.All(context.User.IsInRole))
-            context.Succeed(requirement);
+        }
 
         return Task.CompletedTask;
     }
