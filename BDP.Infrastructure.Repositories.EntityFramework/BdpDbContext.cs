@@ -125,9 +125,6 @@ public class BdpDbContext : DbContext
     /// <param name="builder"></param>
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        // configure transaction unique fields
-        builder.Entity<Transaction>().HasIndex(t => t.ConfirmationToken).IsUnique();
-
         // set decimal bakcend-type
         builder.Entity<Product>()
             .Property(s => s.Price)

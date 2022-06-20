@@ -10,5 +10,8 @@ public class TransactionTypeConfiguration : EntityTypeConfiguration<Transaction>
     public override void Configure(EntityTypeBuilder<Transaction> builder)
     {
         base.Configure(builder);
+
+        // indeces
+        builder.HasIndex(t => t.ConfirmationToken);
     }
 }
