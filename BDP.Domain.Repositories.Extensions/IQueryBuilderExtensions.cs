@@ -61,7 +61,7 @@ public static class IQueryBuilderExtensions
     /// <returns>The matched item</returns>
     public static Task<T> FindAsync<T>(
         this IQueryBuilder<T> source,
-        long id,
+        Guid id,
         CancellationToken cancellationToken = default) where T : AuditableEntity
     {
         return source.FirstAsync(i => i.Id == id, cancellationToken);
@@ -75,7 +75,7 @@ public static class IQueryBuilderExtensions
     /// <returns>The matched item if found, null otherwise</returns>
     public static Task<T?> FindOrDefaultAsync<T>(
         this IQueryBuilder<T> source,
-        long id,
+        Guid id,
         CancellationToken cancellationToken = default) where T : AuditableEntity
     {
         return source.FirstOrDefaultAsync(i => i.Id == id, cancellationToken);
