@@ -50,7 +50,9 @@ public class AccountController : ControllerBase
     [HttpGet("is-profile-complete")]
     public async Task<IActionResult> IsProfileCompleteAsync()
     {
-        var user = await _usersSvc.GetByUsernameAsync(User.GetUsername(), includeGroups: true);
+        var user = await _usersSvc.GetByUsername(User.GetUsername())
+            .Include(u => u.Groups)
+            .FirstAsync();
 
         return Ok(new
         {

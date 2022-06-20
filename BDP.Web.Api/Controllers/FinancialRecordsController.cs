@@ -85,7 +85,7 @@ public class FinancialRecordsController : ControllerBase
         string? note,
         IFormFile? document)
     {
-        var user = await _usersSvc.GetByUsernameAsync(User.GetUsername());
+        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
 
         return await _financialRecordsSvc.VerifyAsync(
             recordId,

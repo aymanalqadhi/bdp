@@ -48,7 +48,7 @@ public class TransactionsController : ControllerBase
     [Authorize]
     public async Task<IActionResult> MyTransactions([FromQuery] PagingParameters paging)
     {
-        var user = await _usersSvc.GetByUsernameAsync(User.GetUsername());
+        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var ret = _transactionsSvc.ForUserAsync(user)
             .PageDescending(paging.Page, paging.PageLength)
             .Include(t => t.From)
@@ -65,7 +65,7 @@ public class TransactionsController : ControllerBase
     [Authorize]
     public async Task<IActionResult> Confirm([FromBody] ConfirmTransactionRequest form)
     {
-        var user = await _usersSvc.GetByUsernameAsync(User.GetUsername());
+        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var ret = await _transactionsSvc.ConfirmAsync(user, form.Token);
 
         return Ok(_mapper.Map<TransactionConfirmationDto>(ret));
@@ -75,7 +75,7 @@ public class TransactionsController : ControllerBase
     [Authorize]
     public async Task<IActionResult> Cancel(int id)
     {
-        var user = await _usersSvc.GetByUsernameAsync(User.GetUsername());
+        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var ret = await _transactionsSvc.CancelAsync(user, id);
 
         return Ok(_mapper.Map<TransactionConfirmationDto>(ret));
@@ -85,7 +85,7 @@ public class TransactionsController : ControllerBase
     [Authorize]
     public async Task<IActionResult> GetConfirmationToken(long id)
     {
-        var user = await _usersSvc.GetByUsernameAsync(User.GetUsername());
+        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var tx = await _transactionsSvc.GetByIdAsync(id).FirstAsync();
 
         if (tx.From.Id != user.Id)

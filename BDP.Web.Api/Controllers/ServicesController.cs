@@ -47,7 +47,7 @@ public class ServicesController : ControllerBase
     [IsProvider]
     public async Task<IActionResult> Create([FromForm] CreateServiceRequest form)
     {
-        var user = await _usersSvc.GetByUsernameAsync(User.GetUsername());
+        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var service = await _servicesService.ListAsync(
             user, form.Title,
             form.Description,
@@ -67,7 +67,7 @@ public class ServicesController : ControllerBase
     [IsProvider]
     public async Task<IActionResult> Update([FromBody] UpdateServiceRequest form, int id)
     {
-        var user = await _usersSvc.GetByUsernameAsync(User.GetUsername());
+        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var service = await _servicesService.GetByIdAsync(id);
 
         if (user.Id != service.OfferedBy.Id)
@@ -88,7 +88,7 @@ public class ServicesController : ControllerBase
     [IsProvider]
     public async Task<IActionResult> Delete(int id)
     {
-        var user = await _usersSvc.GetByUsernameAsync(User.GetUsername());
+        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var service = await _servicesService.GetByIdAsync(id);
 
         if (user.Id != service.OfferedBy.Id)
@@ -102,7 +102,7 @@ public class ServicesController : ControllerBase
     [IsCustomer]
     public async Task<IActionResult> Reserve(int id)
     {
-        var user = await _usersSvc.GetByUsernameAsync(User.GetUsername());
+        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var service = await _servicesService.GetByIdAsync(id);
         var order = await _servicesService.ReserveAsync(user, service);
 

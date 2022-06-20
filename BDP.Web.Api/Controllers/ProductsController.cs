@@ -50,7 +50,7 @@ public class ProductsController : ControllerBase
     [IsProvider]
     public async Task<IActionResult> Create([FromForm] CreateProductRequest form)
     {
-        var user = await _usersSvc.GetByUsernameAsync(User.GetUsername());
+        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var product = await _productsSvc.ListAsync(
             user, form.Title,
             form.Description,
@@ -69,7 +69,7 @@ public class ProductsController : ControllerBase
     [IsProvider]
     public async Task<IActionResult> Update([FromBody] UpdateProductRequest form, int id)
     {
-        var user = await _usersSvc.GetByUsernameAsync(User.GetUsername());
+        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var product = await _productsSvc.GetByIdAsync(id);
 
         if (user.Id != product.OfferedBy.Id)
@@ -83,7 +83,7 @@ public class ProductsController : ControllerBase
     [IsProvider]
     public async Task<IActionResult> Delete(int id)
     {
-        var user = await _usersSvc.GetByUsernameAsync(User.GetUsername());
+        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var product = await _productsSvc.GetByIdAsync(id);
 
         if (user.Id != product.OfferedBy.Id)
@@ -105,7 +105,7 @@ public class ProductsController : ControllerBase
     [IsCustomer]
     public async Task<IActionResult> Order([FromBody] OrderProductRequest form, int id)
     {
-        var user = await _usersSvc.GetByUsernameAsync(User.GetUsername());
+        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var product = await _productsSvc.GetByIdAsync(id);
         var order = await _productsSvc.OrderAsync(user, product, form.Quantity);
 

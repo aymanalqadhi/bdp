@@ -47,7 +47,7 @@ public class PurchasesController : ControllerBase
     [Authorize]
     public async Task<IActionResult> MyPurchases([FromQuery] PagingParameters paging)
     {
-        var user = await _usersSvc.GetByUsernameAsync(User.GetUsername());
+        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var ret = _purchasesSvc.ForUserAsync(user)
             .PageDescending(paging.Page, paging.PageLength)
             .Include(p => p.Transaction)

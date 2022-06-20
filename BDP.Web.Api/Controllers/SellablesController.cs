@@ -47,7 +47,7 @@ public class SellablesController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetByUserPaged([Required] string username, [FromQuery] PagingParameters paging)
     {
-        var user = await _usersSvc.GetByUsernameAsync(username);
+        var user = await _usersSvc.GetByUsername(username).FirstAsync();
         var ret = _sellablesSvc.GetForAsync(user)
             .PageDescending(paging.Page, paging.PageLength)
             .Map(_mapper, typeof(SellableDto))
@@ -60,7 +60,7 @@ public class SellablesController : ControllerBase
     public async Task<IActionResult> Search([Required] string query, string? username, [FromQuery] PagingParameters paging)
     {
         var searchResult = username != null
-            ? _sellablesSvc.SearchForAsync(await _usersSvc.GetByUsernameAsync(username), query)
+            ? _sellablesSvc.SearchForAsync(await _usersSvc.GetByUsername(username).FirstAsync(), query)
             : _sellablesSvc.SearchAsync(query);
 
         var ret = searchResult
@@ -87,7 +87,7 @@ public class SellablesController : ControllerBase
     [Authorize]
     public async Task<IActionResult> MyReview(int id)
     {
-        var user = await _usersSvc.GetByUsernameAsync(User.GetUsername());
+        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var item = await _sellablesSvc.GetByIdAsync(id);
         var ret = await _sellableReviewsSvc.GetReviewForUser(item, user);
 
@@ -105,7 +105,7 @@ public class SellablesController : ControllerBase
     [Authorize]
     public async Task<IActionResult> CanReview(int id)
     {
-        var user = await _usersSvc.GetByUsernameAsync(User.GetUsername());
+        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var item = await _sellablesSvc.GetByIdAsync(id);
 
         return Ok(new
@@ -118,7 +118,7 @@ public class SellablesController : ControllerBase
     [IsCustomer]
     public async Task<IActionResult> Review(int id, [FromBody] SellableReviewRequest form)
     {
-        var user = await _usersSvc.GetByUsernameAsync(User.GetUsername());
+        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var item = await _sellablesSvc.GetByIdAsync(id);
         var ret = await _sellableReviewsSvc.ReviewAsync(item, user, form.Rating, form.Comment);
 

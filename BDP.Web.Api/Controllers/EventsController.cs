@@ -65,7 +65,7 @@ public class EventsController : ControllerBase
     [Authorize]
     public async Task<IActionResult> GetEvents([Required] string username, [FromQuery] PagingParameters paging)
     {
-        var user = await _usersSvc.GetByUsernameAsync(username);
+        var user = await _usersSvc.GetByUsername(username).FirstAsync();
         var ret = _eventsSvc.ForUserAsync(user)
             .PageDescending(paging.Page, paging.PageLength)
             .Include(e => e.Pictures)
@@ -81,7 +81,7 @@ public class EventsController : ControllerBase
     [IsCustomer]
     public async Task<IActionResult> Create([FromBody] CreateEventRequest form)
     {
-        var user = await _usersSvc.GetByUsernameAsync(User.GetUsername());
+        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var type = await _eventsSvc.GetTypeByIdAsync(form.EventTypeId);
         var ret = await _eventsSvc.CreateAsync(
             user, type, form.Title, form.Description, form.TakesPlaceAt);
@@ -93,7 +93,7 @@ public class EventsController : ControllerBase
     [IsCustomer]
     public async Task<IActionResult> Update(int id, [FromBody] UpdateEventRequest form)
     {
-        var user = await _usersSvc.GetByUsernameAsync(User.GetUsername());
+        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var @event = await _eventsSvc.GetByIdAsync(id);
 
         if (@event.CreatedBy.Id != user.Id)
@@ -118,7 +118,7 @@ public class EventsController : ControllerBase
         // TODO:
         // move ownership logic to the service
 
-        var user = await _usersSvc.GetByUsernameAsync(User.GetUsername());
+        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var @event = await _eventsSvc.GetByIdAsync(id);
 
         if (@event.CreatedBy.Id != user.Id)
@@ -133,7 +133,7 @@ public class EventsController : ControllerBase
     [IsCustomer]
     public async Task<IActionResult> GetAssociatePurchase(int id)
     {
-        var user = await _usersSvc.GetByUsernameAsync(User.GetUsername());
+        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var @event = await _eventsSvc.GetByIdAsync(id);
 
         if (@event.CreatedBy.Id != user.Id)
@@ -151,7 +151,7 @@ public class EventsController : ControllerBase
         // TODO:
         // move ownership logic to the service
 
-        var user = await _usersSvc.GetByUsernameAsync(User.GetUsername());
+        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var @event = await _eventsSvc.GetByIdAsync(id);
 
         if (@event.CreatedBy.Id != user.Id)
@@ -174,7 +174,7 @@ public class EventsController : ControllerBase
         // TODO:
         // move ownership logic to the service
 
-        var user = await _usersSvc.GetByUsernameAsync(User.GetUsername());
+        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var @event = await _eventsSvc.GetByIdAsync(id);
 
         if (@event.CreatedBy.Id != user.Id)
@@ -197,7 +197,7 @@ public class EventsController : ControllerBase
         // TODO:
         // move ownership logic to the service
 
-        var user = await _usersSvc.GetByUsernameAsync(User.GetUsername());
+        var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var @event = await _eventsSvc.GetByIdAsync(id);
 
         if (@event.CreatedBy.Id != user.Id)

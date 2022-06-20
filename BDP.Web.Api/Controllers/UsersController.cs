@@ -38,12 +38,15 @@ public class UsersController : ControllerBase
 
     [HttpGet("{username}")]
     public async Task<IActionResult> GetByUsernameAsync(string username)
-        => Ok(_mapper.Map<UserDto>(
-            await _usersSvc.GetByUsernameAsync(
-                username,
-                includeGroups: true,
-                includePhones: true)
-            ));
+    {
+        var ret = await _usersSvc.GetByUsername(username)
+            .Include(u => u.Groups)
+            .Include(u => u.PhoneNumbers)
+            .Map<User, UserDto>(_mapper)
+            .FirstAsync();
+
+        return Ok(ret);
+    }
 
     [HttpGet("search")]
     public IAsyncEnumerable<UserDto> Search(string query, [FromQuery] PagingParameters paging)
