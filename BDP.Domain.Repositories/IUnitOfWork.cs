@@ -37,11 +37,6 @@ public interface IUnitOfWork : IDisposable, IAsyncDisposable
     IRepository<FinancialRecordVerification> FinancialRecordVerficiations { get; }
 
     /// <summary>
-    /// Gets the phone numbers repository
-    /// </summary>
-    IRepository<PhoneNumber> PhoneNumbers { get; }
-
-    /// <summary>
     /// Gets the product orders repository
     /// </summary>
     IRepository<ProductOrder> ProductOrders { get; }
@@ -52,24 +47,14 @@ public interface IUnitOfWork : IDisposable, IAsyncDisposable
     IRepository<Product> Products { get; }
 
     /// <summary>
-    /// Gets the purchases repository
+    /// Gets the product reviews repository
     /// </summary>
-    IRepository<Purchase> Purchases { get; }
+    IRepository<ProductReview> ProductReviews { get; }
 
     /// <summary>
     /// Gets the refresh tokens repository
     /// </summary>
     IRepository<RefreshToken> RefreshTokens { get; }
-
-    /// <summary>
-    /// Gets the sellable reviews repository
-    /// </summary>
-    IRepository<SellableReview> SellableReviews { get; }
-
-    /// <summary>
-    /// Gets the sellables respository
-    /// </summary>
-    IRepository<Sellable> Sellables { get; }
 
     /// <summary>
     /// Gets the service reservations repository
@@ -82,6 +67,11 @@ public interface IUnitOfWork : IDisposable, IAsyncDisposable
     IRepository<Service> Services { get; }
 
     /// <summary>
+    /// Gets the services' reviews repository
+    /// </summary>
+    IRepository<ServiceReview> ServicesReviews { get; }
+
+    /// <summary>
     /// Gets the transaction confirmations repository
     /// </summary>
     IRepository<TransactionConfirmation> TransactionConfirmations { get; }
@@ -92,14 +82,14 @@ public interface IUnitOfWork : IDisposable, IAsyncDisposable
     IRepository<Transaction> Transactions { get; }
 
     /// <summary>
-    /// Gets the user groups repository
-    /// </summary>
-    IRepository<UserGroup> UserGroups { get; }
-
-    /// <summary>
     /// Gets the users repository
     /// </summary>
     IRepository<User> Users { get; }
+
+    /// <summary>
+    /// Gets the user profiles repository
+    /// </summary>
+    IRepository<UserProfile> UserProfiles { get; }
 
     /// <summary>
     /// Gets the logs repository
