@@ -1,6 +1,7 @@
 ﻿using BDP.Application.App.Exceptions;
 using BDP.Domain.Entities.Validators.Tests;
 using BDP.Domain.Repositories;
+using BDP.Domain.Repositories.Exceptions;
 using BDP.Domain.Services;
 using BDP.Infrastructure.Repositories.EntityFramework;
 using BDP.Tests.Util;
