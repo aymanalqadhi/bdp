@@ -126,11 +126,6 @@ public class BdpDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder builder)
     {
         // break cycles
-        builder.Entity<FinancialRecordVerification>()
-            .HasOne(t => t.VerifiedBy)
-            .WithMany()
-            .OnDelete(DeleteBehavior.Restrict);
-
         builder.Entity<ProductReview>()
             .HasOne(r => r.LeftBy)
             .WithMany()

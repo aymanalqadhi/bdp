@@ -1,4 +1,6 @@
 ﻿using BDP.Domain.Entities;
+
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BDP.Infrastructure.Repositories.EntityFramework.Configuration;
@@ -13,5 +15,11 @@ public class FinancialRecordVerificationTypeConfiguration : EntityTypeConfigurat
 
         // indeces
         builder.HasIndex(v => v.FinancialRecordId).IsUnique();
+
+        // relationships
+        builder
+            .HasOne(t => t.VerifiedBy)
+            .WithMany()
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
