@@ -1,4 +1,5 @@
 ﻿using BDP.Domain.Entities;
+using BDP.Domain.Services.Exceptions;
 
 namespace BDP.Domain.Services;
 
@@ -58,6 +59,8 @@ public interface IFinanceService
     /// <param name="amount">The amount of the deposit</param>
     /// <param name="note">An optional note left by the user</param>
     /// <returns></returns>
+    /// <exception cref="InvalidDepositAmountException"></exception>
+    /// <exception cref="PendingRequestExistsException"></exception>
     Task<FinancialRecord> DepositAsync(EntityKey<User> user, decimal amount, string? note = null);
 
     /// <summary>
@@ -67,5 +70,7 @@ public interface IFinanceService
     /// <param name="amount">The amount to withdraw</param>
     /// <param name="note">An optional note left by the user</param>
     /// <returns></returns>
+    /// <exception cref="InsufficientBalanceException"></exception>
+    /// <exception cref="PendingRequestExistsException"></exception>
     Task<FinancialRecord> WithdrawAsync(EntityKey<User> user, decimal amount, string? note = null);
 }

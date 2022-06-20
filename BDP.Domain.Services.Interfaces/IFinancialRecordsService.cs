@@ -1,5 +1,6 @@
 ﻿using BDP.Domain.Entities;
 using BDP.Domain.Repositories;
+using BDP.Domain.Services.Exceptions;
 
 using System.Linq.Expressions;
 
@@ -38,6 +39,8 @@ public interface IFinancialRecordsService
     /// <param name="document">The document of the deposit/withdraw</param>
     /// <param name="notes">Addtional notes</param>
     /// <returns>The created verification object</returns>
+    /// <exception cref="InsufficientPermissionsException"></exception>
+    /// <exception cref="FinancialRecordAlreadyVerifiedException"></exception>
     Task<FinancialRecordVerification> VerifyAsync(
         EntityKey<User> userId,
         EntityKey<FinancialRecord> recordId,
@@ -52,6 +55,8 @@ public interface IFinancialRecordsService
     /// <param name="document">The document of the deposit/withdraw</param>
     /// <param name="notes">Addtional notes</param>
     /// <returns>The created verification object</returns>
+    /// <exception cref="InsufficientPermissionsException"></exception>
+    /// <exception cref="FinancialRecordAlreadyVerifiedException"></exception>
     Task<FinancialRecordVerification> DeclineAsync(
         EntityKey<User> userId,
         EntityKey<FinancialRecord> recordId,

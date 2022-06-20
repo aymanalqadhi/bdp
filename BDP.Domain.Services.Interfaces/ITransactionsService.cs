@@ -1,5 +1,6 @@
 ﻿using BDP.Domain.Entities;
 using BDP.Domain.Repositories;
+using BDP.Domain.Services.Exceptions;
 
 using System.Linq.Expressions;
 
@@ -51,6 +52,7 @@ public interface ITransactionsService
     /// <param name="senderId">The id of the sender of the transaction</param>
     /// <param name="confirmationToken">The token to confirm with</param>
     /// <returns>The transaction confirmation</returns>
+    /// <exception cref="TransactionAlreadyConfirmedException"></exception>
     Task<TransactionConfirmation> ConfirmAsync(EntityKey<User> senderId, string confirmationToken);
 
     /// <summary>
@@ -59,5 +61,6 @@ public interface ITransactionsService
     /// <param name="receiverId">The id of the receiver of the transaction</param>
     /// <param name="transactionId">The id of the transaction to cancel</param>
     /// <returns>The canceled transaction confirmation</returns>
+    /// <exception cref="TransactionAlreadyConfirmedException"></exception>
     Task<TransactionConfirmation> CancelAsync(EntityKey<User> receiverId, EntityKey<Transaction> transactionId);
 }

@@ -1,4 +1,5 @@
 ﻿using BDP.Domain.Entities;
+using BDP.Domain.Services.Exceptions;
 
 namespace BDP.Domain.Services;
 
@@ -12,6 +13,8 @@ public interface IAuthService
     /// <param name="tokenGenerator">The function used to generate tokens</param>
     /// <param name="deviceInfo">The info of the device that requested the token</param>
     /// <returns>The created refresh token</returns>
+    /// <exception cref="InvalidUsernameOrPasswordException"></exception>
+    /// <exception cref="MaxSessionsCountExceeded"></exception>
     Task<(User, RefreshToken)> SignInAsync(
         string username,
         string password,
@@ -43,6 +46,8 @@ public interface IAuthService
     /// <param name="email">The email of the user</param>
     /// <param name="password">The password of the user</param>
     /// <returns>The created user account</returns>
+    /// <exception cref="AlreadyUsedUsernameException"></exception>
+    /// <exception cref="AlreadyUsedEmailException"></exception>
     Task<User> SignUpAsync(string username, string email, string password);
 
     /// <summary>

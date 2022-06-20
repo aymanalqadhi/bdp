@@ -1,5 +1,6 @@
 ﻿using BDP.Domain.Entities;
 using BDP.Domain.Repositories;
+using BDP.Domain.Services.Exceptions;
 
 namespace BDP.Domain.Services;
 
@@ -30,6 +31,7 @@ public interface IUserProfilesService
     /// <param name="fullName">The full name of the user</param>
     /// <param name="profilePicture">(optional) profile picture file</param>
     /// <returns>The created user profile</returns>
+    /// <exception cref="ExistingProfileFoundException"></exception>
     Task<UserProfile> CreateAsync(
         EntityKey<User> userId,
         UserRole role,

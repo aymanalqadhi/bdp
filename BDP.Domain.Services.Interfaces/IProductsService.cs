@@ -1,5 +1,6 @@
 ﻿using BDP.Domain.Entities;
 using BDP.Domain.Repositories;
+using BDP.Domain.Services.Exceptions;
 
 namespace BDP.Domain.Services;
 
@@ -33,6 +34,7 @@ public interface IProductsService
     /// <param name="price">The price of the variant</param>
     /// <param name="attachments">The attachments of the variant</param>
     /// <returns>The created variant object</returns>
+    /// <exception cref="InvalidPriceException"></exception>
     Task<ProductVariant> AddReservableVariantAsync(
         EntityKey<Product> productId,
         string name,
@@ -50,6 +52,7 @@ public interface IProductsService
     /// <param name="price">The price of the variant</param>
     /// <param name="attachments">The attachments of the variant</param>
     /// <returns>The created variant object</returns>
+    /// <exception cref="InvalidPriceException"></exception>
     Task<ProductVariant> AddSellableVariantAsync(
         EntityKey<Product> productId,
         string name,
@@ -84,6 +87,7 @@ public interface IProductsService
     /// <param name="productId">The id of the product to remove</param>
     /// <param name="cancelPurchases">If true, cancel all pending purchases of the product</param>
     /// <returns></returns>
+    /// <exception cref="PendingPurchasesLeftException"></exception>
     Task RemoveAsync(EntityKey<Product> productId, bool cancelPurchases = false);
 
     /// <summary>
@@ -106,6 +110,7 @@ public interface IProductsService
     /// <param name="variantId">The id of the variant to add the stock batch for</param>
     /// <param name="quantity">The quantity of the stock batch</param>
     /// <returns>The created stock batch</returns>
+    /// <exception cref="InvalidProductVaraintTypeException"></exception>
     Task<StockBatch> AddStockBatchAsync(EntityKey<ProductVariant> variantId, uint quantity);
 
     /// <summary>
@@ -113,6 +118,7 @@ public interface IProductsService
     /// </summary>
     /// <param name="batchId">The id of the batch to remove</param>
     /// <returns></returns>
+    /// <exception cref="NotEnoughStockException"></exception>
     Task RemoveStockBatchAsync(EntityKey<StockBatch> batchId);
 
     /// <summary>
@@ -130,6 +136,7 @@ public interface IProductsService
     /// <param name="start">The start of the reservation </param>
     /// <param name="end"></param>
     /// <returns>The created reservation window</returns>
+    /// <exception cref="InvalidProductVaraintTypeException"></exception>
     Task<ReservationWindow> AddReservationWindowAsync(
         EntityKey<ProductVariant> variantId,
         Weekday weekdays,

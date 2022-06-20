@@ -1,5 +1,6 @@
 ﻿using BDP.Domain.Entities;
 using BDP.Domain.Repositories;
+using BDP.Domain.Services.Exceptions;
 
 namespace BDP.Domain.Services;
 
@@ -28,6 +29,7 @@ public interface IProductReviewsService
     /// <param name="rating">The rating value (between 1 and 5)</param>
     /// <param name="comment">An optional comment string</param>
     /// <returns>The created review</returns>
+    /// <exception cref="ItemAlreadyReviewedException"></exception>
     Task<ProductReview> ReviewAsync(
         EntityKey<User> userId,
         EntityKey<Product> productId,

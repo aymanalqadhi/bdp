@@ -1,5 +1,6 @@
 ﻿using BDP.Domain.Entities;
 using BDP.Domain.Repositories;
+using BDP.Domain.Services.Exceptions;
 
 using System.Linq.Expressions;
 
@@ -85,6 +86,7 @@ public interface IEventsService
     /// <param name=eventId">The id of the event which to update</param>
     /// <param name="progress">The new progress value</param>
     /// <returns></returns>
+    /// <exception cref="InvalidRangeException"></exception>
     Task UpdateProgressAsync(EntityKey<Event> eventId, double progress);
 
     #endregion Public Methods

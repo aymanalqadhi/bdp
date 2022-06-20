@@ -1,5 +1,6 @@
 ﻿using BDP.Domain.Entities;
 using BDP.Domain.Repositories;
+using BDP.Domain.Services.Exceptions;
 
 using System.Linq.Expressions;
 
@@ -19,6 +20,9 @@ public interface IPurchasesService
     /// <param name="variantId">The product variant to order</param>
     /// <param name="quantity">The quantity to be ordered</param>
     /// <returns>The created order</returns>
+    /// <exception cref="InvalidProductVaraintTypeException"></exception>
+    /// <exception cref="NotEnoughStockException"></exception>
+    /// <exception cref="InsufficientBalanceException"></exception>
     Task<Order> OrderAsync(
         EntityKey<User> userId,
         EntityKey<ProductVariant> variantId,
@@ -30,6 +34,8 @@ public interface IPurchasesService
     /// <param name="userId">The id of the user to make the reservation for</param>
     /// <param name="variantId">The product variant to reserve</param>
     /// <returns>The created reservation</returns>
+    /// <exception cref="InvalidProductVaraintTypeException"></exception>
+    /// <exception cref="InsufficientBalanceException"></exception>
     Task<Reservation> ReserveAsync(
         EntityKey<User> userId,
         EntityKey<ProductVariant> variantId);
