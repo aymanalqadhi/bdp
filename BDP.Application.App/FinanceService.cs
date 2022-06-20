@@ -137,7 +137,7 @@ public class FinanceService : IFinanceService
     #region Private methods
 
     private async Task<FinancialRecord> CreateFinancialRecord(
-        User user, decimal amount, string? note, IDatabaseTransaction tx)
+        User user, decimal amount, string? note, IAsyncDatabaseTransaction tx)
     {
         if (amount == 0)
             throw new InvalidDepositAmountException(amount);

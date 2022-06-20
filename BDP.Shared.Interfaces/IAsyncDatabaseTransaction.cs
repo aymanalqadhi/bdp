@@ -1,6 +1,6 @@
 ﻿namespace BDP.Domain.Repositories;
 
-public interface IDatabaseTransaction : IAsyncDisposable
+public interface IAsyncDatabaseTransaction : IAsyncDisposable
 {
     /// <summary>
     /// Asynchrnously commits the transaction
