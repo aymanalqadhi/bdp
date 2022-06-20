@@ -10,7 +10,7 @@ public sealed class FinancialRecordVerificationDto : EntityDto<FinancialRecordVe
     /// <summary>
     /// Gets or sets whether the record has been accepted
     /// </summary>
-    public bool IsAccepted { get; set; }
+    public bool IsApproved { get; set; }
 
     /// <summary>
     /// Gets or sets the document of the record verification
