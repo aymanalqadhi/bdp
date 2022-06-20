@@ -70,7 +70,7 @@ public interface IQueryBuilder<T> where T : AuditableEntity
     /// no items were found
     /// </summary>
     /// <returns>the first item in the query if found, null otherwise</returns>
-    Task<T?> FirstOrNullAsync(CancellationToken cancellationToken = default);
+    Task<T?> FirstOrDefaultAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Asynchronously gets the first item in the query. A null is returned if
@@ -78,7 +78,7 @@ public interface IQueryBuilder<T> where T : AuditableEntity
     /// </summary>
     /// <param name="pred">The filting expression</param>
     /// <returns>the first item in the query if found, null otherwise</returns>
-    Task<T?> FirstOrNullAsync(
+    Task<T?> FirstOrDefaultAsync(
         Expression<Func<T, bool>> pred,
         CancellationToken cancellationToken = default);
 

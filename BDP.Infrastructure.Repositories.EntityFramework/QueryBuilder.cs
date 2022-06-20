@@ -71,11 +71,11 @@ public sealed class QueryBuilder<T> : IQueryBuilder<T> where T : AuditableEntity
     }
 
     /// <inheritdoc/>
-    public Task<T?> FirstOrNullAsync(CancellationToken cancellationToken = default)
+    public Task<T?> FirstOrDefaultAsync(CancellationToken cancellationToken = default)
         => _query.FirstOrDefaultAsync(cancellationToken);
 
     /// <inheritdoc/>
-    public Task<T?> FirstOrNullAsync(
+    public Task<T?> FirstOrDefaultAsync(
         Expression<Func<T, bool>> pred,
         CancellationToken cancellationToken = default)
     {
@@ -97,7 +97,7 @@ public sealed class QueryBuilder<T> : IQueryBuilder<T> where T : AuditableEntity
 
     /// <inheritdoc/>
     public Task<T?> FindOrDefaultAsync(long id)
-        => FirstOrNullAsync(i => i.Id == id);
+        => FirstOrDefaultAsync(i => i.Id == id);
 
     /// <inheritdoc/>
     public Task<bool> HasItemsAsync(CancellationToken cancellationToken = default)

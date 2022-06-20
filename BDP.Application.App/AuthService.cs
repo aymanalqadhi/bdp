@@ -48,12 +48,12 @@ public class AuthService : IAuthService
         var user = await _uow.Users
             .Query()
             .Include(u => u.Groups)
-            .FirstOrNullAsync(u => u.Username == username);
+            .FirstOrDefaultAsync(u => u.Username == username);
 
         if (user == null || !_passwordHashingSvc.Verify(password, user.PasswordHash))
             throw new InvalidUsernameOrPasswordException();
 
-        if (await _uow.RefreshTokens.Query().FirstOrNullAsync(
+        if (await _uow.RefreshTokens.Query().FirstOrDefaultAsync(
             r => r.Owner.Id == user.Id &&
             r.UniqueIdentifier == deviceInfo.UniqueIdentifier &&
             r.ValidUntil > DateTime.Now)
