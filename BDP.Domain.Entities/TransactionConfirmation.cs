@@ -13,7 +13,7 @@ public sealed class TransactionConfirmation : AuditableEntity<TransactionConfirm
     /// <summary>
     /// Gets or sets the id of the transaction
     /// </summary>
-    public Guid TransactionId { get; set; }
+    public EntityKey<Transaction> TransactionId { get; set; } = null!;
 
     /// <summary>
     /// Gets or sets the transaction this confirmation belongs to
