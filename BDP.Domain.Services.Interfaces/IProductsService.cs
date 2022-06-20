@@ -3,6 +3,9 @@ using BDP.Domain.Repositories;
 
 namespace BDP.Domain.Services;
 
+/// <summary>
+/// A service to manage products
+/// </summary>
 public interface IProductsService
 {
     #region Public Methods
@@ -56,13 +59,6 @@ public interface IProductsService
      );
 
     /// <summary>
-    /// Asynchronously gets the available quantity for a sellable product variant
-    /// </summary>
-    /// <param name="variantId">The id of the sellable product variant</param>
-    /// <returns>The avaiable quantity</returns>
-    Task<uint> AvailableSellableVariantQuantityAsync(EntityKey<ProductVariant> variantId);
-
-    /// <summary>
     /// Gets products by category
     /// </summary>
     /// <param name="categoryId">The id of the category to get products in</param>
@@ -70,29 +66,17 @@ public interface IProductsService
     IQueryBuilder<Product> GetByCategory(EntityKey<Category> categoryId);
 
     /// <summary>
+    /// Gets products for a user, limited with pagination
+    /// </summary>
+    /// <param name="userId">The id of the user which to get the products for</param>
+    /// <returns></returns>
+    IQueryBuilder<Product> GetFor(EntityKey<User> userId);
+
+    /// <summary>
     /// Gets products
     /// </summary>
     /// <returns>A query builder for products</returns>
     IQueryBuilder<Product> GetProducts();
-
-    /// <summary>
-    /// Asynchronously checks if a product variant is available or not
-    /// </summary>
-    /// <param name="variantId">The id of the product to check for</param>
-    /// <returns>True if the product variant is available, false otherwise</returns>
-    Task<bool> IsAvailableAsync(EntityKey<ProductVariant> variantId);
-
-    /// <summary>
-    /// Asynchronously makes an order for a sellable product variant
-    /// </summary>
-    /// <param name="userId"></param>
-    /// <param name="variantId"></param>
-    /// <param name="quantity"></param>
-    /// <returns></returns>
-    Task<Order> OrderAsync(
-        EntityKey<User> userId,
-        EntityKey<ProductVariant> variantId,
-        uint quantity);
 
     /// <summary>
     /// Asynchronously removes a product
@@ -110,14 +94,11 @@ public interface IProductsService
     Task RemoveVariantAsync(EntityKey<ProductVariant> variantid);
 
     /// <summary>
-    /// Asynchronously makes a reservation for a reservable product variant
+    /// Searches products gloablly
     /// </summary>
-    /// <param name="userId"></param>
-    /// <param name="variantId"></param>
+    /// <param name="query">The query to look for</param>
     /// <returns></returns>
-    Task<Order> ReserveAsync(
-        EntityKey<User> userId,
-        EntityKey<ProductVariant> variantId);
+    IQueryBuilder<Product> Search(string query);
 
     #endregion Public Methods
 }
