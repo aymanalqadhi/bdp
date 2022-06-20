@@ -3,8 +3,6 @@ using BDP.Domain.Entities;
 using BDP.Domain.Repositories;
 using BDP.Domain.Services;
 
-using Isopoh.Cryptography.Argon2;
-
 using System.Linq.Expressions;
 
 namespace BDP.Application.App;
