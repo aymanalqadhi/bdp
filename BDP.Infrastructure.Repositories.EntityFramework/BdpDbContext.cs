@@ -81,14 +81,14 @@ public class BdpDbContext : DbContext
     public DbSet<Product> Products => Set<Product>();
 
     /// <summary>
+    /// Gets the product variants table
+    /// </summary>
+    public DbSet<ProductVariant> ProductVariants => Set<ProductVariant>();
+
+    /// <summary>
     /// Gets the referesh tokens table
     /// </summary>
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
-
-    /// <summary>
-    /// Gets the reservable variants table
-    /// </summary>
-    public DbSet<ReservableVariant> ReservableVariants => Set<ReservableVariant>();
 
     /// <summary>
     /// Gets the reservations table
@@ -96,9 +96,14 @@ public class BdpDbContext : DbContext
     public DbSet<Reservation> Reservations => Set<Reservation>();
 
     /// <summary>
-    /// Gets the sellable variants table
+    /// Gets the reservable variants' reservation windows table
     /// </summary>
-    public DbSet<SellableVariant> SellableVariants => Set<SellableVariant>();
+    public DbSet<ReservationWindow> ReservationWindows => Set<ReservationWindow>();
+
+    /// <summary>
+    /// Gets the sellable variants' stock batches talbe
+    /// </summary>
+    public DbSet<StockBatch> StockBatches => Set<StockBatch>();
 
     /// <summary>
     /// Gets the transaction confirmations table
