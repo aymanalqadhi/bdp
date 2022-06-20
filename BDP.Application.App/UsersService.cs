@@ -48,7 +48,7 @@ public class UsersService : IUsersService
     }
 
     /// <inheritdoc/>
-    public async Task AddUserToGroupAsync(Guid userId, string groupName)
+    public async Task AddUserToGroupAsync(EntityKey<User> userId, string groupName)
     {
         // TODO:
         // Fix the logic here

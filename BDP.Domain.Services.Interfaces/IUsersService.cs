@@ -25,7 +25,7 @@ public interface IUsersService
     /// <param name="userId">The id of the user which to be added to the group</param>
     /// <param name="groupName">The group which to add the user to</param>
     /// <returns></returns>
-    Task AddUserToGroupAsync(Guid userId, string groupName);
+    Task AddUserToGroupAsync(EntityKey<User> userId, string groupName);
 
     /// <summary>
     /// Asynchronously sets reqiured fileds for a profile to be complete
