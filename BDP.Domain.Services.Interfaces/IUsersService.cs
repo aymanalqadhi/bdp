@@ -22,10 +22,10 @@ public interface IUsersService
     /// <summary>
     /// Asynchronously adds a user to a specific group
     /// </summary>
-    /// <param name="user">The user which to be added to the group</param>
+    /// <param name="userId">The id of the user which to be added to the group</param>
     /// <param name="groupName">The group which to add the user to</param>
     /// <returns></returns>
-    Task AddUserToGroupAsync(User user, string groupName);
+    Task AddUserToGroupAsync(Guid userId, string groupName);
 
     /// <summary>
     /// Asynchronously sets reqiured fileds for a profile to be complete
