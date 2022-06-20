@@ -1,10 +1,13 @@
 ﻿using BDP.Domain.Entities;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace BDP.Infrastructure.Repositories.EntityFramework;
 
 public class BdpDbContext : DbContext
 {
+    #region Public Constructors
+
     /// <summary>
     /// Default constructor
     /// </summary>
@@ -12,6 +15,119 @@ public class BdpDbContext : DbContext
     public BdpDbContext(DbContextOptions options) : base(options)
     {
     }
+
+    #endregion Public Constructors
+
+    #region Properties
+
+    /// <summary>
+    /// Gets the attachments table
+    /// </summary>
+    public DbSet<Attachment> Attachments => Set<Attachment>();
+
+    /// <summary>
+    /// Gets the confirmations table
+    /// </summary>
+    public DbSet<Confirmation> Confirmations => Set<Confirmation>();
+
+    /// <summary>
+    /// Gets the events table
+    /// </summary>
+    public DbSet<Event> Events => Set<Event>();
+
+    /// <summary>
+    /// Gets the event types table
+    /// </summary>
+    public DbSet<EventType> EventTypes => Set<EventType>();
+
+    /// <summary>
+    /// Gets the financial records table
+    /// </summary>
+    public DbSet<FinancialRecord> FinancialRecords => Set<FinancialRecord>();
+
+    /// <summary>
+    /// Gets the financial record verfications table
+    /// </summary>
+    public DbSet<FinancialRecordVerification> FinancialRecordVerifications => Set<FinancialRecordVerification>();
+
+    /// <summary>
+    /// Gets the phone numbers table
+    /// </summary>
+    public DbSet<PhoneNumber> PhoneNumbers => Set<PhoneNumber>();
+
+    /// <summary>
+    /// Gets the product orders table
+    /// </summary>
+    public DbSet<ProductOrder> ProductOrders => Set<ProductOrder>();
+
+    /// <summary>
+    /// Gets the products table
+    /// </summary>
+    public DbSet<Product> Products => Set<Product>();
+
+    /// <summary>
+    /// Gets the purchases table
+    /// </summary>
+    public DbSet<Purchase> Purchases => Set<Purchase>();
+
+    /// <summary>
+    /// Gets the referesh tokens table
+    /// </summary>
+    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+
+    /// <summary>
+    /// Gets the sellable reviews table
+    /// </summary>
+    public DbSet<SellableReview> SellableReviews => Set<SellableReview>();
+
+    /// <summary>
+    /// Gets the sellables table
+    /// </summary>
+    public DbSet<Sellable> Sellables => Set<Sellable>();
+
+    /// <summary>
+    /// Gets the service reservations table
+    /// </summary>
+    public DbSet<ServiceReservation> ServiceReservations => Set<ServiceReservation>();
+
+    /// <summary>
+    /// Gets the services table
+    /// </summary>
+    public DbSet<Service> Services => Set<Service>();
+
+    /// <summary>
+    /// Gets the transaction confirmations table
+    /// </summary>
+    public DbSet<TransactionConfirmation> TransactionConfirmations => Set<TransactionConfirmation>();
+
+    /// <summary>
+    /// Gets the transactions table
+    /// </summary>
+    public DbSet<Transaction> Transactions => Set<Transaction>();
+
+    /// <summary>
+    /// Gets the user groups table
+    /// </summary>
+    public DbSet<UserGroup> UserGroups => Set<UserGroup>();
+
+    /// <summary>
+    /// Gets the users table
+    /// </summary>
+    public DbSet<User> Users => Set<User>();
+
+    /// <summary>
+    /// Gets the logs table
+    /// </summary>
+    public DbSet<Log> Logs => Set<Log>();
+
+    /// <summary>
+    /// Gets the log tags table
+    /// </summary>
+    public DbSet<LogTag> LogTags => Set<LogTag>();
+
+    #endregion Properties
+
+    #region Protected Methods
 
     /// <summary>
     /// Configures database context on creation
@@ -137,98 +253,5 @@ public class BdpDbContext : DbContext
                     );
     }
 
-    /// <summary>
-    /// Gets the users table
-    /// </summary>
-    public DbSet<User> Users => Set<User>();
-
-    /// <summary>
-    /// Gets the phone numbers table
-    /// </summary>
-    public DbSet<PhoneNumber> PhoneNumbers => Set<PhoneNumber>();
-
-    /// <summary>
-    /// Gets the user groups table
-    /// </summary>
-    public DbSet<UserGroup> UserGroups => Set<UserGroup>();
-
-    /// <summary>
-    /// Gets the referesh tokens table
-    /// </summary>
-    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
-
-    /// <summary>
-    /// Gets the events table
-    /// </summary>
-    public DbSet<Event> Events => Set<Event>();
-
-    /// <summary>
-    /// Gets the event types table
-    /// </summary>
-    public DbSet<EventType> EventTypes => Set<EventType>();
-
-    /// <summary>
-    /// Gets the sellables table
-    /// </summary>
-    public DbSet<Sellable> Sellables => Set<Sellable>();
-
-    /// <summary>
-    /// Gets the sellable reviews table
-    /// </summary>
-    public DbSet<SellableReview> SellableReviews => Set<SellableReview>();
-
-    /// <summary>
-    /// Gets the products table
-    /// </summary>
-    public DbSet<Product> Products => Set<Product>();
-
-    /// <summary>
-    /// Gets the product orders table
-    /// </summary>
-    public DbSet<ProductOrder> ProductOrders => Set<ProductOrder>();
-
-    /// <summary>
-    /// Gets the services table
-    /// </summary>
-    public DbSet<Service> Services => Set<Service>();
-
-    /// <summary>
-    /// Gets the service reservations table
-    /// </summary>
-    public DbSet<ServiceReservation> ServiceReservations => Set<ServiceReservation>();
-
-    /// <summary>
-    /// Gets the purchases table
-    /// </summary>
-    public DbSet<Purchase> Purchases => Set<Purchase>();
-
-    /// <summary>
-    /// Gets the attachments table
-    /// </summary>
-    public DbSet<Attachment> Attachments => Set<Attachment>();
-
-    /// <summary>
-    /// Gets the transactions table
-    /// </summary>
-    public DbSet<Transaction> Transactions => Set<Transaction>();
-
-    /// <summary>
-    /// Gets the financial records table
-    /// </summary>
-    public DbSet<FinancialRecord> FinancialRecords => Set<FinancialRecord>();
-
-    /// <summary>
-    /// Gets the transaction confirmations table
-    /// </summary>
-    public DbSet<TransactionConfirmation> TransactionConfirmations => Set<TransactionConfirmation>();
-
-    /// <summary>
-    /// Gets the financial record verfications table
-    /// </summary>
-    public DbSet<FinancialRecordVerification> FinancialRecordVerifications => Set<FinancialRecordVerification>();
-
-    /// <summary>
-    /// Gets the confirmations table
-    /// </summary>
-    public DbSet<Confirmation> Confirmations => Set<Confirmation>();
+    #endregion Protected Methods
 }
