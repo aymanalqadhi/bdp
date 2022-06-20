@@ -5,7 +5,7 @@ public class SellableDto
     /// <summary>
     /// Gets or sets the id of the user
     /// </summary>
-    public long Id { get; set; }
+    public Guid Id { get; set; }
 
     /// <summary>
     /// Gets or sets the title of the sellable

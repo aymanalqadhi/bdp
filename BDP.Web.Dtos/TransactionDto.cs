@@ -5,7 +5,7 @@ public class TransactionDto
     /// <summary>
     /// Gets or sets the id of the transaction
     /// </summary>
-    public long Id { get; set; }
+    public Guid Id { get; set; }
 
     /// <summary>
     /// Gets or sets the amount set by the transaction

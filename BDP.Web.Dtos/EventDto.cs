@@ -5,7 +5,7 @@ public class EventDto
     /// <summary>
     /// Gets or sets the id of the event
     /// </summary>
-    public long Id { get; set; }
+    public Guid Id { get; set; }
 
     /// <summary>
     /// Gets or sets the event title

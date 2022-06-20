@@ -5,7 +5,7 @@ public class FinancialRecordVerificationDto
     /// <summary>
     /// Gets or sets the id of the verification
     /// </summary>
-    public long Id { get; set; }
+    public Guid Id { get; set; }
 
     /// <summary>
     /// Gets or sets whether the record has been accepted

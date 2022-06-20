@@ -5,7 +5,7 @@ public class EventTypeDto
     /// <summary>
     /// Gets or sets the id of the event type
     /// </summary>
-    public long Id { get; set; }
+    public Guid Id { get; set; }
 
     /// <summary>
     /// Gets or sets the name of the event type

@@ -5,7 +5,7 @@ public class TransactionConfirmationDto
     /// <summary>
     /// Gets or sets the id of the confirmation
     /// </summary>
-    public long Id { get; set; }
+    public Guid Id { get; set; }
 
     /// <summary>
     /// Gets or sets whether the transaction has been accepted or not

@@ -5,7 +5,7 @@ public class FinancialRecordDto
     /// <summary>
     /// Gets or sets the financial record id
     /// </summary>
-    public long Id { get; set; }
+    public Guid Id { get; set; }
 
     /// <summary>
     /// Gets or sets the amount associated with the financial record
