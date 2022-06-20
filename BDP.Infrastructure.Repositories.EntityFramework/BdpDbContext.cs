@@ -195,16 +195,6 @@ public class BdpDbContext : DbContext
             .WithMany()
             .OnDelete(DeleteBehavior.Restrict);
 
-        // seed data
-        builder.Entity<EventType>()
-            .HasData(new() { Name = "Wedding" },
-                     new() { Name = "Birth Day" },
-                     new() { Name = "Engagement Party" },
-                     new() { Name = "Graduation Ceremony" },
-                     new() { Name = "Graduation Party" },
-                     new() { Name = "Other" }
-                    );
-
         // model configuration
         builder.ApplyConfigurationsFromAssembly(typeof(BdpDbContext).Assembly);
     }
