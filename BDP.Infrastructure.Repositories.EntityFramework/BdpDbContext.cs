@@ -119,36 +119,9 @@ public class BdpDbContext : DbContext
 
     #region Protected Methods
 
-    /// <summary>
-    /// Configures database context on creation
-    /// </summary>
-    /// <param name="builder"></param>
+    /// <inheritdoc/>
     protected override void OnModelCreating(ModelBuilder builder)
-    {
-        // break cycles
-        builder.Entity<ProductReview>()
-            .HasOne(r => r.LeftBy)
-            .WithMany()
-            .OnDelete(DeleteBehavior.NoAction);
-
-        builder.Entity<ServiceReview>()
-            .HasOne(r => r.LeftBy)
-            .WithMany()
-            .OnDelete(DeleteBehavior.NoAction);
-
-        builder.Entity<ProductOrder>()
-            .HasOne(o => o.Item)
-            .WithMany()
-            .OnDelete(DeleteBehavior.Restrict);
-
-        builder.Entity<ServiceReservation>()
-            .HasOne(s => s.Item)
-            .WithMany()
-            .OnDelete(DeleteBehavior.Restrict);
-
-        // model configuration
-        builder.ApplyConfigurationsFromAssembly(typeof(BdpDbContext).Assembly);
-    }
+        => builder.ApplyConfigurationsFromAssembly(typeof(BdpDbContext).Assembly);
 
     #endregion Protected Methods
 }

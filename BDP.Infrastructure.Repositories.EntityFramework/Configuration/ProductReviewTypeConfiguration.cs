@@ -1,4 +1,5 @@
 ﻿using BDP.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BDP.Infrastructure.Repositories.EntityFramework.Configuration;
@@ -10,5 +11,11 @@ public class ProductReviewTypeConfiguration : EntityTypeConfiguration<ProductRev
     public override void Configure(EntityTypeBuilder<ProductReview> builder)
     {
         base.Configure(builder);
+
+        // relationships
+        builder
+            .HasOne(r => r.LeftBy)
+            .WithMany()
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }
