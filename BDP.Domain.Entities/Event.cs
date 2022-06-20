@@ -1,7 +1,21 @@
 ﻿namespace BDP.Domain.Entities;
 
+/// <summary>
+/// A recrod to represent keys for the <see cref="Event"/> entity
+/// </summary>
+/// <param name="Id">The id field of the key</param>
+public sealed record EventKey(Guid Id) : EntityKey<Event>(Id);
+
+/// <summary>
+/// A class to represent an event
+/// </summary>
 public class Event : AuditableEntity
 {
+    /// <summary>
+    /// Gets or sets the id of the event
+    /// </summary>
+    public EventKey Id { get; set; } = new EventKey(Guid.NewGuid());
+
     /// <summary>
     /// Gets or sets the event title
     /// </summary>
