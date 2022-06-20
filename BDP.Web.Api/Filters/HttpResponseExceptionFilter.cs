@@ -1,6 +1,8 @@
 ﻿using BDP.Application.App.Exceptions;
 using BDP.Domain.Entities.Validators;
 using BDP.Domain.Repositories.Exceptions;
+using BDP.Domain.Repositories.Extensions.Exceptions;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.IdentityModel.Tokens;
@@ -12,11 +14,14 @@ namespace BDP.Web.Api.Filters;
 /// </summary>
 public class HttpResponseExceptionFilter : IActionFilter, IOrderedFilter
 {
+    /// <inheritdoc/>
     public int Order => int.MaxValue - 10;
 
+    /// <inheritdoc/>
     public void OnActionExecuting(ActionExecutingContext context)
     { }
 
+    /// <inheritdoc/>
     public void OnActionExecuted(ActionExecutedContext context)
     {
         var message = context.Exception?.Message ?? "unknown error occured";
