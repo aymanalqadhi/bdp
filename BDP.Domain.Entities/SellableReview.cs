@@ -3,7 +3,8 @@
 /// <summary>
 /// A class to represent a sellable review
 /// </summary>
-public class SellableReview : AuditableEntity<SellableReview>
+public abstract class SellableReview<TSellable> : AuditableEntity<SellableReview<TSellable>>
+    where TSellable : class
 {
     /// <summary>
     /// Gets or sets teh rating value
@@ -18,7 +19,7 @@ public class SellableReview : AuditableEntity<SellableReview>
     /// <summary>
     /// Gets or sets the rated item
     /// </summary>
-    public Sellable Item { get; set; } = null!;
+    public TSellable Item { get; set; } = null!;
 
     /// <summary>
     /// Gets or sets the user who left the review
