@@ -8,8 +8,6 @@ using BDP.Web.Dtos;
 using BDP.Web.Dtos.Parameters;
 using BDP.Web.Dtos.Requests;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
-using System.Linq.Expressions;
 
 namespace BDP.Web.Api.Controllers;
 
@@ -42,7 +40,7 @@ public class FinancialRecordsController : ControllerBase
     [IsAdmin]
     public IAsyncEnumerable<FinancialRecordDto> Pending([FromQuery] PagingParameters paging)
     {
-        var ret = _financialRecordsSvc.PendingAsync()
+        var ret = _financialRecordsSvc.Pending()
             .PageDescending(paging.Page, paging.PageLength)
             .Include(f => f.MadeBy)
             .Include(f => f.MadeBy.ProfilePicture!)

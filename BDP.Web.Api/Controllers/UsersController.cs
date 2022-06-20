@@ -40,8 +40,6 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> GetByUsernameAsync(string username)
     {
         var ret = await _usersSvc.GetByUsername(username)
-            .Include(u => u.Groups)
-            .Include(u => u.PhoneNumbers)
             .Map<User, UserDto>(_mapper)
             .FirstAsync();
 

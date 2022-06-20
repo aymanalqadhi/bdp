@@ -1,5 +1,4 @@
-﻿using BDP.Domain.Entities;
-using BDP.Domain.Repositories.Extensions;
+﻿using BDP.Domain.Repositories.Extensions;
 using BDP.Domain.Services;
 using BDP.Web.Api.Extensions;
 using BDP.Web.Dtos;
@@ -8,9 +7,6 @@ using AutoMapper;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
-using System.ComponentModel.DataAnnotations;
-using System.Linq.Expressions;
 using BDP.Web.Dtos.Parameters;
 
 namespace BDP.Web.Api.Controllers;

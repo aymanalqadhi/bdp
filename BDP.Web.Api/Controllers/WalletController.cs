@@ -12,8 +12,6 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-using System.Linq.Expressions;
-
 namespace BDP.Web.Api.Controllers;
 
 [Route("api/[controller]")]

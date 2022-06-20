@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using BDP.Domain.Entities;
 using BDP.Domain.Repositories.Extensions;
 using BDP.Domain.Services;
 using BDP.Web.Api.Auth.Attributes;
@@ -20,7 +19,7 @@ public class SellablesController : ControllerBase
     #region Private fileds
 
     private readonly ISellablesService _sellablesSvc;
-    private readonly ISellableReviewsService _sellableReviewsSvc;
+    private readonly IProductReviewsService _sellableReviewsSvc;
     private readonly IMapper _mapper;
 
     #endregion Private fileds
@@ -29,7 +28,7 @@ public class SellablesController : ControllerBase
 
     public SellablesController(
         ISellablesService sellablesSvc,
-        ISellableReviewsService sellableReviewsSvc,
+        IProductReviewsService sellableReviewsSvc,
         IMapper mapper)
     {
         _sellablesSvc = sellablesSvc;
@@ -70,11 +69,11 @@ public class SellablesController : ControllerBase
     }
 
     [HttpGet("{id}/reviews")]
-    public IAsyncEnumerable<SellableReviewDto> GetReviewsPaged(Guid id, [FromQuery] PagingParameters paging)
+    public IAsyncEnumerable<ProductReview> GetReviewsPaged(Guid id, [FromQuery] PagingParameters paging)
     {
         var ret = _sellableReviewsSvc.GetForAsync(id)
             .PageDescending(paging.Page, paging.PageLength)
-            .Map<SellableReview, SellableReviewDto>(_mapper)
+            .Map<SellableReview, ProductReview>(_mapper)
             .AsAsyncEnumerable();
 
         return ret;
@@ -86,7 +85,7 @@ public class SellablesController : ControllerBase
     {
         var ret = await _sellableReviewsSvc.GetReviewForUserAsync(id, User.GetId());
 
-        return Ok(ret is not null ? _mapper.Map<SellableReviewDto>(ret) : null);
+        return Ok(ret is not null ? _mapper.Map<ProductReview>(ret) : null);
     }
 
     [HttpGet("{id}/review-info")]
@@ -107,7 +106,7 @@ public class SellablesController : ControllerBase
     {
         var ret = await _sellableReviewsSvc.ReviewAsync(User.GetId(), id, form.Rating, form.Comment);
 
-        return Ok(_mapper.Map<SellableReviewDto>(ret));
+        return Ok(_mapper.Map<ProductReview>(ret));
     }
 
     #endregion Actions
