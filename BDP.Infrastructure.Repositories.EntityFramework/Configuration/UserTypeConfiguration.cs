@@ -10,5 +10,9 @@ public class UserTypeConfiguration : EntityTypeConfiguration<User>
     public override void Configure(EntityTypeBuilder<User> builder)
     {
         base.Configure(builder);
+
+        // Indeces
+        builder.HasIndex(u => u.Username).IsUnique();
+        builder.HasIndex(u => u.Email).IsUnique();
     }
 }

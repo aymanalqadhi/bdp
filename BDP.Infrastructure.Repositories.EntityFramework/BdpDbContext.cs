@@ -125,10 +125,6 @@ public class BdpDbContext : DbContext
     /// <param name="builder"></param>
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        // configure user unique fields
-        builder.Entity<User>().HasIndex(u => u.Username).IsUnique();
-        builder.Entity<User>().HasIndex(u => u.Email).IsUnique();
-
         // configure transaction unique fields
         builder.Entity<Transaction>().HasIndex(t => t.ConfirmationToken).IsUnique();
 
