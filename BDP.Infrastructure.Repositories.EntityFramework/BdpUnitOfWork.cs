@@ -4,6 +4,9 @@ using BDP.Domain.Repositories;
 
 namespace BDP.Infrastructure.Repositories.EntityFramework;
 
+/// <summary>
+/// An implementaion of <see cref="IUnitOfWork"/> using Entity Framework
+/// </summary>
 public sealed class BdpUnitOfWork : IUnitOfWork, IDisposable, IAsyncDisposable
 {
     #region Fields
@@ -28,17 +31,24 @@ public sealed class BdpUnitOfWork : IUnitOfWork, IDisposable, IAsyncDisposable
     #region Properties
 
     /// <inheritdoc/>
-    public IRepository<Attachment> Attachments => RepositoryFactory.Create(_ctx.Attachments);
+    public IRepository<Attachment> Attachments
+        => RepositoryFactory.Create(_ctx.Attachments);
+
+    /// <inheritdoc/>
+    public IRepository<Category> Categories
+        => new Repository<Category, CategoryValidator>(_ctx.Categories);
 
     /// <inheritdoc/>
     public IRepository<Confirmation> Confirmations
         => new Repository<Confirmation, ConfirmationValidator>(_ctx.Confirmations);
 
     /// <inheritdoc/>
-    public IRepository<Event> Events => new Repository<Event, EventValidator>(_ctx.Events);
+    public IRepository<Event> Events
+        => new Repository<Event, EventValidator>(_ctx.Events);
 
     /// <inheritdoc/>
-    public IRepository<EventType> EventTypes => RepositoryFactory.Create(_ctx.EventTypes);
+    public IRepository<EventType> EventTypes
+        => RepositoryFactory.Create(_ctx.EventTypes);
 
     /// <inheritdoc/>
     public IRepository<FinancialRecord> FinancialRecords
@@ -57,26 +67,32 @@ public sealed class BdpUnitOfWork : IUnitOfWork, IDisposable, IAsyncDisposable
         => new Repository<LogTag, LogTagValidator>(_ctx.LogTags);
 
     /// <inheritdoc/>
-    public IRepository<ProductOrder> ProductOrders
-        => new Repository<ProductOrder, ProductOrderValidator>(_ctx.ProductOrders);
+    public IRepository<Order> Orders
+        => new Repository<Order, OrderValidator>(_ctx.Orders);
 
     /// <inheritdoc/>
-    public IRepository<ProductReview> ProductReviews => RepositoryFactory.Create(_ctx.ProductReviews);
+    public IRepository<ProductReview> ProductReviews
+        => RepositoryFactory.Create(_ctx.ProductReviews);
 
     /// <inheritdoc/>
-    public IRepository<Product> Products => RepositoryFactory.Create(_ctx.Products);
+    public IRepository<Product> Products
+        => RepositoryFactory.Create(_ctx.Products);
 
     /// <inheritdoc/>
-    public IRepository<RefreshToken> RefreshTokens => RepositoryFactory.Create(_ctx.RefreshTokens);
+    public IRepository<RefreshToken> RefreshTokens
+        => RepositoryFactory.Create(_ctx.RefreshTokens);
 
     /// <inheritdoc/>
-    public IRepository<ServiceReservation> ServiceReservations => RepositoryFactory.Create(_ctx.ServiceReservations);
+    public IRepository<ReservableVariant> ReservableVariants
+        => new Repository<ReservableVariant, ReservableVariantValidator>(_ctx.ReservableVariants);
 
     /// <inheritdoc/>
-    public IRepository<Service> Services => RepositoryFactory.Create(_ctx.Services);
+    public IRepository<Reservation> Reservations
+        => new Repository<Reservation, ReservationValidator>(_ctx.Reservations);
 
     /// <inheritdoc/>
-    public IRepository<ServiceReview> ServicesReviews => RepositoryFactory.Create(_ctx.ServiceReviews);
+    public IRepository<SellableVariant> SellableVariants
+        => new Repository<SellableVariant, SellableVariantValidator>(_ctx.SellableVariants);
 
     /// <inheritdoc/>
     public IRepository<TransactionConfirmation> TransactionConfirmations
@@ -87,10 +103,12 @@ public sealed class BdpUnitOfWork : IUnitOfWork, IDisposable, IAsyncDisposable
         => new Repository<Transaction, TransactionValidator>(_ctx.Transactions);
 
     /// <inheritdoc/>
-    public IRepository<UserProfile> UserProfiles => RepositoryFactory.Create(_ctx.UserProfiles);
+    public IRepository<UserProfile> UserProfiles
+        => RepositoryFactory.Create(_ctx.UserProfiles);
 
     /// <inheritdoc/>
-    public IRepository<User> Users => new Repository<User, UserValidator>(_ctx.Users);
+    public IRepository<User> Users
+        => new Repository<User, UserValidator>(_ctx.Users);
 
     #endregion Properties
 
