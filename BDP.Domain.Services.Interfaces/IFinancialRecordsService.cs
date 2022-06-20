@@ -32,14 +32,26 @@ public interface IFinancialRecordsService
     /// </summary>
     /// <param name="userId">The id of the user to verify with</param>
     /// <param name="recordId">The id of the record to verify</param>
-    /// <param name="outcome">The outcome of the verification</param>
     /// <param name="document">The document of the deposit/withdraw</param>
     /// <param name="notes">Addtional notes</param>
-    /// <returns></returns>
+    /// <returns>The created verification object</returns>
     Task<FinancialRecordVerification> VerifyAsync(
         EntityKey<User> userId,
         EntityKey<FinancialRecord> recordId,
-        FinancialRecordVerificationOutcome outcome,
+        string? notes = null,
+        IUploadFile? document = null);
+
+    /// <summary>
+    /// Asynchronously declines a financial record
+    /// </summary>
+    /// <param name="userId">The id of the user to verify with</param>
+    /// <param name="recordId">The id of the record to verify</param>
+    /// <param name="document">The document of the deposit/withdraw</param>
+    /// <param name="notes">Addtional notes</param>
+    /// <returns>The created verification object</returns>
+    Task<FinancialRecordVerification> DeclineAsync(
+        EntityKey<User> userId,
+        EntityKey<FinancialRecord> recordId,
         string? notes = null,
         IUploadFile? document = null);
 }
