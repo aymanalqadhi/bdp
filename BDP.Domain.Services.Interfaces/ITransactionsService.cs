@@ -7,7 +7,7 @@ namespace BDP.Domain.Services;
 public interface ITransactionsService
 {
     /// <summary>
-    /// Asynchrnously gets transactions that a user has either sent or recieved, 
+    /// Asynchrnously gets transactions that a user has either sent or recieved,
     /// limited by pagination
     /// </summary>
     /// <param name="page">The page to fetch</param>

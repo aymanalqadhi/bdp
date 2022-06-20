@@ -48,7 +48,7 @@ public class EventDto
     public DateTime CreatedAt { get; set; }
 
     /// <summary>
-    /// Gets or sets the 
+    /// Gets or sets the
     /// </summary>
     public DateTime ModifiedAt { get; set; }
 }

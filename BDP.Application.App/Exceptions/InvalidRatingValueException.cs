@@ -6,7 +6,7 @@ public class InvalidRatingValueException : Exception
 
     private readonly double _value;
 
-    #endregion
+    #endregion Private fields
 
     #region Ctors
 
@@ -17,7 +17,7 @@ public class InvalidRatingValueException : Exception
     public InvalidRatingValueException(double value) : base($"invalid rating vlaue {value}")
         => _value = value;
 
-    #endregion
+    #endregion Ctors
 
     #region Public properties
 
@@ -26,5 +26,5 @@ public class InvalidRatingValueException : Exception
     /// </summary>
     public double Value => _value;
 
-    #endregion
+    #endregion Public properties
 }

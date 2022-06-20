@@ -1,15 +1,11 @@
-﻿using BDP.Domain.Entities;
+﻿using AutoMapper;
+using BDP.Domain.Services;
+using BDP.Web.Api.Auth.Attributes;
+using BDP.Web.Api.Extensions;
 using BDP.Web.Dtos;
-
-using AutoMapper;
+using BDP.Web.Dtos.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
-using System.Linq;
-using BDP.Web.Api.Extensions;
-using BDP.Web.Dtos.Requests;
-using BDP.Web.Api.Auth.Attributes;
-using BDP.Domain.Services;
 
 namespace BDP.Web.Api.Controllers;
 
@@ -26,7 +22,7 @@ public class SellablesController : ControllerBase
     private readonly ISellableReviewsService _sellableReviewsSvc;
     private readonly IMapper _mapper;
 
-    #endregion
+    #endregion Private fileds
 
     #region Ctors
 
@@ -45,7 +41,7 @@ public class SellablesController : ControllerBase
         _pageSize = configurationSvc.GetInt("QuerySettings:DefaultPageSize");
     }
 
-    #endregion
+    #endregion Ctors
 
     #region Actions
 
@@ -123,5 +119,5 @@ public class SellablesController : ControllerBase
         return Ok(_mapper.Map<SellableReviewDto>(ret));
     }
 
-    #endregion
+    #endregion Actions
 }

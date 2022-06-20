@@ -8,7 +8,7 @@ public class AppSettingsConfigurationService : IConfigurationService
 
     private readonly IConfiguration _config;
 
-    #endregion
+    #endregion Private fields
 
     #region Ctors
 
@@ -21,14 +21,14 @@ public class AppSettingsConfigurationService : IConfigurationService
         _config = config;
     }
 
-    #endregion
+    #endregion Ctors
 
     #region Public properties
 
     /// <inheritdoc/>
     public string this[string key] { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-    #endregion
+    #endregion Public properties
 
     #region Public methods
 
@@ -76,5 +76,5 @@ public class AppSettingsConfigurationService : IConfigurationService
     public void Bind<T>(string name, T output)
         => _config.Bind(name, output);
 
-    #endregion
+    #endregion Public methods
 }

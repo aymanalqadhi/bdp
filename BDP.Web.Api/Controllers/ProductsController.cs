@@ -1,11 +1,10 @@
-﻿using BDP.Web.Api.Auth.Attributes;
+﻿using AutoMapper;
+using BDP.Domain.Services;
+using BDP.Web.Api.Auth.Attributes;
 using BDP.Web.Api.Extensions;
 using BDP.Web.Dtos;
 using BDP.Web.Dtos.Requests;
-
-using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using BDP.Domain.Services;
 
 namespace BDP.Web.Api.Controllers;
 
@@ -21,7 +20,7 @@ public class ProductsController : ControllerBase
     private readonly IFinanceService _financeSvc;
     private readonly IMapper _mapper;
 
-    #endregion
+    #endregion Private fileds
 
     #region Ctors
 
@@ -39,7 +38,7 @@ public class ProductsController : ControllerBase
         _mapper = mapper;
     }
 
-    #endregion
+    #endregion Ctors
 
     #region Actions
 
@@ -113,5 +112,5 @@ public class ProductsController : ControllerBase
         return Ok(_mapper.Map<OrderDto>(order));
     }
 
-    #endregion
+    #endregion Actions
 }

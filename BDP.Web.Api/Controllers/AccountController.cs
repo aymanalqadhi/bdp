@@ -1,5 +1,4 @@
-﻿using BDP.Domain.Entities;
-using BDP.Domain.Services;
+﻿using BDP.Domain.Services;
 using BDP.Web.Api.Auth;
 using BDP.Web.Api.Extensions;
 using BDP.Web.Dtos.Requests;

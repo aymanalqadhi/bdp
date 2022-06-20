@@ -35,7 +35,7 @@ public sealed class EfUnitOfWork : IUnitOfWork, IDisposable, IAsyncDisposable
 
     /// <inheritdoc/>
     public ISellablesRepository Sellables => new SellablesRepository(_ctx.Sellables);
-    
+
     /// <inheritdoc/>
     public ISellableReviewsRepository SellableReviews => new SellableReviewsRepository(_ctx.SellableReviews);
 
