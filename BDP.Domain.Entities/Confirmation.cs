@@ -1,7 +1,21 @@
 ﻿namespace BDP.Domain.Entities;
 
+/// <summary>
+/// A recrod to represent keys for the <see cref="Confirmation"/> entity
+/// </summary>
+/// <param name="Id">The id field of the key</param>
+public sealed record ConfirmationKey(Guid Id) : EntityKey<Confirmation>(Id);
+
+/// <summary>
+/// A class to represent a user account confirmation
+/// </summary>
 public class Confirmation : AuditableEntity
 {
+    /// <summary>
+    /// Gets or sets the id of the confirmation
+    /// </summary>
+    public ConfirmationKey Id { get; set; } = new ConfirmationKey(Guid.NewGuid());
+
     /// <summary>
     /// Gets or sets the OTP of the confirmation
     /// </summary>
