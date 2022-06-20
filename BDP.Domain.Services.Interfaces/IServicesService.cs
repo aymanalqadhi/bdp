@@ -9,7 +9,7 @@ public interface IServicesService
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    Task<Service> GetByIdAsync(Guid id);
+    Task<Service> GetByIdAsync(EntityKey<Service> id);
 
     /// <summary>
     /// Asynchronously lists a service
@@ -23,7 +23,7 @@ public interface IServicesService
     /// <param name="attachments">The attachments of the service</param>
     /// <returns>The listed service</returns>
     Task<Service> ListAsync(
-        Guid userId,
+        EntityKey<User> userId,
         string title,
         string description,
         decimal price,
@@ -43,7 +43,7 @@ public interface IServicesService
     /// <param name="availableEnd">The new ending availability time of the service</param>
     /// <returns></returns>
     Task<Service> UpdateAsync(
-        Guid serviceId,
+        EntityKey<Service> serviceId,
         string title,
         string description,
         decimal price,
@@ -56,7 +56,7 @@ public interface IServicesService
     /// </summary>
     /// <param name="serviceId">The id of the service to unlist</param>
     /// <returns></returns>
-    Task UnlistAsync(Guid serviceId);
+    Task UnlistAsync(EntityKey<Service> serviceId);
 
     /// <summary>
     /// Asynchronously changes the availability flag of a service
@@ -64,7 +64,7 @@ public interface IServicesService
     /// <param name="serviceId">The id of the service to change</param>
     /// <param name="isAvailable">The new availability value</param>
     /// <returns>The updated service</returns>
-    Task<Service> SetAvailability(Guid serviceId, bool isAvailable);
+    Task<Service> SetAvailability(EntityKey<Service> serviceId, bool isAvailable);
 
     /// <summary>
     /// Asynchronously creates a reservation for a service
@@ -72,5 +72,5 @@ public interface IServicesService
     /// <param name="userId">The id of the user which to make the reservation for</param>
     /// <param name="serviceId">The id of the service to reserve</param>
     /// <returns>The service reservation</returns>
-    Task<ServiceReservation> ReserveAsync(Guid userId, Guid serviceId);
+    Task<ServiceReservation> ReserveAsync(EntityKey<User> userId, EntityKey<Service> serviceId);
 }

@@ -38,7 +38,7 @@ public class ServicesService : IServicesService
     #region Public Methods
 
     /// <inheritdoc/>
-    public Task<Service> GetByIdAsync(Guid id)
+    public Task<Service> GetByIdAsync(EntityKey<Service> id)
     {
         return _uow.Services
             .Query()
@@ -49,7 +49,7 @@ public class ServicesService : IServicesService
 
     /// <inheritdoc/>
     public async Task<Service> ListAsync(
-        Guid userId,
+        EntityKey<User> userId,
         string title,
         string description,
         decimal price,
@@ -83,7 +83,7 @@ public class ServicesService : IServicesService
     }
 
     /// <inheritdoc/>
-    public async Task<ServiceReservation> ReserveAsync(Guid userId, Guid serviceId)
+    public async Task<ServiceReservation> ReserveAsync(EntityKey<User> userId, EntityKey<Service> serviceId)
     {
         await using var tx = await _uow.BeginTransactionAsync();
 
@@ -107,7 +107,7 @@ public class ServicesService : IServicesService
     }
 
     /// <inheritdoc/>
-    public async Task<Service> SetAvailability(Guid serviceId, bool isAvailable)
+    public async Task<Service> SetAvailability(EntityKey<Service> serviceId, bool isAvailable)
     {
         var service = await _uow.Services.Query().FindAsync(serviceId);
 
@@ -123,12 +123,12 @@ public class ServicesService : IServicesService
     }
 
     /// <inheritdoc/>
-    public async Task UnlistAsync(Guid serviceId)
+    public async Task UnlistAsync(EntityKey<Service> serviceId)
     {
         var service = await _uow.Services.Query().FindAsync(serviceId);
 
         if (await _uow.ServiceReservations.Query().AnyAsync(
-            o => o.Service.Id == serviceId && o.Transaction.Confirmation == null))
+            o => o.Service.Id.Id == serviceId.Id && o.Transaction.Confirmation == null))
             throw new PendingReservationsLeftException(service);
 
         _uow.Services.Remove(service);
@@ -137,7 +137,7 @@ public class ServicesService : IServicesService
 
     /// <inheritdoc/>
     public async Task<Service> UpdateAsync(
-        Guid serviceId,
+        EntityKey<Service> serviceId,
         string title,
         string description,
         decimal price,
