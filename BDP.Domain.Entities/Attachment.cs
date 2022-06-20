@@ -8,7 +8,7 @@ public class Attachment : AuditableEntity<Attachment>
     /// <summary>
     /// Gets or sets the full URI of the attachment
     /// </summary>
-    public string FullPath { get; set; } = null!;
+    public Uri FullPath { get; set; } = null!;
 
     /// <summary>
     /// Gets the filename of the attachment (prior to uploading)
