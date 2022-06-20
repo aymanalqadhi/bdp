@@ -1,8 +1,9 @@
-﻿using BDP.Application.App.Exceptions;
-using BDP.Domain.Entities;
+﻿using BDP.Domain.Entities;
 using BDP.Domain.Repositories;
 using BDP.Domain.Repositories.Extensions;
 using BDP.Domain.Services;
+using BDP.Domain.Services.Exceptions;
+
 using System.Linq.Expressions;
 
 namespace BDP.Application.App;
@@ -114,7 +115,7 @@ public class TransactionsService : ITransactionsService
         bool isAccepted,
         IAsyncDatabaseTransaction tx)
     {
-        if (transaction.Confirmation != null)
+        if (transaction.Confirmation is not null)
             throw new TransactionAlreadyConfirmedException(transaction.Confirmation);
 
         var confirmation = new TransactionConfirmation

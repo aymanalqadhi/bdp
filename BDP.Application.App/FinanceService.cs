@@ -1,8 +1,8 @@
-﻿using BDP.Application.App.Exceptions;
-using BDP.Domain.Entities;
+﻿using BDP.Domain.Entities;
 using BDP.Domain.Repositories;
 using BDP.Domain.Repositories.Extensions;
 using BDP.Domain.Services;
+using BDP.Domain.Services.Exceptions;
 
 namespace BDP.Application.App;
 
@@ -26,7 +26,6 @@ public class FinanceService : IFinanceService
     /// <param name="uow">The unit-of-work of the application</param>
     /// <param name="configSvc">The configuration service of the application</param>
     /// <param name="rngSvc">The random generator service of the application</param>
-    /// <param name="attachmentsSvc">The attachments managment service</param>
     /// <param name="financialRecordsSvc">The financial documents service</param>
     /// <param name="transactionsSvc">The transactions service</param>
     public FinanceService(
@@ -122,6 +121,12 @@ public class FinanceService : IFinanceService
         if (amount <= 0)
             throw new InvalidDepositAmountException(amount);
 
+        if (amount > 0 && await _uow.FinancialRecords.Query().AnyAsync
+            (r => r.MadeBy.Id == userId && r.Verification == null && r.Amount > 0))
+        {
+            throw new PendingRequestExistsException("a deposit request already exists");
+        }
+
         return await CreateFinancialRecord(userId, amount, note, tx);
     }
 
@@ -132,6 +137,13 @@ public class FinanceService : IFinanceService
 
         if (await CalculateTotalUsableAsync(userId) < amount)
             throw new InsufficientBalanceException(userId, amount);
+
+        if (await _uow.FinancialRecords.Query().AnyAsync(r =>
+                r.MadeBy.Id == userId &&
+                r.Verification == null && r.Amount < 0))
+        {
+            throw new PendingRequestExistsException("a withdraw request already exists");
+        }
 
         return await CreateFinancialRecord(userId, -amount, note, tx);
     }
@@ -145,20 +157,6 @@ public class FinanceService : IFinanceService
     {
         /// TODO:
         /// Use transactions here
-
-        if (amount == 0)
-            throw new InvalidDepositAmountException(amount);
-
-        if (amount < 0 && await _uow.FinancialRecords.Query().AnyAsync(
-            r => r.MadeBy.Id == userId && r.Verification == null && r.Amount < 0))
-        {
-            throw new PendingRequestExistsException("a withdraw request already exists");
-        }
-        else if (amount > 0 && await _uow.FinancialRecords.Query().AnyAsync
-            (r => r.MadeBy.Id == userId && r.Verification == null && r.Amount > 0))
-        {
-            throw new PendingRequestExistsException("a deposit request already exists");
-        }
 
         var user = await _uow.Users.Query().FindAsync(userId);
 
