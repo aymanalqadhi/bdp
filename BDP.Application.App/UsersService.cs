@@ -1,6 +1,7 @@
 ﻿using BDP.Application.App.Exceptions;
 using BDP.Domain.Entities;
 using BDP.Domain.Repositories;
+using BDP.Domain.Repositories.Extensions;
 using BDP.Domain.Services;
 
 using System.Linq.Expressions;
@@ -47,11 +48,12 @@ public class UsersService : IUsersService
     }
 
     /// <inheritdoc/>
-    public async Task AddUserToGroupAsync(User user, string groupName)
+    public async Task AddUserToGroupAsync(Guid userId, string groupName)
     {
         // TODO:
         // Fix the logic here
 
+        var user = await _uow.Users.Query().FindAsync(userId);
         var group = await _uow.UserGroups.Query().FirstOrDefaultAsync(g => g.Name == groupName);
 
         if (group is null)
@@ -87,7 +89,7 @@ public class UsersService : IUsersService
         if (profilePicture is not null)
             user.ProfilePicture = await _attachmentsSvc.SaveAsync(profilePicture);
 
-        await AddUserToGroupAsync(user, group);
+        await AddUserToGroupAsync(user.Id, group);
 
         return user;
     }

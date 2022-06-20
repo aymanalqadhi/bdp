@@ -36,12 +36,12 @@ public class SellablesService : ISellablesService
         => _uow.Sellables.Query().FindAsync(id);
 
     /// <inheritdoc/>
-    public IQueryBuilder<Sellable> GetForAsync(User user)
-        => _uow.Sellables.Query().Where(s => s.OfferedBy.Id == user.Id);
+    public IQueryBuilder<Sellable> GetForAsync(Guid userId)
+        => _uow.Sellables.Query().Where(s => s.OfferedBy.Id == userId);
 
     /// <inheritdoc/>
-    public IQueryBuilder<Sellable> SearchForAsync(User user, string query)
-        => _uow.Sellables.Query().Where(s => s.OfferedBy.Id == user.Id && s.Title.ToLower().Contains(query.ToLower()));
+    public IQueryBuilder<Sellable> SearchForAsync(Guid userId, string query)
+        => _uow.Sellables.Query().Where(s => s.OfferedBy.Id == userId && s.Title.ToLower().Contains(query.ToLower()));
 
     /// <inheritdoc/>
     public IQueryBuilder<Sellable> SearchAsync(string query)

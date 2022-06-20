@@ -39,7 +39,7 @@ public class ProductsService : IProductsService
 
     /// <inheritdoc/>
     public async Task<Product> ListAsync(
-        User user,
+        Guid userid,
         string title,
         string description,
         decimal price,
@@ -51,6 +51,8 @@ public class ProductsService : IProductsService
 
         if (quantity <= 0 || quantity > 10_000)
             throw new InvalidQuantityException(quantity);
+
+        var user = await _uow.Users.Query().FindAsync(userid);
 
         var product = new Product
         {
@@ -73,13 +75,15 @@ public class ProductsService : IProductsService
 
     /// <inheritdoc/>
     public async Task<Product> UpdateAsync(
-        Product product,
+        Guid productId,
         string title,
         string description,
         decimal price)
     {
         if (price <= 0 || price > 1_000_000)
             throw new InvalidPriceException(price);
+
+        var product = await _uow.Products.Query().FindAsync(productId);
 
         product.Title = title;
         product.Description = description;
@@ -92,45 +96,30 @@ public class ProductsService : IProductsService
     }
 
     /// <inheritdoc/>
-    public async Task UnlistAsync(Product product)
+    public async Task UnlistAsync(Guid productId)
     {
-        if (await _uow.ProductOrders.Query().AnyAsync(
-            o => o.Product.Id == product.Id && o.Transaction.Confirmation == null))
-            throw new PendingOrdersLeftException(product);
+        if (await _uow.ProductOrders.Query().AnyAsync(o =>
+            o.Product.Id == productId &&
+            o.Transaction.Confirmation == null))
+        {
+            throw new PendingOrdersLeftException(productId);
+        }
 
+        var product = await _uow.Products.Query().FindAsync(productId);
         _uow.Products.Remove(product);
+
         await _uow.CommitAsync();
     }
 
     /// <inheritdoc/>
-    public async Task<Product> AddStock(Product product, uint quantity)
+    public async Task<long> AvailableQuantityAsync(Guid productId)
     {
-        product.Quantity += quantity;
+        // TODO:
+        // Use transactions here
 
-        _uow.Products.Update(product);
-        await _uow.CommitAsync();
-
-        return product;
-    }
-
-    /// <inheritdoc/>
-    public async Task<Product> RemoveStock(Product product, uint quantity)
-    {
-        if (quantity > await AvailableQuantityAsync(product))
-            throw new InvalidQuantityException(product.Quantity);
-
-        product.Quantity -= quantity;
-        await _uow.CommitAsync();
-
-        return product;
-    }
-
-    /// <inheritdoc/>
-    public async Task<long> AvailableQuantityAsync(Product product)
-    {
-        var orderedQuantity = await _uow.ProductOrders
-            .Query()
-            .Where(o => o.Product.Id == product.Id)
+        var product = await _uow.Products.Query().FindAsync(productId);
+        var orderedQuantity = await _uow.ProductOrders.Query()
+            .Where(o => o.Product.Id == productId)
             .Where(o => o.Transaction.Confirmation == null || o.Transaction.Confirmation.Outcome == TransactionConfirmationOutcome.Confirmed)
             .AsAsyncEnumerable()
             .SumAsync(o => o.Quantity);
@@ -142,12 +131,14 @@ public class ProductsService : IProductsService
     }
 
     /// <inheritdoc/>
-    public async Task<bool> IsAvailableAsync(Product product)
-        => product.IsAvailable && await AvailableQuantityAsync(product) > 0;
+    public async Task<bool> IsAvailableAsync(Guid productId)
+        => await AvailableQuantityAsync(productId) > 0;
 
     /// <inheritdoc/>
-    public async Task<Product> SetAvailability(Product product, bool isAvailable)
+    public async Task<Product> SetAvailability(Guid productId, bool isAvailable)
     {
+        var product = await _uow.Products.Query().FindAsync(productId);
+
         if (product.IsAvailable == isAvailable)
             return product;
 
@@ -160,19 +151,20 @@ public class ProductsService : IProductsService
     }
 
     /// <inheritdoc/>
-    public async Task<ProductOrder> OrderAsync(User by, Product product, uint quantity)
+    public async Task<ProductOrder> OrderAsync(Guid userId, Guid productId, uint quantity)
     {
         await using var tx = await _uow.BeginTransactionAsync();
 
+        var product = await _uow.Products.Query().FindAsync(productId);
         decimal totalPrice = product.Price * quantity;
 
-        if (await AvailableQuantityAsync(product) < quantity)
+        if (await AvailableQuantityAsync(productId) < quantity)
             throw new NotEnoughStockException(product, quantity);
 
-        if (await _financeSvc.CalculateTotalUsableAsync(by) < totalPrice)
-            throw new InsufficientBalanceException(by, totalPrice);
+        if (await _financeSvc.CalculateTotalUsableAsync(userId) < totalPrice)
+            throw new InsufficientBalanceException(userId, totalPrice);
 
-        var transaction = await _financeSvc.TransferUncomittedAsync(by, product.OfferedBy, totalPrice);
+        var transaction = await _financeSvc.TransferUncomittedAsync(userId, product.OfferedBy.Id, totalPrice);
         var order = new ProductOrder
         {
             Product = product,

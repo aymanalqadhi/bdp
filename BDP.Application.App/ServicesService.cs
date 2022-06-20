@@ -48,12 +48,8 @@ public class ServicesService : IServicesService
     }
 
     /// <inheritdoc/>
-    public Task<bool> IsAvailableAsync(Service service)
-        => Task.FromResult(service.IsAvailable);
-
-    /// <inheritdoc/>
     public async Task<Service> ListAsync(
-        User user,
+        Guid userId,
         string title,
         string description,
         decimal price,
@@ -63,6 +59,8 @@ public class ServicesService : IServicesService
     {
         if (price <= 0 || price > 1_000_000)
             throw new InvalidPriceException(price);
+
+        var user = await _uow.Users.Query().FindAsync(userId);
 
         var service = new Service
         {
@@ -85,14 +83,17 @@ public class ServicesService : IServicesService
     }
 
     /// <inheritdoc/>
-    public async Task<ServiceReservation> ReserveAsync(User by, Service service)
+    public async Task<ServiceReservation> ReserveAsync(Guid userId, Guid serviceId)
     {
         await using var tx = await _uow.BeginTransactionAsync();
 
-        if (await _financeSvc.CalculateTotalUsableAsync(by) < service.Price)
-            throw new InsufficientBalanceException(by, service.Price);
+        var user = await _uow.Users.Query().FindAsync(userId);
+        var service = await _uow.Services.Query().FindAsync(serviceId);
 
-        var transaction = await _financeSvc.TransferUncomittedAsync(by, service.OfferedBy, service.Price);
+        if (await _financeSvc.CalculateTotalUsableAsync(userId) < service.Price)
+            throw new InsufficientBalanceException(userId, service.Price);
+
+        var transaction = await _financeSvc.TransferUncomittedAsync(userId, service.OfferedBy.Id, service.Price);
         var reservation = new ServiceReservation
         {
             Service = service,
@@ -106,8 +107,10 @@ public class ServicesService : IServicesService
     }
 
     /// <inheritdoc/>
-    public async Task<Service> SetAvailability(Service service, bool isAvailable)
+    public async Task<Service> SetAvailability(Guid serviceId, bool isAvailable)
     {
+        var service = await _uow.Services.Query().FindAsync(serviceId);
+
         if (service.IsAvailable == isAvailable)
             return service;
 
@@ -120,10 +123,12 @@ public class ServicesService : IServicesService
     }
 
     /// <inheritdoc/>
-    public async Task UnlistAsync(Service service)
+    public async Task UnlistAsync(Guid serviceId)
     {
+        var service = await _uow.Services.Query().FindAsync(serviceId);
+
         if (await _uow.ServiceReservations.Query().AnyAsync(
-            o => o.Service.Id == service.Id && o.Transaction.Confirmation == null))
+            o => o.Service.Id == serviceId && o.Transaction.Confirmation == null))
             throw new PendingReservationsLeftException(service);
 
         _uow.Services.Remove(service);
@@ -132,7 +137,7 @@ public class ServicesService : IServicesService
 
     /// <inheritdoc/>
     public async Task<Service> UpdateAsync(
-        Service service,
+        Guid serviceId,
         string title,
         string description,
         decimal price,
@@ -141,6 +146,8 @@ public class ServicesService : IServicesService
     {
         if (price <= 0 || price > 1_000_000)
             throw new InvalidPriceException(price);
+
+        var service = await _uow.Services.Query().FindAsync(serviceId);
 
         service.Title = title;
         service.Description = description;

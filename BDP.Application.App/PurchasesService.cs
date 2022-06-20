@@ -36,10 +36,10 @@ public class PurchasesService : IPurchasesService
         => _uow.Purchases.Query().FindAsync(id);
 
     /// <inheritdoc/>
-    public IQueryBuilder<Purchase> ForUserAsync(User user)
+    public IQueryBuilder<Purchase> ForUserAsync(Guid userId)
     {
         return _uow.Purchases.Query()
-            .Where(p => p.Transaction.From.Id == user.Id || p.Transaction.To.Id == user.Id);
+            .Where(p => p.Transaction.From.Id == userId || p.Transaction.To.Id == userId);
     }
 
     #endregion Public method

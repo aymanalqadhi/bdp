@@ -36,7 +36,7 @@ public class FinancialRecordsService : IFinancialRecordsService
 
     /// <inheritdoc/>
     public IAsyncEnumerable<FinancialRecord> ForUserAsync(
-        User user,
+        Guid userId,
         Expression<Func<FinancialRecord, object>>[]? includes = null)
     {
         var query = _uow.FinancialRecords.Query();
@@ -45,25 +45,25 @@ public class FinancialRecordsService : IFinancialRecordsService
             query = query.IncludeAll(includes);
 
         return query
-            .Where(f => f.MadeBy.Id == user.Id)
+            .Where(f => f.MadeBy.Id == userId)
             .AsAsyncEnumerable();
     }
 
     /// <inheritdoc/>
-    public IQueryBuilder<FinancialRecord> ForUserAsync(User user)
-        => _uow.FinancialRecords.Query().Where(f => f.MadeBy.Id == user.Id);
+    public IQueryBuilder<FinancialRecord> ForUserAsync(Guid userId)
+        => _uow.FinancialRecords.Query().Where(f => f.MadeBy.Id == userId);
 
     /// <inheritdoc/>
     public IQueryBuilder<FinancialRecord> PendingAsync()
         => _uow.FinancialRecords.Query().Where(f => f.Verification == null);
 
     /// <inheritdoc/>
-    public async Task<decimal> TotalUsableAsync(User user)
+    public async Task<decimal> TotalUsableAsync(Guid userId)
     {
         decimal total = 0;
 
         await foreach (var record in ForUserAsync(
-            user,
+            userId,
             includes: new Expression<Func<FinancialRecord, object>>[] { r => r.Verification! }))
         {
             if (record.Verification?.Outcome == FinancialRecordVerificationOutcome.Accepted
@@ -78,12 +78,15 @@ public class FinancialRecordsService : IFinancialRecordsService
 
     /// <inheritdoc/>
     public async Task<FinancialRecordVerification> VerifyAsync(
+        Guid userId,
         Guid recordId,
-        User verifiedBy,
         FinancialRecordVerificationOutcome outcome,
         string? notes = null,
         IUploadFile? document = null)
     {
+        // TODO:
+        // Check permissions here
+
         await using var tx = await _uow.BeginTransactionAsync();
 
         var record = await _uow.FinancialRecords.Query().FindAsync(recordId);
@@ -91,11 +94,13 @@ public class FinancialRecordsService : IFinancialRecordsService
         if (await _uow.FinancialRecordVerficiations.Query().AnyAsync(v => v.FinancialRecord.Id == record.Id))
             throw new FinancialRecordAlreadyVerifiedException(record);
 
+        var user = await _uow.Users.Query().FindAsync(userId);
+
         var verification = new FinancialRecordVerification
         {
             Outcome = outcome,
             FinancialRecord = record,
-            VerifiedBy = verifiedBy,
+            VerifiedBy = user,
             Document = document is not null ? await _attachmentsSvc.SaveAsync(document) : null,
             Notes = notes,
         };

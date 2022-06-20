@@ -1,6 +1,7 @@
 ﻿using BDP.Application.App.Exceptions;
 using BDP.Domain.Entities;
 using BDP.Domain.Repositories;
+using BDP.Domain.Repositories.Extensions;
 using BDP.Domain.Services;
 
 namespace BDP.Application.App;
@@ -29,28 +30,31 @@ public class SellableReviewsService : ISellableReviewsService
     #region Public methods
 
     /// <inheritdoc/>
-    public IQueryBuilder<SellableReview> GetForAsync(Sellable item)
-        => _uow.SellableReviews.Query().Where(r => r.Item.Id == item.Id);
+    public IQueryBuilder<SellableReview> GetForAsync(Guid itemId)
+        => _uow.SellableReviews.Query().Where(r => r.Item.Id == itemId);
 
     /// <inheritdoc/>
-    public Task<SellableReview?> GetReviewForUser(Sellable item, User user)
+    public Task<SellableReview?> GetReviewForUserAsync(Guid userId, Guid itemId)
     {
         return _uow.SellableReviews
             .Query()
-            .FirstOrDefaultAsync(r => r.Item.Id == item.Id && r.LeftBy.Id == user.Id);
+            .FirstOrDefaultAsync(r => r.Item.Id == itemId && r.LeftBy.Id == userId);
     }
 
     /// <inheritdoc/>
     public async Task<SellableReview> ReviewAsync(
-        Sellable item, User user, double rating, string? comment = null)
+        Guid userId, Guid itemId, double rating, string? comment = null)
     {
         await using var tx = await _uow.BeginTransactionAsync();
 
         if (rating < 0 || rating > 5)
             throw new InvalidRatingValueException(rating);
 
-        if (!await CanReviewAsync(item, user))
-            throw new ItemAlreadyReviewedException($"item #{item.Id} cannot be reviewed by user #{user.Id}");
+        if (!await CanReviewAsync(userId, itemId))
+            throw new ItemAlreadyReviewedException($"item #{itemId} cannot be reviewed by user #{userId}");
+
+        var user = await _uow.Users.Query().FindAsync(userId);
+        var item = await _uow.Sellables.Query().FindAsync(itemId);
 
         var review = new SellableReview
         {
@@ -67,11 +71,11 @@ public class SellableReviewsService : ISellableReviewsService
     }
 
     /// <inheritdoc/>
-    public async Task<SellableReviewInfo> ReviewInfoForAsync(Sellable item)
+    public async Task<SellableReviewInfo> ReviewInfoForAsync(Guid itemId)
     {
         var reviews = _uow.SellableReviews
             .Query()
-            .Where(r => r.Item.Id == item.Id)
+            .Where(r => r.Item.Id == itemId)
             .AsAsyncEnumerable();
 
         var reviewsCount = await reviews.CountAsync();
@@ -81,13 +85,15 @@ public class SellableReviewsService : ISellableReviewsService
     }
 
     /// <inheritdoc/>
-    public async Task<bool> CanReviewAsync(Sellable item, User user)
+    public async Task<bool> CanReviewAsync(Guid userId, Guid itemId)
     {
+        var item = await _uow.Sellables.Query().FindAsync(itemId);
+
         if (item is Product)
         {
             if (!await _uow.ProductOrders.Query().AnyAsync(
-                o => o.Product.Id == item.Id &&
-                     o.Transaction.From.Id == user.Id &&
+                o => o.Product.Id == itemId &&
+                     o.Transaction.From.Id == userId &&
                      o.Transaction.Confirmation != null &&
                      o.Transaction.Confirmation.Outcome == TransactionConfirmationOutcome.Confirmed))
             {
@@ -97,8 +103,8 @@ public class SellableReviewsService : ISellableReviewsService
         else if (item is Service)
         {
             if (!await _uow.ServiceReservations.Query().AnyAsync(
-                o => o.Service.Id == item.Id &&
-                     o.Transaction.From.Id == user.Id &&
+                o => o.Service.Id == itemId &&
+                     o.Transaction.From.Id == userId &&
                      o.Transaction.Confirmation != null &&
                      o.Transaction.Confirmation.Outcome == TransactionConfirmationOutcome.Confirmed))
             {
@@ -107,8 +113,7 @@ public class SellableReviewsService : ISellableReviewsService
         }
 
         return !await _uow.SellableReviews.Query().AnyAsync(
-            r => r.Item.Id == item.Id &&
-                 r.LeftBy.Id == user.Id);
+            r => r.Item.Id == itemId && r.LeftBy.Id == userId);
     }
 
     #endregion Public methods

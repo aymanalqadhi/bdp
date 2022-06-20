@@ -35,43 +35,43 @@ public class TransactionsService : ITransactionsService
         => _uow.Transactions.Query().Where(t => t.Id == id);
 
     /// <inheritdoc/>
-    public IQueryBuilder<Transaction> ForUserAsync(User user)
-        => _uow.Transactions.Query().Where(t => t.From.Id == user.Id || t.To.Id == user.Id);
+    public IQueryBuilder<Transaction> ForUserAsync(Guid userId)
+        => _uow.Transactions.Query().Where(t => t.From.Id == userId || t.To.Id == userId);
 
     /// <inheritdoc/>
-    public Task<decimal> TotalInAsync(User user, bool confirmedOnly = false)
-        => DoCalculateTotal(user, TransactionDirection.Incoming, confirmedOnly);
+    public Task<decimal> TotalInAsync(Guid userId, bool confirmedOnly = false)
+        => DoCalculateTotal(userId, TransactionDirection.Incoming, confirmedOnly);
 
     /// <inheritdoc/>
-    public Task<decimal> TotalOutAsync(User user, bool confirmedOnly = false)
-        => DoCalculateTotal(user, TransactionDirection.Outgoing, confirmedOnly);
+    public Task<decimal> TotalOutAsync(Guid userId, bool confirmedOnly = false)
+        => DoCalculateTotal(userId, TransactionDirection.Outgoing, confirmedOnly);
 
     /// <inheritdoc/>
-    public async Task<decimal> TotalUsableAsync(User user)
-        => await TotalInAsync(user, true) - await TotalOutAsync(user, true);
+    public async Task<decimal> TotalUsableAsync(Guid userId)
+        => await TotalInAsync(userId, true) - await TotalOutAsync(userId, true);
 
     /// <inheritdoc/>
-    public async Task<TransactionConfirmation> ConfirmAsync(User receiver, string confirmationToken)
+    public async Task<TransactionConfirmation> ConfirmAsync(Guid userId, string confirmationToken)
     {
         await using var tx = await _uow.BeginTransactionAsync();
 
         var transaction = await _uow.Transactions
             .Query()
             .Include(t => t.Confirmation!)
-            .FirstAsync(t => t.ConfirmationToken == confirmationToken && t.To.Id == receiver.Id);
+            .FirstAsync(t => t.ConfirmationToken == confirmationToken && t.To.Id == userId);
 
         return await DoCreateConfirmation(transaction, TransactionConfirmationOutcome.Confirmed, tx);
     }
 
     /// <inheritdoc/>
-    public async Task<TransactionConfirmation> CancelAsync(User receiver, Guid transactionId)
+    public async Task<TransactionConfirmation> CancelAsync(Guid userId, Guid transactionId)
     {
         await using var tx = await _uow.BeginTransactionAsync();
 
         var transaction = await _uow.Transactions
             .Query()
             .Include(t => t.Confirmation!)
-            .FirstAsync(t => t.Id == transactionId && t.To.Id == receiver.Id);
+            .FirstAsync(t => t.Id == transactionId && t.To.Id == userId);
 
         return await DoCreateConfirmation(transaction, TransactionConfirmationOutcome.Declined, tx);
     }
@@ -81,7 +81,7 @@ public class TransactionsService : ITransactionsService
     #region Private methods
 
     private async Task<decimal> DoCalculateTotal(
-        User user,
+        Guid userId,
         TransactionDirection direction,
         bool confirmedOnly = false)
     {
@@ -91,11 +91,11 @@ public class TransactionsService : ITransactionsService
                 ? _uow.Transactions
                     .Query()
                     .Where(t => t.Confirmation != null)
-                    .Where(t => t.Confirmation!.Outcome == TransactionConfirmationOutcome.Confirmed && t.From.Id == user.Id)
+                    .Where(t => t.Confirmation!.Outcome == TransactionConfirmationOutcome.Confirmed && t.From.Id == userId)
                 : _uow.Transactions
                     .Query()
                     .Where(t => t.Confirmation != null)
-                    .Where(t => t.Confirmation!.Outcome == TransactionConfirmationOutcome.Confirmed && t.To.Id == user.Id);
+                    .Where(t => t.Confirmation!.Outcome == TransactionConfirmationOutcome.Confirmed && t.To.Id == userId);
 
             return await res.AsAsyncEnumerable().SumAsync(t => t.Amount);
         }
@@ -103,8 +103,8 @@ public class TransactionsService : ITransactionsService
         return await _uow.Transactions
             .Query()
             .Where(direction == TransactionDirection.Outgoing
-                 ? t => t.From.Id == user.Id
-                 : t => t.To.Id == user.Id)
+                 ? t => t.From.Id == userId
+                 : t => t.To.Id == userId)
             .AsAsyncEnumerable()
             .SumAsync(t => t.Amount);
     }

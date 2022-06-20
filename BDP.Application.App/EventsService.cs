@@ -1,7 +1,8 @@
 ﻿using BDP.Application.App.Exceptions;
-using BDP.Domain.Entities;
 using BDP.Domain.Repositories;
+using BDP.Domain.Entities;
 using BDP.Domain.Services;
+using BDP.Domain.Repositories.Extensions;
 
 using System.Linq.Expressions;
 
@@ -50,17 +51,20 @@ public class EventsService : IEventsService
         => _uow.EventTypes.Query();
 
     /// <inheritdoc/>
-    public IQueryBuilder<Event> ForUserAsync(User user)
-        => _uow.Events.Query().Where(e => e.CreatedBy.Id == user.Id);
+    public IQueryBuilder<Event> ForUserAsync(Guid userId)
+        => _uow.Events.Query().Where(e => e.CreatedBy.Id == userId);
 
     /// <inheritdoc/>
     public async Task<Event> CreateAsync(
-        User user,
-        EventType type,
+        Guid userId,
+        Guid typeId,
         string title,
         string description,
         DateTime takesPlaceAt)
     {
+        var user = await _uow.Users.Query().FindAsync(userId);
+        var type = await _uow.EventTypes.Query().FindAsync(typeId);
+
         var @event = new Event
         {
             CreatedBy = user,
@@ -79,12 +83,15 @@ public class EventsService : IEventsService
 
     /// <inheritdoc/>
     public async Task<Event> UpdateAsync(
-        Event @event,
-        EventType type,
+        Guid eventId,
+        Guid typeId,
         string title,
         string description,
         DateTime takesPlaceAt)
     {
+        var @event = await _uow.Events.Query().FindAsync(eventId);
+        var type = await _uow.EventTypes.Query().FindAsync(typeId);
+
         @event.Type = type;
         @event.Title = title;
         @event.Description = description;
@@ -97,15 +104,20 @@ public class EventsService : IEventsService
     }
 
     /// <inheritdoc/>
-    public async Task RemoveAsync(Event e)
+    public async Task RemoveAsync(Guid eventId)
     {
-        _uow.Events.Remove(e);
+        var @event = await _uow.Events.Query().FindAsync(eventId);
+
+        _uow.Events.Remove(@event);
         await _uow.CommitAsync();
     }
 
     /// <inheritdoc/>
-    public async Task AssociatePurchaseAsync(Event @event, Purchase purchase)
+    public async Task AssociatePurchaseAsync(Guid eventId, Guid purchaseId)
     {
+        var @event = await _uow.Events.Query().FindAsync(eventId);
+        var purchase = await _uow.Purchases.Query().FindAsync(purchaseId);
+
         @event.Purchases.Add(purchase);
         _uow.Events.Update(@event);
 
@@ -113,8 +125,9 @@ public class EventsService : IEventsService
     }
 
     /// <inheritdoc/>
-    public async Task AddImageAsync(Event @event, IUploadFile image)
+    public async Task AddImageAsync(Guid eventId, IUploadFile image)
     {
+        var @event = await _uow.Events.Query().FindAsync(eventId);
         var attachment = await _attachmentsSvc.SaveAsync(image);
 
         @event.Pictures.Add(attachment);
@@ -124,10 +137,12 @@ public class EventsService : IEventsService
     }
 
     /// <inheritdoc/>
-    public async Task UpdateProgressAsync(Event @event, double progress)
+    public async Task UpdateProgressAsync(Guid eventId, double progress)
     {
         if (progress > 1 || progress < 0)
             throw new InvalidRangeException(progress, 0, 1);
+
+        var @event = await _uow.Events.Query().FindAsync(eventId);
 
         @event.Progress = progress;
 
