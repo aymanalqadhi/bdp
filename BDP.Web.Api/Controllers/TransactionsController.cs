@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BDP.Domain.Entities;
+using BDP.Domain.Repositories.Extensions;
 using BDP.Domain.Services;
 using BDP.Web.Api.Extensions;
 using BDP.Web.Dtos;
@@ -49,18 +50,15 @@ public class TransactionsController : ControllerBase
     public async Task<IActionResult> MyTransactions([Required] int page)
     {
         var user = await _usersSvc.GetByUsernameAsync(User.GetUsername())!;
-        var ret = await _transactionsSvc.ForUserAsync(
-            page,
-            _pageSize,
-            user,
-            includes: new Expression<Func<Transaction, object>>[]
-            {
-                t => t.From,
-                t => t.To,
-                t => t.Confirmation!
-            }).ToListAsync();
+        var ret = _transactionsSvc.ForUserAsync(user)
+            .OrderDescending()
+            .Page(page, _pageSize)
+            .Include(t => t.From)
+            .Include(t => t.To)
+            .Include(t => t.Confirmation!)
+            .AsAsyncEnumerable();
 
-        return Ok(ret.Select(t =>
+        return Ok(await ret.Select(t =>
         {
             var dto = _mapper.Map<TransactionDto>(t);
 
@@ -68,7 +66,7 @@ public class TransactionsController : ControllerBase
                 dto.ConfirmationToken = null;
 
             return dto;
-        }));
+        }).ToListAsync());
     }
 
     [HttpPost("[action]")]
