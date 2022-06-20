@@ -51,6 +51,16 @@ public class BdpDbContext : DbContext
     public DbSet<FinancialRecordVerification> FinancialRecordVerifications => Set<FinancialRecordVerification>();
 
     /// <summary>
+    /// Gets the logs table
+    /// </summary>
+    public DbSet<Log> Logs => Set<Log>();
+
+    /// <summary>
+    /// Gets the log tags table
+    /// </summary>
+    public DbSet<LogTag> LogTags => Set<LogTag>();
+
+    /// <summary>
     /// Gets the phone numbers table
     /// </summary>
     public DbSet<PhoneNumber> PhoneNumbers => Set<PhoneNumber>();
@@ -114,16 +124,6 @@ public class BdpDbContext : DbContext
     /// Gets the users table
     /// </summary>
     public DbSet<User> Users => Set<User>();
-
-    /// <summary>
-    /// Gets the logs table
-    /// </summary>
-    public DbSet<Log> Logs => Set<Log>();
-
-    /// <summary>
-    /// Gets the log tags table
-    /// </summary>
-    public DbSet<LogTag> LogTags => Set<LogTag>();
 
     #endregion Properties
 
@@ -251,7 +251,37 @@ public class BdpDbContext : DbContext
                      new() { Name = "Graduation Party" },
                      new() { Name = "Other" }
                     );
+
+        // strong-typed identifiers
+        SetIdConversion<Attachment>(builder);
+        SetIdConversion<Confirmation>(builder);
+        SetIdConversion<Event>(builder);
+        SetIdConversion<EventType>(builder);
+        SetIdConversion<FinancialRecord>(builder);
+        SetIdConversion<FinancialRecordVerification>(builder);
+        SetIdConversion<Log>(builder);
+        SetIdConversion<LogTag>(builder);
+        SetIdConversion<PhoneNumber>(builder);
+        SetIdConversion<Purchase>(builder);
+        SetIdConversion<RefreshToken>(builder);
+        SetIdConversion<Sellable>(builder);
+        SetIdConversion<SellableReview>(builder);
+        SetIdConversion<Transaction>(builder);
+        SetIdConversion<TransactionConfirmation>(builder);
+        SetIdConversion<User>(builder);
+        SetIdConversion<UserGroup>(builder);
     }
 
     #endregion Protected Methods
+
+    #region Private Methods
+
+    private static void SetIdConversion<T>(ModelBuilder builder) where T : AuditableEntity<T>
+    {
+        builder.Entity<T>()
+            .Property(e => e.Id)
+            .HasConversion(i => i.Id, g => new EntityKey<T>(g));
+    }
+
+    #endregion Private Methods
 }
