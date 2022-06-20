@@ -50,6 +50,8 @@ public class SellablesController : ControllerBase
         var user = await _usersSvc.GetByUsername(username).FirstAsync();
         var ret = _sellablesSvc.GetForAsync(user)
             .PageDescending(paging.Page, paging.PageLength)
+            .Include(p => p.OfferedBy)
+            .Include(p => p.Attachments)
             .Map(_mapper, typeof(SellableDto))
             .AsAsyncEnumerable();
 
