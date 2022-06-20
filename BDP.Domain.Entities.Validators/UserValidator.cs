@@ -15,7 +15,11 @@ public sealed class UserValidator : Validator<User>
         RuleFor(u => u.Username)
             .NotEmpty()
             .WithMessage("username is required")
-            .Matches(@"^[a-zA-Z0-9](_(?!(\.|_))|\.(?!(_|\.))|[a-zA-Z0-9]){4,18}[a-zA-Z0-9]$")
+            .MinimumLength(4)
+            .WithMessage("username must be at least four characters long")
+            .MaximumLength(32)
+            .WithMessage("usernames cannot go above 32 characters")
+            .Matches(@"^[a-zA-Z0-9](_(?!(\.|_))|\.(?!(_|\.))|[a-zA-Z0-9]){2,18}[a-zA-Z0-9]$")
             .WithMessage("invalid username");
 
         RuleFor(u => u.Email)
