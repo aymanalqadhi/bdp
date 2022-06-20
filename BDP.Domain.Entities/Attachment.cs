@@ -23,5 +23,5 @@ public class Attachment : AuditableEntity<Attachment>
     /// <summary>
     /// Gets or sets the size of the attachment in bytes
     /// </summary>
-    public long Size { get; set; }
+    public ulong Size { get; set; }
 }
