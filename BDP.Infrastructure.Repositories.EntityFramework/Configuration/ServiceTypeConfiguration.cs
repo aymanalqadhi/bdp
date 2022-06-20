@@ -10,5 +10,10 @@ public class ServiceTypeConfiguration : EntityTypeConfiguration<Service>
     public override void Configure(EntityTypeBuilder<Service> builder)
     {
         base.Configure(builder);
+
+        // field precision
+        builder
+            .Property(s => s.Price)
+            .HasPrecision(18, 6);
     }
 }

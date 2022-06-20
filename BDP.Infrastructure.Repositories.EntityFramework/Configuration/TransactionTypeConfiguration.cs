@@ -13,5 +13,10 @@ public class TransactionTypeConfiguration : EntityTypeConfiguration<Transaction>
 
         // indeces
         builder.HasIndex(t => t.ConfirmationToken);
+
+        // field precision
+        builder
+            .Property(s => s.Amount)
+            .HasPrecision(18, 6);
     }
 }

@@ -10,5 +10,10 @@ public class FinancialRecordTypeConfiguration : EntityTypeConfiguration<Financia
     public override void Configure(EntityTypeBuilder<FinancialRecord> builder)
     {
         base.Configure(builder);
+
+        // field precision
+        builder
+            .Property(s => s.Amount)
+            .HasPrecision(18, 6);
     }
 }

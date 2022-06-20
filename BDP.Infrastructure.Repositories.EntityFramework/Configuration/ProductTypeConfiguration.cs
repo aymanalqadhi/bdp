@@ -10,5 +10,10 @@ public class ProductTypeConfiguration : EntityTypeConfiguration<Product>
     public override void Configure(EntityTypeBuilder<Product> builder)
     {
         base.Configure(builder);
+
+        // field precision
+        builder
+            .Property(s => s.Price)
+            .HasPrecision(18, 6);
     }
 }
