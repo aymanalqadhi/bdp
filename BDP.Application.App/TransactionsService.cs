@@ -31,7 +31,7 @@ public class TransactionsService : ITransactionsService
     #region Public methods
 
     /// <inheritdoc/>
-    public IQueryBuilder<Transaction> GetByIdAsync(EntityKey<Transaction> id)
+    public IQueryBuilder<Transaction> GetById(EntityKey<Transaction> id)
         => _uow.Transactions.Query().Where(t => t.Id == id);
 
     /// <inheritdoc/>
