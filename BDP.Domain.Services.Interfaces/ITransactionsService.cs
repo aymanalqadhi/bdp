@@ -1,4 +1,5 @@
 ﻿using BDP.Domain.Entities;
+using BDP.Domain.Repositories;
 
 using System.Linq.Expressions;
 
@@ -7,29 +8,19 @@ namespace BDP.Domain.Services;
 public interface ITransactionsService
 {
     /// <summary>
-    /// Asynchrnously gets transactions that a user has either sent or recieved,
+    /// Asynchrnously gets transactions that a user has either sent or recieved
     /// limited by pagination
     /// </summary>
-    /// <param name="page">The page to fetch</param>
-    /// <param name="pageSize">The page size</param>
     /// <param name="user">The user which to get transactions for</param>
-    /// <param name="includes">Additional includes</param>
     /// <returns></returns>
-    IAsyncEnumerable<Transaction> ForUserAsync(
-        int page,
-        int pageSize,
-        User user,
-        Expression<Func<Transaction, object>>[]? includes = null);
+    IQueryBuilder<Transaction> ForUserAsync(User user);
 
     /// <summary>
     /// Asynchronously gets all sent transactions from a user
     /// </summary>
     /// <param name="user">The user to get the transactions for</param>
-    /// <param name="includes">Additonal includes</param>
     /// <returns></returns>
-    IAsyncEnumerable<Transaction> SentByAsync(
-        User user,
-        Expression<Func<Transaction, object>>[]? includes = null);
+    IQueryBuilder<Transaction> SentByAsync(User user);
 
     /// <summary>
     /// Asynchronously gets all received transactions by a user
@@ -37,9 +28,7 @@ public interface ITransactionsService
     /// <param name="user">The user to get the transactions for</param>
     /// <param name="includes">Additonal includes</param>
     /// <returns></returns>
-    IAsyncEnumerable<Transaction> ReceivedByAsync(
-        User user,
-        Expression<Func<Transaction, object>>[]? includes = null);
+    IQueryBuilder<Transaction> ReceivedByAsync(User user);
 
     /// <summary>
     /// Asynchronously gets the total input transferred to the user
