@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
 using BDP.Domain.Entities;
+using BDP.Web.Api.Auth;
 using BDP.Web.Dtos;
+
+using System;
 
 namespace BDP.Web.Api;
 
@@ -14,60 +17,6 @@ public class AutomapperProfile : Profile
     /// </summary>
     public AutomapperProfile()
     {
-        // users
-        CreateMap<User, UserDto>()
-            .ForMember(
-                u => u.ProfilePictureUrl,
-                o => o.MapFrom(s => s.ProfilePicture != null ? s.ProfilePicture.FullPath : null)
-             )
-            .ForMember(
-                u => u.Groups,
-                o => o.MapFrom(s => s.Groups.Select(g => g.Name))
-            )
-            .ForMember(
-                u => u.PhoneNumbers,
-                o => o.MapFrom(s => s.PhoneNumbers.Select(p => p.Number))
-            );
-
-        // sellables
-        CreateMap<Sellable, SellableDto>()
-            .ForMember(
-                p => p.Attachments,
-                o => o.MapFrom(s => s.Attachments.Select(a => a.FullPath))
-            )
-            .Include<Product, ProductDto>()
-            .Include<Service, ServiceDto>();
-        CreateMap<Product, ProductDto>();
-        CreateMap<Service, ServiceDto>();
-        CreateMap<SellableReview, SellableReviewDto>();
-
-        // finacial records
-        CreateMap<FinancialRecord, FinancialRecordDto>();
-        CreateMap<FinancialRecordVerification, FinancialRecordVerificationDto>()
-            .ForMember(
-                v => v.IsAccepted,
-                o => o.MapFrom(v => v.Outcome == FinancialRecordVerificationOutcome.Accepted)
-            )
-            .ForMember(
-                v => v.Document,
-                o => o.MapFrom(v => v.Document == null ? null : v.Document.FullPath)
-            );
-
-        // transactions
-        CreateMap<Transaction, TransactionDto>();
-        CreateMap<TransactionConfirmation, TransactionConfirmationDto>()
-            .ForMember(
-                c => c.IsAccepted,
-                o => o.MapFrom(c => c.Outcome == TransactionConfirmationOutcome.Confirmed)
-            );
-
-        // purchases
-        CreateMap<Purchase, PurchaseDto>()
-            .Include<ProductOrder, OrderDto>()
-            .Include<ServiceReservation, ReservationDto>();
-        CreateMap<ProductOrder, OrderDto>();
-        CreateMap<ServiceReservation, ReservationDto>();
-
         // events
         CreateMap<Event, EventDto>()
             .ForMember(
@@ -75,5 +24,51 @@ public class AutomapperProfile : Profile
                 o => o.MapFrom(s => s.Pictures.Select(i => i.FullPath))
             );
         CreateMap<EventType, EventTypeDto>();
+
+        // finacial records
+        CreateMap<FinancialRecord, FinancialRecordDto>();
+        CreateMap<FinancialRecordVerification, FinancialRecordVerificationDto>()
+            .ForMember(
+                v => v.Document,
+                o => o.MapFrom(v => v.Document == null ? null : v.Document.FullPath)
+            );
+
+        // products
+        CreateMap<Product, ProductDto>()
+            .ForMember(
+                p => p.Categories,
+                o => o.MapFrom(s => s.Categories.Select(a => a.Name))
+            );
+        CreateMap<ProductVariant, ProductVariantDto>()
+            .ForMember(
+                p => p.Attachments,
+                o => o.MapFrom(s => s.Attachments.Select(a => a.FullPath))
+            );
+
+        // purchases
+        CreateMap<Order, OrderDto>();
+        CreateMap<Reservation, ReservationDto>();
+
+        // transactions
+        CreateMap<Transaction, TransactionDto>();
+        CreateMap<TransactionConfirmation, TransactionConfirmationDto>();
+
+        // users
+        CreateMap<User, UserDto>()
+            .ForMember(
+                u => u.Role,
+                o => o.MapFrom(s => UserRoleConverter.FromRole(s.Role))
+            );
+
+        // user profiles
+        CreateMap<UserProfile, UserProfileDto>()
+            .ForMember(
+                u => u.ProfilePicture,
+                o => o.MapFrom(s => s.ProfilePicture != null ? s.ProfilePicture.FullPath : null)
+             )
+            .ForMember(
+                u => u.CoverPicture,
+                o => o.MapFrom(s => s.CoverPicture != null ? s.CoverPicture.FullPath : null)
+             );
     }
 }
