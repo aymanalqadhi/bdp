@@ -8,7 +8,7 @@ namespace BDP.Infrastructure.Repositories.EntityFramework;
 
 public sealed class Repository<T, Validator> : IRepository<T>
     where T : AuditableEntity<T>
-    where Validator : Validator<T>, new()
+    where Validator : IValidator<T>, new()
 {
     #region Private fields
 
@@ -38,10 +38,7 @@ public sealed class Repository<T, Validator> : IRepository<T>
     {
         foreach (var entity in entites)
         {
-            var res = _validator.Validate(entity);
-
-            if (!res.IsValid)
-                throw new ValidationAggregateException(res.Errors);
+            _validator.Validate(entity);
 
             entity.CreatedAt = DateTime.Now;
             entity.ModifiedAt = DateTime.Now;
@@ -53,10 +50,7 @@ public sealed class Repository<T, Validator> : IRepository<T>
     /// <inheritdoc/>
     public void Update(T entity)
     {
-        var res = _validator.Validate(entity);
-
-        if (!res.IsValid)
-            throw new ValidationAggregateException(res.Errors);
+        _validator.Validate(entity);
 
         entity.ModifiedAt = DateTime.Now;
 
@@ -88,7 +82,7 @@ public static class RepositoryFactory
     /// <returns>The created repository instance</returns>
     public static IRepository<TEntity> Create<TEntity, Validator>(DbSet<TEntity> set)
         where TEntity : AuditableEntity<TEntity>
-        where Validator : Validator<TEntity>, new()
+        where Validator : IValidator<TEntity>, new()
     {
         return new Repository<TEntity, Validator>(set);
     }
