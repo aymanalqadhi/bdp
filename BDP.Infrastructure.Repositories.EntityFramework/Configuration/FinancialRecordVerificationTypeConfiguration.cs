@@ -10,5 +10,8 @@ public class FinancialRecordVerificationTypeConfiguration : EntityTypeConfigurat
     public override void Configure(EntityTypeBuilder<FinancialRecordVerification> builder)
     {
         base.Configure(builder);
+
+        // indeces
+        builder.HasIndex(v => v.FinancialRecordId).IsUnique();
     }
 }

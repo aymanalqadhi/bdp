@@ -10,5 +10,8 @@ public class TransactionConfirmationTypeConfiguration : EntityTypeConfiguration<
     public override void Configure(EntityTypeBuilder<TransactionConfirmation> builder)
     {
         base.Configure(builder);
+
+        // indeces
+        builder.HasIndex(c => c.TransactionId).IsUnique();
     }
 }
