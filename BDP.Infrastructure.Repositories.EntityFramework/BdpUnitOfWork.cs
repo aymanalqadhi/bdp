@@ -28,8 +28,7 @@ public sealed class BdpUnitOfWork : IUnitOfWork, IDisposable, IAsyncDisposable
     #region Properties
 
     /// <inheritdoc/>
-    public IRepository<Attachment> Attachments
-        => new Repository<Attachment, Validator<Attachment>>(_ctx.Attachments);
+    public IRepository<Attachment> Attachments => RepositoryFactory.Create(_ctx.Attachments);
 
     /// <inheritdoc/>
     public IRepository<Confirmation> Confirmations
@@ -39,7 +38,7 @@ public sealed class BdpUnitOfWork : IUnitOfWork, IDisposable, IAsyncDisposable
     public IRepository<Event> Events => new Repository<Event, EventValidator>(_ctx.Events);
 
     /// <inheritdoc/>
-    public IRepository<EventType> EventTypes => new Repository<EventType, Validator<EventType>>(_ctx.EventTypes);
+    public IRepository<EventType> EventTypes => RepositoryFactory.Create(_ctx.EventTypes);
 
     /// <inheritdoc/>
     public IRepository<FinancialRecord> FinancialRecords
@@ -47,7 +46,7 @@ public sealed class BdpUnitOfWork : IUnitOfWork, IDisposable, IAsyncDisposable
 
     /// <inheritdoc/>
     public IRepository<FinancialRecordVerification> FinancialRecordVerficiations
-        => new Repository<FinancialRecordVerification, Validator<FinancialRecordVerification>>(_ctx.FinancialRecordVerifications);
+        => RepositoryFactory.Create(_ctx.FinancialRecordVerifications);
 
     /// <inheritdoc/>
     public IRepository<Log> Logs
@@ -65,26 +64,23 @@ public sealed class BdpUnitOfWork : IUnitOfWork, IDisposable, IAsyncDisposable
     public IRepository<ProductReview> ProductReviews => RepositoryFactory.Create(_ctx.ProductReviews);
 
     /// <inheritdoc/>
-    public IRepository<Product> Products
-        => new Repository<Product, Validator<Product>>(_ctx.Products);
+    public IRepository<Product> Products => RepositoryFactory.Create(_ctx.Products);
 
     /// <inheritdoc/>
     public IRepository<RefreshToken> RefreshTokens => RepositoryFactory.Create(_ctx.RefreshTokens);
 
     /// <inheritdoc/>
-    public IRepository<ServiceReservation> ServiceReservations
-        => new Repository<ServiceReservation, Validator<ServiceReservation>>(_ctx.ServiceReservations);
+    public IRepository<ServiceReservation> ServiceReservations => RepositoryFactory.Create(_ctx.ServiceReservations);
 
     /// <inheritdoc/>
-    public IRepository<Service> Services
-        => new Repository<Service, Validator<Service>>(_ctx.Services);
+    public IRepository<Service> Services => RepositoryFactory.Create(_ctx.Services);
 
     /// <inheritdoc/>
     public IRepository<ServiceReview> ServicesReviews => RepositoryFactory.Create(_ctx.ServiceReviews);
 
     /// <inheritdoc/>
     public IRepository<TransactionConfirmation> TransactionConfirmations
-        => new Repository<TransactionConfirmation, Validator<TransactionConfirmation>>(_ctx.TransactionConfirmations);
+        => RepositoryFactory.Create(_ctx.TransactionConfirmations);
 
     /// <inheritdoc/>
     public IRepository<Transaction> Transactions
@@ -94,8 +90,7 @@ public sealed class BdpUnitOfWork : IUnitOfWork, IDisposable, IAsyncDisposable
     public IRepository<UserProfile> UserProfiles => RepositoryFactory.Create(_ctx.UserProfiles);
 
     /// <inheritdoc/>
-    public IRepository<User> Users
-        => new Repository<User, UserValidator>(_ctx.Users);
+    public IRepository<User> Users => new Repository<User, UserValidator>(_ctx.Users);
 
     #endregion Properties
 
