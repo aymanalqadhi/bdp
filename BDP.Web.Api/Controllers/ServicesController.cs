@@ -40,7 +40,7 @@ public class ServicesController : ControllerBase
     #region Actions
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(int id)
+    public async Task<IActionResult> GetById(Guid id)
         => Ok(_mapper.Map<ServiceDto>(await _servicesService.GetByIdAsync(id)));
 
     [HttpPost]
@@ -65,7 +65,7 @@ public class ServicesController : ControllerBase
 
     [HttpPatch("{id}")]
     [IsProvider]
-    public async Task<IActionResult> Update([FromBody] UpdateServiceRequest form, int id)
+    public async Task<IActionResult> Update([FromBody] UpdateServiceRequest form, Guid id)
     {
         var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var service = await _servicesService.GetByIdAsync(id);
@@ -86,7 +86,7 @@ public class ServicesController : ControllerBase
 
     [HttpDelete("{id}")]
     [IsProvider]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(Guid id)
     {
         var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var service = await _servicesService.GetByIdAsync(id);
@@ -100,7 +100,7 @@ public class ServicesController : ControllerBase
 
     [HttpPost("{id}/[action]")]
     [IsCustomer]
-    public async Task<IActionResult> Reserve(int id)
+    public async Task<IActionResult> Reserve(Guid id)
     {
         var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var service = await _servicesService.GetByIdAsync(id);

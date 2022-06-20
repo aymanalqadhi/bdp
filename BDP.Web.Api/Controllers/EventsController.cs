@@ -47,7 +47,7 @@ public class EventsController : ControllerBase
 
     [HttpGet("{id}")]
     [Authorize]
-    public async Task<IActionResult> GetById(int id)
+    public async Task<IActionResult> GetById(Guid id)
         => Ok(_mapper.Map<EventDto>(await _eventsSvc.GetByIdAsync(id)));
 
     [HttpGet("types")]
@@ -91,7 +91,7 @@ public class EventsController : ControllerBase
 
     [HttpPatch("{id}")]
     [IsCustomer]
-    public async Task<IActionResult> Update(int id, [FromBody] UpdateEventRequest form)
+    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateEventRequest form)
     {
         var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var @event = await _eventsSvc.GetByIdAsync(id);
@@ -113,7 +113,7 @@ public class EventsController : ControllerBase
 
     [HttpDelete("{id}")]
     [IsCustomer]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(Guid id)
     {
         // TODO:
         // move ownership logic to the service
@@ -131,7 +131,7 @@ public class EventsController : ControllerBase
 
     [HttpGet("{id}/purchases")]
     [IsCustomer]
-    public async Task<IActionResult> GetAssociatePurchase(int id)
+    public async Task<IActionResult> GetAssociatePurchase(Guid id)
     {
         var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var @event = await _eventsSvc.GetByIdAsync(id);
@@ -145,7 +145,7 @@ public class EventsController : ControllerBase
     [HttpPost("{id}/purchases")]
     [IsCustomer]
     public async Task<IActionResult> AssociatePurchase(
-        int id,
+        Guid id,
         [FromBody] AssociatePurchaseWithEventRequest form)
     {
         // TODO:
@@ -169,7 +169,7 @@ public class EventsController : ControllerBase
 
     [HttpPost("{id}/images")]
     [IsCustomer]
-    public async Task<IActionResult> AddImage(long id, [FromForm] AddImageToEventRequest form)
+    public async Task<IActionResult> AddImage(Guid id, [FromForm] AddImageToEventRequest form)
     {
         // TODO:
         // move ownership logic to the service
@@ -191,7 +191,7 @@ public class EventsController : ControllerBase
     [HttpPut("{id}/progress")]
     [IsCustomer]
     public async Task<IActionResult> UpdateProgress(
-        long id,
+        Guid id,
         [FromBody] UpdateEventProgressRequess form)
     {
         // TODO:

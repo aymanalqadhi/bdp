@@ -72,7 +72,7 @@ public class SellablesController : ControllerBase
     }
 
     [HttpGet("{id}/reviews")]
-    public async Task<IActionResult> GetReviewsPaged(int id, [FromQuery] PagingParameters paging)
+    public async Task<IActionResult> GetReviewsPaged(Guid id, [FromQuery] PagingParameters paging)
     {
         var item = await _sellablesSvc.GetByIdAsync(id);
         var ret = _sellableReviewsSvc.GetForAsync(item)
@@ -85,7 +85,7 @@ public class SellablesController : ControllerBase
 
     [HttpGet("{id}/my-review")]
     [Authorize]
-    public async Task<IActionResult> MyReview(int id)
+    public async Task<IActionResult> MyReview(Guid id)
     {
         var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var item = await _sellablesSvc.GetByIdAsync(id);
@@ -95,7 +95,7 @@ public class SellablesController : ControllerBase
     }
 
     [HttpGet("{id}/review-info")]
-    public async Task<IActionResult> ReviewInfo(int id)
+    public async Task<IActionResult> ReviewInfo(Guid id)
     {
         var item = await _sellablesSvc.GetByIdAsync(id);
         return Ok(await _sellableReviewsSvc.ReviewInfoForAsync(item));
@@ -103,7 +103,7 @@ public class SellablesController : ControllerBase
 
     [HttpGet("{id}/can-review")]
     [Authorize]
-    public async Task<IActionResult> CanReview(int id)
+    public async Task<IActionResult> CanReview(Guid id)
     {
         var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var item = await _sellablesSvc.GetByIdAsync(id);
@@ -116,7 +116,7 @@ public class SellablesController : ControllerBase
 
     [HttpPost("{id}/[action]")]
     [IsCustomer]
-    public async Task<IActionResult> Review(int id, [FromBody] SellableReviewRequest form)
+    public async Task<IActionResult> Review(Guid id, [FromBody] SellableReviewRequest form)
     {
         var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var item = await _sellablesSvc.GetByIdAsync(id);

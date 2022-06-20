@@ -43,7 +43,7 @@ public class ProductsController : ControllerBase
     #region Actions
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(int id)
+    public async Task<IActionResult> GetById(Guid id)
         => Ok(_mapper.Map<ProductDto>(await _productsSvc.GetByIdAsync(id)));
 
     [HttpPost]
@@ -67,7 +67,7 @@ public class ProductsController : ControllerBase
 
     [HttpPatch("{id}")]
     [IsProvider]
-    public async Task<IActionResult> Update([FromBody] UpdateProductRequest form, int id)
+    public async Task<IActionResult> Update([FromBody] UpdateProductRequest form, Guid id)
     {
         var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var product = await _productsSvc.GetByIdAsync(id);
@@ -81,7 +81,7 @@ public class ProductsController : ControllerBase
 
     [HttpDelete("{id}")]
     [IsProvider]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(Guid id)
     {
         var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var product = await _productsSvc.GetByIdAsync(id);
@@ -94,7 +94,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet("{id}/quantity")]
-    public async Task<IActionResult> AvailableQuantity(int id)
+    public async Task<IActionResult> AvailableQuantity(Guid id)
     {
         var product = await _productsSvc.GetByIdAsync(id);
 
@@ -103,7 +103,7 @@ public class ProductsController : ControllerBase
 
     [HttpPost("{id}/[action]")]
     [IsCustomer]
-    public async Task<IActionResult> Order([FromBody] OrderProductRequest form, int id)
+    public async Task<IActionResult> Order([FromBody] OrderProductRequest form, Guid id)
     {
         var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var product = await _productsSvc.GetByIdAsync(id);

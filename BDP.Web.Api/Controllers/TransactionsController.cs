@@ -73,7 +73,7 @@ public class TransactionsController : ControllerBase
 
     [HttpPost("{id}/[action]")]
     [Authorize]
-    public async Task<IActionResult> Cancel(int id)
+    public async Task<IActionResult> Cancel(Guid id)
     {
         var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var ret = await _transactionsSvc.CancelAsync(user, id);
@@ -83,7 +83,7 @@ public class TransactionsController : ControllerBase
 
     [HttpGet("{id}/token")]
     [Authorize]
-    public async Task<IActionResult> GetConfirmationToken(long id)
+    public async Task<IActionResult> GetConfirmationToken(Guid id)
     {
         var user = await _usersSvc.GetByUsername(User.GetUsername()).FirstAsync();
         var tx = await _transactionsSvc.GetByIdAsync(id).FirstAsync();

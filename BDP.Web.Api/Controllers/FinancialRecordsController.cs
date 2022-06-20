@@ -80,7 +80,7 @@ public class FinancialRecordsController : ControllerBase
     #region Private methods
 
     private async Task<FinancialRecordVerification> FinishRecord(
-        int recordId,
+        Guid recordId,
         FinancialRecordVerificationOutcome outcome,
         string? note,
         IFormFile? document)
