@@ -23,11 +23,6 @@ public class TransactionDto
     public UserDto To { get; set; } = null!;
 
     /// <summary>
-    /// Gets or sets the confimation token of the transaction
-    /// </summary>
-    public string? ConfirmationToken { get; set; }
-
-    /// <summary>
     /// Gets or sets the confimation of the request
     /// </summary>
     public TransactionConfirmationDto? Confirmation { get; set; }
