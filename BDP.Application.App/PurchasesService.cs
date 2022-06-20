@@ -32,11 +32,11 @@ public class PurchasesService : IPurchasesService
     #region Public method
 
     /// <inheritdoc/>
-    public Task<Purchase> GetById(Guid id)
+    public Task<Purchase> GetById(EntityKey<Purchase> id)
         => _uow.Purchases.Query().FindAsync(id);
 
     /// <inheritdoc/>
-    public IQueryBuilder<Purchase> ForUserAsync(Guid userId)
+    public IQueryBuilder<Purchase> ForUserAsync(EntityKey<User> userId)
     {
         return _uow.Purchases.Query()
             .Where(p => p.Transaction.From.Id == userId || p.Transaction.To.Id == userId);
