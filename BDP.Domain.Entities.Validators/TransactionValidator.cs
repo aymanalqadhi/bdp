@@ -12,8 +12,12 @@ public sealed class TransactionValidator : Validator<Transaction>
     /// </summary>
     public TransactionValidator()
     {
-        RuleFor(u => u.Amount)
-            .GreaterThanOrEqualTo(0)
+        RuleFor(t => t.Amount)
+            .GreaterThan(0)
             .WithMessage("transaction amount must be higher than 0");
+
+        RuleFor(t => t.ConfirmationToken)
+            .NotEmpty()
+            .WithMessage("confirmation token is required");
     }
 }
