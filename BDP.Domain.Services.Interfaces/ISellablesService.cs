@@ -15,17 +15,17 @@ public interface ISellablesService
     /// <summary>
     /// Asynchronosly gets sellables for a user, limited with pagination
     /// </summary>
-    /// <param name="user">The user which to get the products for</param>
+    /// <param name="userId">The id of the user which to get the products for</param>
     /// <returns></returns>
-    IQueryBuilder<Sellable> GetForAsync(User user);
+    IQueryBuilder<Sellable> GetForAsync(Guid userId);
 
     /// <summary>
     /// Asynchronosly searches sellables for a user, limited with paging
     /// </summary>
-    /// <param name="user">The user which to get the products for</param>
+    /// <param name="userId">The id of the user which to get the products for</param>
     /// <param name="query">The to look for</param>
     /// <returns></returns>
-    IQueryBuilder<Sellable> SearchForAsync(User user, string query);
+    IQueryBuilder<Sellable> SearchForAsync(Guid userId, string query);
 
     /// <summary>
     /// Asynchronosly searches sellables gloablly, limited with paging
