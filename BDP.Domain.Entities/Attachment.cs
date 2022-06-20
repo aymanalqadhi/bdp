@@ -24,7 +24,4 @@ public class Attachment : AuditableEntity<Attachment>
     /// Gets or sets the size of the attachment in bytes
     /// </summary>
     public long Size { get; set; }
-
-    public bool IsImage()
-        => Mime.StartsWith("image/");
 }
