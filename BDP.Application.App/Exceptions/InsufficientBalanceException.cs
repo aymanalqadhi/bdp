@@ -4,28 +4,40 @@ namespace BDP.Application.App.Exceptions;
 
 public class InsufficientBalanceException : Exception
 {
-    private readonly User _from;
+    #region Fields
+
+    private readonly Guid _userId;
     private readonly decimal _amount;
+
+    #endregion Fields
+
+    #region Public Constructors
 
     /// <summary>
     /// Default constructor
     /// </summary>
     /// <param name="from">The user which requsted the specified amount</param>
     /// <param name="amount">The amount requsted</param>
-    public InsufficientBalanceException(User from, decimal amount)
-        : base($"user {from.Username} does not have {amount} in balance")
+    public InsufficientBalanceException(Guid userId, decimal amount)
+        : base($"user `{userId}' does not have {amount} in balance")
     {
-        _from = from;
+        _userId = userId;
         _amount = amount;
     }
 
-    /// <summary>
-    /// Gets the user who lacks sufficient balance
-    /// </summary>
-    public User From => _from;
+    #endregion Public Constructors
+
+    #region Properties
 
     /// <summary>
     /// Gets the requested amount
     /// </summary>
     public decimal Amount => _amount;
+
+    /// <summary>
+    /// Gets the user who lacks sufficient balance
+    /// </summary>
+    public Guid UserId => _userId;
+
+    #endregion Properties
 }
