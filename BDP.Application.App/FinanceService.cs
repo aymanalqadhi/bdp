@@ -48,7 +48,7 @@ public class FinanceService : IFinanceService
     #region Public methods
 
     /// <inheritdoc/>
-    public async Task<decimal> CalculateTotalVirtualAsync(Guid userId)
+    public async Task<decimal> CalculateTotalVirtualAsync(EntityKey<User> userId)
     {
         var recordsTotal = await _financialRecordsSvc.TotalUsableAsync(userId);
         var transactionsIn = await _transactionsSvc.TotalInAsync(userId, true);
@@ -58,7 +58,7 @@ public class FinanceService : IFinanceService
     }
 
     /// <inheritdoc/>
-    public async Task<decimal> CalculateTotalUsableAsync(Guid userId)
+    public async Task<decimal> CalculateTotalUsableAsync(EntityKey<User> userId)
     {
         var recordsTotal = await _financialRecordsSvc.TotalUsableAsync(userId);
         var transactionsTotal = await _transactionsSvc.TotalUsableAsync(userId);
@@ -67,21 +67,21 @@ public class FinanceService : IFinanceService
     }
 
     /// <inheritdoc/>
-    public async Task<decimal> TotalVirtualAsync(Guid userId)
+    public async Task<decimal> TotalVirtualAsync(EntityKey<User> userId)
     {
         await using var tx = await _uow.BeginTransactionAsync();
         return await CalculateTotalVirtualAsync(userId);
     }
 
     /// <inheritdoc/>
-    public async Task<decimal> TotalUsableAsync(Guid userId)
+    public async Task<decimal> TotalUsableAsync(EntityKey<User> userId)
     {
         await using var tx = await _uow.BeginTransactionAsync();
         return await CalculateTotalUsableAsync(userId);
     }
 
     /// <inheritdoc/>
-    public async Task<Transaction> TransferUncomittedAsync(Guid fromId, Guid toId, decimal amount)
+    public async Task<Transaction> TransferUncomittedAsync(EntityKey<User> fromId, EntityKey<User> toId, decimal amount)
     {
         if (await CalculateTotalUsableAsync(fromId) < amount)
             throw new InsufficientBalanceException(fromId, amount);
@@ -104,7 +104,7 @@ public class FinanceService : IFinanceService
     }
 
     /// <inheritdoc/>
-    public async Task<Transaction> TransferAsync(Guid fromId, Guid toId, decimal amount)
+    public async Task<Transaction> TransferAsync(EntityKey<User> fromId, EntityKey<User> toId, decimal amount)
     {
         await using var tx = await _uow.BeginTransactionAsync();
 
@@ -115,7 +115,7 @@ public class FinanceService : IFinanceService
     }
 
     /// <inheritdoc/>
-    public async Task<FinancialRecord> DepositAsync(Guid userId, decimal amount, string? note)
+    public async Task<FinancialRecord> DepositAsync(EntityKey<User> userId, decimal amount, string? note)
     {
         await using var tx = await _uow.BeginTransactionAsync();
 
@@ -126,7 +126,7 @@ public class FinanceService : IFinanceService
     }
 
     /// <inheritdoc/>
-    public async Task<FinancialRecord> WithdrawAsync(Guid userId, decimal amount, string? note)
+    public async Task<FinancialRecord> WithdrawAsync(EntityKey<User> userId, decimal amount, string? note)
     {
         await using var tx = await _uow.BeginTransactionAsync();
 
@@ -141,7 +141,7 @@ public class FinanceService : IFinanceService
     #region Private methods
 
     private async Task<FinancialRecord> CreateFinancialRecord(
-        Guid userId, decimal amount, string? note, IAsyncDatabaseTransaction tx)
+        EntityKey<User> userId, decimal amount, string? note, IAsyncDatabaseTransaction tx)
     {
         /// TODO:
         /// Use transactions here
