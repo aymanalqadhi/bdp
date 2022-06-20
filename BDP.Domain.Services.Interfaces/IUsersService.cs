@@ -1,4 +1,5 @@
 ﻿using BDP.Domain.Entities;
+using BDP.Domain.Repositories;
 
 namespace BDP.Domain.Services;
 
@@ -26,15 +27,8 @@ public interface IUsersService
     /// Asynchronsously searches for users
     /// </summary>
     /// <param name="query">The query to search for</param>
-    /// <param name="includeGroups">Whether to include groups or not</param>
-    /// <param name="includePhones">Whether to include phone numbers or not</param>
     /// <returns></returns>
-    IAsyncEnumerable<User> SearchAsync(
-        string query,
-        int page,
-        int pageSize,
-        bool includePhones = false,
-        bool includeGroups = false);
+    IQueryBuilder<User> SearchAsync(string query);
 
     /// <summary>
     /// Asynchronously adds a user to a specific group
