@@ -5,19 +5,48 @@ using System.Linq.Expressions;
 
 namespace BDP.Domain.Services;
 
+/// <summary>
+/// A service to manage purchases (orders and reservations) on the application
+/// </summary>
 public interface IPurchasesService
 {
-    /// <summary>
-    /// Asynchronously gets a purchase by id
-    /// </summary>
-    /// <param name="id">The id of the purchase</param>
-    /// <returns></returns>
-    Task<Purchase> GetById(EntityKey<Purchase> id);
+    #region Public Methods
 
     /// <summary>
-    /// Asynchronosly gets purchases for a user, limited with pagination
+    /// Asynchronously gets the available quantity for a sellable product variant
     /// </summary>
-    /// <param name="userId">The id of the user which to get the purchases for</param>
+    /// <param name="variantId">The id of the sellable product variant</param>
+    /// <returns>The avaiable quantity</returns>
+    Task<uint> AvailableSellableVariantQuantityAsync(EntityKey<ProductVariant> variantId);
+
+    /// <summary>
+    /// Asynchronously checks if a product variant can be purchased or not
+    /// </summary>
+    /// <param name="variantId">The id of the product to check for</param>
+    /// <returns>True if the product variant is available for purchase, false otherwise</returns>
+    Task<bool> CanPurchaseAsync(EntityKey<ProductVariant> variantId);
+
+    /// <summary>
+    /// Asynchronously makes an order for a sellable product variant
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="variantId"></param>
+    /// <param name="quantity"></param>
     /// <returns></returns>
-    IQueryBuilder<Purchase> ForUserAsync(EntityKey<User> userId);
+    Task<Order> OrderAsync(
+        EntityKey<User> userId,
+        EntityKey<ProductVariant> variantId,
+        uint quantity);
+
+    /// <summary>
+    /// Asynchronously makes a reservation for a reservable product variant
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="variantId"></param>
+    /// <returns></returns>
+    Task<Order> ReserveAsync(
+        EntityKey<User> userId,
+        EntityKey<ProductVariant> variantId);
+
+    #endregion Public Methods
 }
