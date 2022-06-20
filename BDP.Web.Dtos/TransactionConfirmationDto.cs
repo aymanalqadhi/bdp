@@ -1,19 +1,14 @@
-﻿namespace BDP.Web.Dtos;
+﻿using BDP.Domain.Entities;
 
-public class TransactionConfirmationDto
+namespace BDP.Web.Dtos;
+
+/// <summary>
+/// A data-transfer object for <see cref="Transaction"/>
+/// </summary>
+public sealed class TransactionConfirmationDto : EntityDto<TransactionConfirmation>
 {
-    /// <summary>
-    /// Gets or sets the id of the confirmation
-    /// </summary>
-    public Guid Id { get; set; }
-
     /// <summary>
     /// Gets or sets whether the transaction has been accepted or not
     /// </summary>
     public bool IsAccepted { get; set; }
-
-    /// <summary>
-    /// Gets or sets the date at which the transaction was confirmed
-    /// </summary>
-    public DateTime CreatedAt { get; set; }
 }
