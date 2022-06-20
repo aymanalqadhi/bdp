@@ -2,7 +2,7 @@
 
 namespace BDP.Domain.Repositories;
 
-public interface IRepository<T> where T : AuditableEntity
+public interface IRepository<T> where T : AuditableEntity<T>
 {
     #region Public Methods
 
