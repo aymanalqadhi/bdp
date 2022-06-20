@@ -83,6 +83,22 @@ public interface IQueryBuilder<T> where T : AuditableEntity
         CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Asynchronously gets an item by id from the backing store. An exception is
+    /// thrown if the item is not found
+    /// </summary>
+    /// <param name="id">The id of the item to get</param>
+    /// <returns>The matched item</returns>
+    Task<T> GetAsync(long id);
+
+    /// <summary>
+    /// Asynchronously gets an item by id from the backing store. If the item is not
+    /// found, null is returned.
+    /// </summary>
+    /// <param name="id">The id of the item to get</param>
+    /// <returns>The matched item if found, null otherwise</returns>
+    Task<T?> GetOrNullAsync(long id);
+
+    /// <summary>
     /// Asynchronously gets whether the query has no items
     /// </summary>
     /// <param name="cancellationToken">The task cancellation cancellationToken</param>
