@@ -1,4 +1,5 @@
 ﻿using BDP.Domain.Entities;
+using BDP.Domain.Repositories;
 
 namespace BDP.Domain.Services;
 
@@ -15,27 +16,21 @@ public interface ISellablesService
     /// Asynchronosly gets sellables for a user, limited with pagination
     /// </summary>
     /// <param name="user">The user which to get the products for</param>
-    /// <param name="page">The page to get</param>
-    /// <param name="pageSize">The pages size</param>
     /// <returns></returns>
-    IAsyncEnumerable<Sellable> GetForAsync(User user, int page, int pageSize);
+    IQueryBuilder<Sellable> GetForAsync(User user);
 
     /// <summary>
     /// Asynchronosly searches sellables for a user, limited with paging
     /// </summary>
     /// <param name="user">The user which to get the products for</param>
     /// <param name="query">The to look for</param>
-    /// <param name="page">The page to get</param>
-    /// <param name="pageSize">The pages size</param>
     /// <returns></returns>
-    IAsyncEnumerable<Sellable> SearchForAsync(User user, string query, int page, int pageSize);
+    IQueryBuilder<Sellable> SearchForAsync(User user, string query);
 
     /// <summary>
     /// Asynchronosly searches sellables gloablly, limited with paging
     /// </summary>
     /// <param name="query">The to look for</param>
-    /// <param name="page">The page to get</param>
-    /// <param name="pageSize">The pages size</param>
     /// <returns></returns>
-    IAsyncEnumerable<Sellable> SearchAsync(string query, int page, int pageSize);
+    IQueryBuilder<Sellable> SearchAsync(string query);
 }
