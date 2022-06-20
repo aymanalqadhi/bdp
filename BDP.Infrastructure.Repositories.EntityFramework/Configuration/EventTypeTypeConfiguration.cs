@@ -11,6 +11,10 @@ public class EventTypeTypeConfiguration : EntityTypeConfiguration<EventType>
     {
         base.Configure(builder);
 
+        // indeces
+        builder.HasIndex(t => t.Name).IsUnique();
+
+        // data seeding
         builder.HasData(
             new() { Name = "Wedding" },
             new() { Name = "Birth Day" },
