@@ -6,11 +6,10 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace BDP.Infrastructure.Repositories.EntityFramework.Configuration;
 
 /// <inheritdoc/>
-public abstract class ProductVariantTypeConfiguration<TVariant> : EntityTypeConfiguration<TVariant>
-    where TVariant : ProductVariant<TVariant>
+public sealed class ProductVariantTypeConfiguration : EntityTypeConfiguration<ProductVariant>
 {
     /// <inheritdoc/>
-    public override void Configure(EntityTypeBuilder<TVariant> builder)
+    public override void Configure(EntityTypeBuilder<ProductVariant> builder)
     {
         base.Configure(builder);
 
