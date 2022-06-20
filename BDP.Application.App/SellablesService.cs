@@ -32,15 +32,15 @@ public class SellablesService : ISellablesService
     #region Public methods
 
     /// <inheritdoc/>
-    public Task<Sellable> GetByIdAsync(Guid id)
+    public Task<Sellable> GetByIdAsync(EntityKey<Sellable> id)
         => _uow.Sellables.Query().FindAsync(id);
 
     /// <inheritdoc/>
-    public IQueryBuilder<Sellable> GetForAsync(Guid userId)
+    public IQueryBuilder<Sellable> GetForAsync(EntityKey<User> userId)
         => _uow.Sellables.Query().Where(s => s.OfferedBy.Id == userId);
 
     /// <inheritdoc/>
-    public IQueryBuilder<Sellable> SearchForAsync(Guid userId, string query)
+    public IQueryBuilder<Sellable> SearchForAsync(EntityKey<User> userId, string query)
         => _uow.Sellables.Query().Where(s => s.OfferedBy.Id == userId && s.Title.ToLower().Contains(query.ToLower()));
 
     /// <inheritdoc/>

@@ -30,11 +30,11 @@ public class SellableReviewsService : ISellableReviewsService
     #region Public methods
 
     /// <inheritdoc/>
-    public IQueryBuilder<SellableReview> GetForAsync(Guid itemId)
+    public IQueryBuilder<SellableReview> GetForAsync(EntityKey<Sellable> itemId)
         => _uow.SellableReviews.Query().Where(r => r.Item.Id == itemId);
 
     /// <inheritdoc/>
-    public Task<SellableReview?> GetReviewForUserAsync(Guid userId, Guid itemId)
+    public Task<SellableReview?> GetReviewForUserAsync(EntityKey<User> userId, EntityKey<Sellable> itemId)
     {
         return _uow.SellableReviews
             .Query()
@@ -43,7 +43,7 @@ public class SellableReviewsService : ISellableReviewsService
 
     /// <inheritdoc/>
     public async Task<SellableReview> ReviewAsync(
-        Guid userId, Guid itemId, double rating, string? comment = null)
+        EntityKey<User> userId, EntityKey<Sellable> itemId, double rating, string? comment = null)
     {
         await using var tx = await _uow.BeginTransactionAsync();
 
@@ -71,7 +71,7 @@ public class SellableReviewsService : ISellableReviewsService
     }
 
     /// <inheritdoc/>
-    public async Task<SellableReviewInfo> ReviewInfoForAsync(Guid itemId)
+    public async Task<SellableReviewInfo> ReviewInfoForAsync(EntityKey<Sellable> itemId)
     {
         var reviews = _uow.SellableReviews
             .Query()
@@ -85,7 +85,7 @@ public class SellableReviewsService : ISellableReviewsService
     }
 
     /// <inheritdoc/>
-    public async Task<bool> CanReviewAsync(Guid userId, Guid itemId)
+    public async Task<bool> CanReviewAsync(EntityKey<User> userId, EntityKey<Sellable> itemId)
     {
         var item = await _uow.Sellables.Query().FindAsync(itemId);
 
