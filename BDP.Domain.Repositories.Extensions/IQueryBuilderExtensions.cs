@@ -52,4 +52,32 @@ public static class IQueryBuilderExtensions
             .OrderDescending()
             .Page(page, pageLength);
     }
+
+    /// <summary>
+    /// Asynchronously gets an item by id from the backing store. An exception is
+    /// thrown if the item is not found
+    /// </summary>
+    /// <param name="id">The id of the item to get</param>
+    /// <returns>The matched item</returns>
+    public static Task<T> FindAsync<T>(
+        this IQueryBuilder<T> source,
+        EntityKey<T> id,
+        CancellationToken cancellationToken = default) where T : AuditableEntity<T>
+    {
+        return source.FirstAsync(i => i.Id == id, cancellationToken);
+    }
+
+    /// <summary>
+    /// Asynchronously gets an item by id from the backing store. If the item is not
+    /// found, null is returned.
+    /// </summary>
+    /// <param name="id">The id of the item to get</param>
+    /// <returns>The matched item if found, null otherwise</returns>
+    public static Task<T?> FindOrDefaultAsync<T>(
+        this IQueryBuilder<T> source,
+        EntityKey<T> id,
+        CancellationToken cancellationToken = default) where T : AuditableEntity<T>
+    {
+        return source.FirstOrDefaultAsync(i => i.Id == id, cancellationToken);
+    }
 }
