@@ -33,9 +33,6 @@ public class SearchSuggestionsService : ISearchSuggestionsService
         bool includeUsers = true,
         bool includeSellables = true)
     {
-        if (length <= 0 || length > 100)
-            throw new InvalidPaginationParametersException(1, length);
-
         var ret = new List<SearchSuggestion>();
 
         if (includeUsers)

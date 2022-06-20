@@ -56,9 +56,6 @@ public class EventsService : IEventsService
         User user,
         Expression<Func<Event, object>>[]? includes = null)
     {
-        if (page <= 0 || pageSize <= 0 || pageSize > 1000)
-            throw new InvalidPaginationParametersException(page, pageSize);
-
         var query = _uow.Events.Query();
 
         if (includes is not null)

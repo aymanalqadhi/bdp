@@ -37,9 +37,6 @@ public class SellablesService : ISellablesService
     /// <inheritdoc/>
     public IAsyncEnumerable<Sellable> GetForAsync(User user, int page, int pageSize)
     {
-        if (page <= 0 || pageSize <= 0 || pageSize > 1000)
-            throw new InvalidPaginationParametersException(page, pageSize);
-
         return _uow.Sellables
             .Query()
             .Where(s => s.OfferedBy.Id == user.Id)
@@ -52,9 +49,6 @@ public class SellablesService : ISellablesService
     /// <inheritdoc/>
     public IAsyncEnumerable<Sellable> SearchForAsync(User user, string query, int page, int pageSize)
     {
-        if (page <= 0 || pageSize <= 0 || pageSize > 1000)
-            throw new InvalidPaginationParametersException(page, pageSize);
-
         return _uow.Sellables
             .Query()
             .Where(s => s.OfferedBy.Id == user.Id && s.Title.ToLower().Contains(query.ToLower()))
@@ -67,9 +61,6 @@ public class SellablesService : ISellablesService
     /// <inheritdoc/>
     public IAsyncEnumerable<Sellable> SearchAsync(string query, int page, int pageSize)
     {
-        if (page <= 0 || pageSize <= 0 || pageSize > 1000)
-            throw new InvalidPaginationParametersException(page, pageSize);
-
         return _uow.Sellables
             .Query()
             .Where(s => s.Title.ToLower().Contains(query.ToLower()))
