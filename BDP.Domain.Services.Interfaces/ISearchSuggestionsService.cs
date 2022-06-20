@@ -1,6 +1,6 @@
 ﻿namespace BDP.Domain.Services;
 
-public interface ISearchSuggestionsService
+public interface ISearchSuggestionService
 {
     /// <summary>
     /// Asynchronsously fetches suggestion for a query
