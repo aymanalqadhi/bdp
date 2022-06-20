@@ -46,7 +46,7 @@ public class WalletController : ControllerBase
     [Authorize]
     public IAsyncEnumerable<FinancialRecordDto> Records([FromQuery] PagingParameters paging)
     {
-        var ret = _financialRecordsSvc.ForUserAsync(User.GetId())
+        var ret = _financialRecordsSvc.ForUser(User.GetId())
             .PageDescending(paging.Page, paging.PageLength)
             .Include(r => r.Verification!)
             .Include(r => r.Verification!.Document!)
@@ -70,24 +70,18 @@ public class WalletController : ControllerBase
     [Authorize]
     public async Task<IActionResult> Deposit([FromBody] DepositRequest form)
     {
-        // TODO:
-        // Return financial record data
+        var ret = await _financeSvc.DepositAsync(User.GetId(), form.Amount, form.Note);
 
-        await _financeSvc.DepositAsync(User.GetId(), form.Amount, form.Note);
-
-        return Ok();
+        return Ok(_mapper.Map<FinancialRecordDto>(ret));
     }
 
     [HttpPost("[action]")]
     [Authorize]
     public async Task<IActionResult> Withdraw([FromBody] WithdrawRequest form)
     {
-        // TODO:
-        // Return financial record data
+        var ret = await _financeSvc.WithdrawAsync(User.GetId(), form.Amount, form.Note);
 
-        await _financeSvc.WithdrawAsync(User.GetId(), form.Amount, form.Note);
-
-        return Ok();
+        return Ok(_mapper.Map<FinancialRecordDto>(ret));
     }
 
     #endregion Actions
