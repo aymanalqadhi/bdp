@@ -1,22 +1,11 @@
 ﻿namespace BDP.Domain.Entities;
 
 /// <summary>
-/// A recrod to represent keys for the <see cref="Sellable"/> entity
-/// </summary>
-/// <param name="Id">The id field of the key</param>
-public sealed record SellableKey(Guid Id) : EntityKey<Sellable>(Id);
-
-/// <summary>
 /// A class to represent a sellable item
 /// </summary>
 /// <typeparam name="TKey">The key type of the sellable item</typeparam>
-public class Sellable : AuditableEntity
+public class Sellable : AuditableEntity<Sellable>
 {
-    /// <summary>
-    /// Gets or sets the id of the sellable item
-    /// </summary>
-    public SellableKey Id { get; set; } = new SellableKey(Guid.NewGuid());
-
     /// <summary>
     /// Gets or sets the title of the sellable
     /// </summary>
