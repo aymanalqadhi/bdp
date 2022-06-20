@@ -10,9 +10,9 @@ public interface IFinancialRecordsService
     /// <summary>
     /// Asynchrnously gets financial records for a user
     /// </summary>
-    /// <param name="user">The user to get financial records for</param>
+    /// <param name="userId">The id of the user to get financial records for</param>
     /// <returns></returns>
-    IQueryBuilder<FinancialRecord> ForUserAsync(User user);
+    IQueryBuilder<FinancialRecord> ForUserAsync(Guid userId);
 
     /// <summary>
     /// Asynchronously gets pending financial records for a specific user
@@ -23,22 +23,22 @@ public interface IFinancialRecordsService
     /// <summary>
     /// Asynchrnounsly gets the total balance from financial records
     /// </summary>
-    /// <param name="user">The user to get the total balance for</param>
+    /// <param name="userId">The id of the user to get the total balance for</param>
     /// <returns></returns>
-    Task<decimal> TotalUsableAsync(User user);
+    Task<decimal> TotalUsableAsync(Guid userId);
 
     /// <summary>
     /// Asynchronously verifies a financial record
     /// </summary>
-    /// <param name="record">The record to verify</param>
+    /// <param name="userId">The id of the user to verify with</param>
+    /// <param name="recordId">The id of the record to verify</param>
     /// <param name="outcome">The outcome of the verification</param>
-    /// <param name="verifiedBy">The user to verify with</param>
     /// <param name="document">The document of the deposit/withdraw</param>
     /// <param name="notes">Addtional notes</param>
     /// <returns></returns>
     Task<FinancialRecordVerification> VerifyAsync(
+        Guid userId,
         Guid recordId,
-        User verifiedBy,
         FinancialRecordVerificationOutcome outcome,
         string? notes = null,
         IUploadFile? document = null);
