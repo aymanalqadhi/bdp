@@ -168,18 +168,13 @@ public sealed class ProductsService : IProductsService
             throw new PendingPurchasesLeftException(productId);
 
         var product = await _uow.Products.Query().FindAsync(productId);
-        var transactions = await _uow.Orders
-            .Query()
-            .Where(o => o.Variant.Product.Id == productId)
-            .Where(o => o.Payment.Confirmation == null)
-            .Select(o => o.Payment)
+
+        var transactions = await _purchasesSvc.PendingReservations(productId)
+            .Select(r => r.Payment)
             .AsAsyncEnumerable()
             .ToListAsync();
 
-        transactions.AddRange(await _uow.Reservations
-            .Query()
-            .Where(r => r.Variant.Product.Id == productId)
-            .Where(o => o.Payment.Confirmation == null)
+        transactions.AddRange(await _purchasesSvc.PendingOrders(productId)
             .Select(o => o.Payment)
             .AsAsyncEnumerable()
             .ToListAsync());
