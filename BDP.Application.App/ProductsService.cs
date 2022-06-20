@@ -9,7 +9,7 @@ namespace BDP.Application.App;
 
 public class ProductsService : IProductsService
 {
-    private readonly ILegacyUnitOfWork _uow;
+    private readonly IUnitOfWork _uow;
     private readonly IAttachmentsService _attachmentsSvc;
     private readonly IFinanceService _financeSvc;
 
@@ -19,7 +19,7 @@ public class ProductsService : IProductsService
     /// <param name="uow">The unit of work of the app</param>
     /// <param name="attachmentsSvc">The attachments managment service</param>
     /// <param name="financeSvc">The finance service</param>
-    public ProductsService(ILegacyUnitOfWork uow, IAttachmentsService attachmentsSvc, IFinanceService financeSvc)
+    public ProductsService(IUnitOfWork uow, IAttachmentsService attachmentsSvc, IFinanceService financeSvc)
     {
         _uow = uow;
         _attachmentsSvc = attachmentsSvc;
@@ -29,13 +29,11 @@ public class ProductsService : IProductsService
     /// <inheritdoc/>
     public async Task<Product> GetByIdAsync(long id)
     {
-        var product = await _uow.Products.GetAsync(
-            id,
-            includes: new Expression<Func<Product, object>>[]
-            {
-                p => p.OfferedBy, p => p.Attachments
-            }
-       );
+        var product = await _uow.Products
+            .Query()
+            .Include(p => p.OfferedBy)
+            .Include(p => p.Attachments)
+            .GetOrNullAsync(id);
 
         if (product is null)
             throw new NotFoundException($"no products were found with id #{id}");
@@ -100,7 +98,7 @@ public class ProductsService : IProductsService
     /// <inheritdoc/>
     public async Task UnlistAsync(Product product)
     {
-        if (await _uow.ProductOrders.AnyAsync(
+        if (await _uow.ProductOrders.Query().AnyAsync(
             o => o.Product.Id == product.Id && o.Transaction.Confirmation == null))
             throw new PendingOrdersLeftException(product);
 
@@ -134,11 +132,12 @@ public class ProductsService : IProductsService
     /// <inheritdoc/>
     public async Task<long> AvailableQuantityAsync(Product product)
     {
-        var orderedQuantity = await _uow.ProductOrders.FilterAsync(o =>
-            o.Product.Id == product.Id &&
-            (o.Transaction.Confirmation == null ||
-             o.Transaction.Confirmation.Outcome == TransactionConfirmationOutcome.Confirmed)
-        ).SumAsync(o => o.Quantity);
+        var orderedQuantity = await _uow.ProductOrders
+            .Query()
+            .Where(o => o.Product.Id == product.Id)
+            .Where(o => o.Transaction.Confirmation == null || o.Transaction.Confirmation.Outcome == TransactionConfirmationOutcome.Confirmed)
+            .AsAsyncEnumerable()
+            .SumAsync(o => o.Quantity);
 
         if (orderedQuantity > product.Quantity)
             throw new InvalidQuantityException(product.Quantity);

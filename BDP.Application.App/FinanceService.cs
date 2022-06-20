@@ -9,7 +9,7 @@ public class FinanceService : IFinanceService
 {
     #region Private fields
 
-    private readonly ILegacyUnitOfWork _uow;
+    private readonly IUnitOfWork _uow;
     private readonly IConfigurationService _configSvc;
     private readonly IRandomGeneratorService _rngSvc;
     private readonly IFinancialRecordsService _financialRecordsSvc;
@@ -29,7 +29,7 @@ public class FinanceService : IFinanceService
     /// <param name="financialRecordsSvc">The financial documents service</param>
     /// <param name="transactionsSvc">The transactions service</param>
     public FinanceService(
-        ILegacyUnitOfWork uow,
+        IUnitOfWork uow,
         IConfigurationService configSvc,
         IRandomGeneratorService rngSvc,
         IFinancialRecordsService financialRecordsSvc,
@@ -142,12 +142,12 @@ public class FinanceService : IFinanceService
         if (amount == 0)
             throw new InvalidDepositAmountException(amount);
 
-        if (amount < 0 && await _uow.FinancialRecords.AnyAsync(
+        if (amount < 0 && await _uow.FinancialRecords.Query().AnyAsync(
             r => r.MadeBy.Id == user.Id && r.Verification == null && r.Amount < 0))
         {
             throw new PendingRequestExistsException("a withdraw request already exists");
         }
-        else if (amount > 0 && await _uow.FinancialRecords.AnyAsync
+        else if (amount > 0 && await _uow.FinancialRecords.Query().AnyAsync
             (r => r.MadeBy.Id == user.Id && r.Verification == null && r.Amount > 0))
         {
             throw new PendingRequestExistsException("a deposit request already exists");

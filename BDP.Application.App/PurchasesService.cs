@@ -10,7 +10,7 @@ public class PurchasesService : IPurchasesService
 {
     #region Private fields
 
-    private readonly ILegacyUnitOfWork _uow;
+    private readonly IUnitOfWork _uow;
 
     #endregion Private fields
 
@@ -20,7 +20,7 @@ public class PurchasesService : IPurchasesService
     /// Default constructor
     /// </summary>
     /// <param name="uow">The unit of work of the app</param>
-    public PurchasesService(ILegacyUnitOfWork uow)
+    public PurchasesService(IUnitOfWork uow)
     {
         _uow = uow;
     }
@@ -32,7 +32,7 @@ public class PurchasesService : IPurchasesService
     /// <inheritdoc/>
     public async Task<Purchase> GetById(long id)
     {
-        var purchase = await _uow.Purchases.FirstOrDefaultAsync(p => p.Id == id);
+        var purchase = await _uow.Purchases.Query().GetOrNullAsync(id);
 
         if (purchase is null)
             throw new NotFoundException($"no purchases were found with id #{id}");
@@ -50,13 +50,16 @@ public class PurchasesService : IPurchasesService
         if (page <= 0 || pageSize <= 0 || pageSize > 1000)
             throw new InvalidPaginationParametersException(page, pageSize);
 
-        return _uow.Purchases.FilterAsync(
-            page,
-            pageSize,
-            p => p.Transaction.From.Id == user.Id || p.Transaction.To.Id == user.Id,
-            includes: includes,
-            descOrder: true
-        );
+        var query = _uow.Purchases.Query();
+
+        if (includes is not null)
+            query = query.IncludeAll(includes);
+
+        return query
+            .Where(p => p.Transaction.From.Id == user.Id || p.Transaction.To.Id == user.Id)
+            .OrderByDescending(p => p.Id)
+            .Page(page, pageSize)
+            .AsAsyncEnumerable();
     }
 
     #endregion Public method

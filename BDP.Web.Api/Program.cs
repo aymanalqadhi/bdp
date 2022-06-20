@@ -92,8 +92,9 @@ builder.Services.AddDbContext<BdpDbContext>(cfg =>
 // services
 builder.Services.AddSingleton<IConfigurationService>(appSettingsSvc);
 builder.Services.AddSingleton<IRandomGeneratorService, SimpleRandomGeneratorService>();
+builder.Services.AddSingleton<IPasswordHashingService, Argon2PasswordHashingService>();
+builder.Services.AddScoped<IUnitOfWork, BdpUnitOfWork>();
 builder.Services.AddSingleton<IEmailService, SmtpEmailService>();
-builder.Services.AddScoped<ILegacyUnitOfWork, LegacyUnitOfWork>();
 builder.Services.AddScoped<IAttachmentsService, LocalAttachmentsService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUsersService, UsersService>();
