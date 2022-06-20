@@ -26,6 +26,11 @@ public class BdpDbContext : DbContext
     public DbSet<Attachment> Attachments => Set<Attachment>();
 
     /// <summary>
+    /// Gets the categories table
+    /// </summary>
+    public DbSet<Category> Categories => Set<Category>();
+
+    /// <summary>
     /// Gets the confirmations table
     /// </summary>
     public DbSet<Confirmation> Confirmations => Set<Confirmation>();
@@ -61,9 +66,14 @@ public class BdpDbContext : DbContext
     public DbSet<LogTag> LogTags => Set<LogTag>();
 
     /// <summary>
-    /// Gets the product orders table
+    /// Gets the orders table
     /// </summary>
-    public DbSet<ProductOrder> ProductOrders => Set<ProductOrder>();
+    public DbSet<Order> Orders => Set<Order>();
+
+    /// <summary>
+    /// Gets the product reviews
+    /// </summary>
+    public DbSet<ProductReview> ProductReviews => Set<ProductReview>();
 
     /// <summary>
     /// Gets the products table
@@ -76,24 +86,19 @@ public class BdpDbContext : DbContext
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
     /// <summary>
-    /// Gets the product reviews
+    /// Gets the reservable variants table
     /// </summary>
-    public DbSet<ProductReview> ProductReviews => Set<ProductReview>();
+    public DbSet<ReservableVariant> ReservableVariants => Set<ReservableVariant>();
 
     /// <summary>
-    /// Gets the product reviews
+    /// Gets the reservations table
     /// </summary>
-    public DbSet<ServiceReview> ServiceReviews => Set<ServiceReview>();
+    public DbSet<Reservation> Reservations => Set<Reservation>();
 
     /// <summary>
-    /// Gets the service reservations table
+    /// Gets the sellable variants table
     /// </summary>
-    public DbSet<ServiceReservation> ServiceReservations => Set<ServiceReservation>();
-
-    /// <summary>
-    /// Gets the services table
-    /// </summary>
-    public DbSet<Service> Services => Set<Service>();
+    public DbSet<SellableVariant> SellableVariants => Set<SellableVariant>();
 
     /// <summary>
     /// Gets the transaction confirmations table
@@ -106,14 +111,14 @@ public class BdpDbContext : DbContext
     public DbSet<Transaction> Transactions => Set<Transaction>();
 
     /// <summary>
-    /// Gets the users table
-    /// </summary>
-    public DbSet<User> Users => Set<User>();
-
-    /// <summary>
     /// Gets the user profiles table
     /// </summary>
     public DbSet<UserProfile> UserProfiles => Set<UserProfile>();
+
+    /// <summary>
+    /// Gets the users table
+    /// </summary>
+    public DbSet<User> Users => Set<User>();
 
     #endregion Properties
 
