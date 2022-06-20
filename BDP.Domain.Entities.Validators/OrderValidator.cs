@@ -13,7 +13,7 @@ public sealed class OrderValidator : Validator<Order>
     public OrderValidator()
     {
         RuleFor(o => o.Quantity)
-            .LessThanOrEqualTo(o => o.Variant.AvailableQuantity)
-            .WithMessage("order quantity cannot be greater than the available quantity");
+            .GreaterThan(0u)
+            .WithMessage("order quantity must be greater than 0");
     }
 }
