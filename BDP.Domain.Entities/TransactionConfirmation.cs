@@ -6,9 +6,9 @@
 public sealed class TransactionConfirmation : AuditableEntity<TransactionConfirmation>
 {
     /// <summary>
-    /// Gets or set the outcome of the transaction confirmation
+    /// Gets or sets whether the transaction was accepted or not
     /// </summary>
-    public TransactionConfirmationOutcome Outcome { get; set; }
+    public bool IsAccepted { get; set; }
 
     /// <summary>
     /// Gets or sets the id of the transaction
@@ -19,13 +19,4 @@ public sealed class TransactionConfirmation : AuditableEntity<TransactionConfirm
     /// Gets or sets the transaction this confirmation belongs to
     /// </summary>
     public Transaction Transaction { get; set; } = null!;
-}
-
-/// <summary>
-/// An enum to represent the outcome of a transaction confirmation
-/// </summary>
-public enum TransactionConfirmationOutcome
-{
-    Declined,
-    Confirmed,
 }
