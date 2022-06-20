@@ -1,21 +1,10 @@
 ﻿namespace BDP.Domain.Entities;
 
 /// <summary>
-/// A recrod to represent keys for the <see cref="FinancialRecord"/> entity
-/// </summary>
-/// <param name="Id">The id field of the key</param>
-public sealed record FinancialRecordKey(Guid Id) : EntityKey<FinancialRecord>(Id);
-
-/// <summary>
 /// A class to represent a financial record requeted by a user
 /// </summary>
-public sealed class FinancialRecord : AuditableEntity
+public sealed class FinancialRecord : AuditableEntity<FinancialRecord>
 {
-    /// <summary>
-    /// Gets or sets the id of the financial record
-    /// </summary>
-    public FinancialRecordKey Id { get; set; } = new FinancialRecordKey(Guid.NewGuid());
-
     /// <summary>
     /// Gets or sets the amount associated with the financial record
     /// </summary>
