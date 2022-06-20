@@ -30,47 +30,16 @@ public class TransactionsService : ITransactionsService
     #region Public methods
 
     /// <inheritdoc/>
-    public IAsyncEnumerable<Transaction> ForUserAsync(
-        int page,
-        int pageSize,
-        User user,
-        Expression<Func<Transaction, object>>[]? includes = null)
-    {
-        var query = _uow.Transactions.Query();
-
-        if (includes is not null)
-            query = query.IncludeAll(includes);
-
-        return query
-            .Where(t => t.From.Id == user.Id || t.To.Id == user.Id)
-            .OrderByDescending(t => t.Id)
-            .Page(page, pageSize)
-            .AsAsyncEnumerable();
-    }
+    public IQueryBuilder<Transaction> ForUserAsync(User user)
+        => _uow.Transactions.Query().Where(t => t.From.Id == user.Id || t.To.Id == user.Id);
 
     /// <inheritdoc/>
-    public IAsyncEnumerable<Transaction> SentByAsync(User user,
-        Expression<Func<Transaction, object>>[]? includes = null)
-    {
-        var query = _uow.Transactions.Query();
-
-        if (includes is not null)
-            query = query.IncludeAll(includes);
-
-        return query.Where(t => t.From.Id == user.Id).AsAsyncEnumerable();
-    }
+    public IQueryBuilder<Transaction> SentByAsync(User user)
+        => _uow.Transactions.Query().Where(t => t.From.Id == user.Id);
 
     /// <inheritdoc/>
-    public IAsyncEnumerable<Transaction> ReceivedByAsync(User user,
-        Expression<Func<Transaction, object>>[]? includes = null)
-    {
-        var query = _uow.Transactions.Query();
-
-        if (includes is not null)
-            query = query.IncludeAll(includes);
-
-        return query.Where(t => t.To.Id == user.Id).AsAsyncEnumerable();
-    }
+    public IQueryBuilder<Transaction> ReceivedByAsync(User user)
+        => _uow.Transactions.Query().Where(t => t.To.Id == user.Id);
 
     /// <inheritdoc/>
     public Task<decimal> TotalInAsync(User user, bool confirmedOnly = false)
