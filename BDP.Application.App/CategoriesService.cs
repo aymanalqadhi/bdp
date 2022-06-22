@@ -1,5 +1,6 @@
 ﻿using BDP.Domain.Entities;
 using BDP.Domain.Repositories;
+using BDP.Domain.Repositories.Extensions;
 using BDP.Domain.Services;
 
 namespace BDP.Application.App;
@@ -29,12 +30,16 @@ public sealed class CategoriesService : ICategoriesService
     #region Public Methods
 
     /// <inheritdoc/>
-    public async Task<Category> AddAsync(string name, Category? parent = null)
+    public IQueryBuilder<Category> GetCategories()
+        => _uow.Categories.Query();
+
+    /// <inheritdoc/>
+    public async Task<Category> AddAsync(string name, EntityKey<Category>? parent = null)
     {
         var category = new Category
         {
             Name = name,
-            Parent = parent,
+            Parent = parent is not null ? await _uow.Categories.Query().FindAsync(parent) : null,
         };
 
         _uow.Categories.Add(category);
@@ -44,8 +49,17 @@ public sealed class CategoriesService : ICategoriesService
     }
 
     /// <inheritdoc/>
-    public IQueryBuilder<Category> GetCategories()
-        => _uow.Categories.Query();
+    public async Task<Category> UpdateAsync(EntityKey<Category> categoryId, string name)
+    {
+        var category = await _uow.Categories.Query().FindAsync(categoryId);
+
+        category.Name = name;
+
+        _uow.Categories.Update(category);
+        await _uow.CommitAsync();
+
+        return category;
+    }
 
     #endregion Public Methods
 }
