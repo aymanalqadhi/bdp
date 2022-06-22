@@ -21,15 +21,20 @@ public class ProductVariantsController : ControllerBase
 
     private readonly IMapper _mapper;
     private readonly IProductVariantsService _variantsSvc;
+    private readonly IPurchasesService _purchasesSvc;
 
     #endregion Fields
 
     #region Public Constructors
 
-    public ProductVariantsController(IMapper mapper, IProductVariantsService productsSvc)
+    public ProductVariantsController(
+        IMapper mapper,
+        IProductVariantsService productsSvc,
+        IPurchasesService purchasesSvc)
     {
         _mapper = mapper;
         _variantsSvc = productsSvc;
+        _purchasesSvc = purchasesSvc;
     }
 
     #endregion Public Constructors
@@ -97,6 +102,29 @@ public class ProductVariantsController : ControllerBase
             variantId, form.Name, form.Description, form.Price);
 
         return Ok(_mapper.Map<ProductVariantDto>(updatedVariant));
+    }
+
+    [HttpPost("{variantId}/order")]
+    [IsCustomer]
+    public async Task<IActionResult> Order(
+         EntityKey<Product> productId,
+         EntityKey<ProductVariant> variantId,
+        [FromBody] OrderRequest form)
+    {
+        var purchase = await _purchasesSvc.OrderAsync(User.GetId(), variantId, form.Quantity);
+
+        return Ok(_mapper.Map<OrderDto>(purchase));
+    }
+
+    [HttpPost("{variantId}/reserve")]
+    [IsCustomer]
+    public async Task<IActionResult> Reserve(
+     EntityKey<Product> productId,
+     EntityKey<ProductVariant> variantId)
+    {
+        var purchase = await _purchasesSvc.ReserveAsync(User.GetId(), variantId);
+
+        return Ok(_mapper.Map<ReservationDto>(purchase));
     }
 
     #endregion Public Methods
