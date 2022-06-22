@@ -1,4 +1,5 @@
-﻿using BDP.Domain.Repositories.Exceptions;
+﻿using BDP.Domain.Entities.Validators.Exceptions;
+using BDP.Domain.Repositories.Exceptions;
 using BDP.Domain.Repositories.Extensions.Exceptions;
 using BDP.Domain.Services.Exceptions;
 using Microsoft.AspNetCore.Mvc;
@@ -32,6 +33,7 @@ public class HttpResponseExceptionFilter : IActionFilter, IOrderedFilter
             InvalidPaginationParametersException => StatusCodes.Status400BadRequest,
             InvalidRatingValueException => StatusCodes.Status400BadRequest,
             InvalidRangeException => StatusCodes.Status400BadRequest,
+            InvalidPriceException => StatusCodes.Status400BadRequest,
             ValidationAggregateException => StatusCodes.Status400BadRequest,
 
             // 401 - Unauthorized
@@ -39,6 +41,7 @@ public class HttpResponseExceptionFilter : IActionFilter, IOrderedFilter
             InvalidConfirmationCredentials => StatusCodes.Status401Unauthorized,
             SecurityTokenException => StatusCodes.Status401Unauthorized,
             InsufficientBalanceException => StatusCodes.Status401Unauthorized,
+            InsufficientPermissionsException => StatusCodes.Status401Unauthorized,
 
             // 404 - NotFound
             NotFoundException => StatusCodes.Status404NotFound,
@@ -49,7 +52,7 @@ public class HttpResponseExceptionFilter : IActionFilter, IOrderedFilter
             TransactionAlreadyConfirmedException => StatusCodes.Status409Conflict,
             InvalidQuantityException => StatusCodes.Status409Conflict,
             PendingRequestExistsException => StatusCodes.Status409Conflict,
-            PendingOrdersLeftException => StatusCodes.Status409Conflict,
+            ExistingProfileFoundException => StatusCodes.Status409Conflict,
             PendingPurchasesLeftException => StatusCodes.Status409Conflict,
             ItemAlreadyReviewedException => StatusCodes.Status409Conflict,
 
