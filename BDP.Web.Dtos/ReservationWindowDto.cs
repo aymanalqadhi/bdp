@@ -3,7 +3,7 @@
 namespace BDP.Web.Dtos;
 
 /// <summary>
-/// A data-transfer object for <see cref="ProductVariant"/> with sellable type
+/// A data-transfer object for <see cref="ProductVariant"/> with reservable type
 /// </summary>
 public sealed class ReservationWindowDto : MutableEntityDto<ReservationWindow>
 {
