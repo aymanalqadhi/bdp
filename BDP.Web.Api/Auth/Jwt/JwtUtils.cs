@@ -16,15 +16,14 @@ public static class JwtUtils
     /// <param name="groups">The groups the user is enrolled in</param>
     /// <param name="settings">Jwt settings</param>
     /// <returns>The generated access token</returns>
-    public static string GenerateAccessToekn(User user, IEnumerable<UserGroup> groups, JwtSettings settings)
+    public static string GenerateAccessToekn(User user, JwtSettings settings)
     {
         var claims = new List<Claim>()
         {
             new Claim(CustomClaims.Id, user.Id.ToString()),
             new Claim(ClaimTypes.NameIdentifier, user.Username),
-            new Claim(ClaimTypes.Name, user.FullName ?? ""),
             new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.Role, string.Join(",",  groups.Select(g => g.Name))),
+            new Claim(ClaimTypes.Role, UserRoleConverter.FromRole(user.Role)),
         };
 
         return GenerateToken(
