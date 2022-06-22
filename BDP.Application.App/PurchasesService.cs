@@ -14,7 +14,6 @@ public class PurchasesService : IPurchasesService
     #region Fields
 
     private readonly IFinanceService _financeSvc;
-    private readonly IProductsService _productsSvc;
     private readonly IStockBatchesService _stockSvc;
     private readonly IUnitOfWork _uow;
 
@@ -26,17 +25,14 @@ public class PurchasesService : IPurchasesService
     /// Default constructor
     /// </summary>
     /// <param name="financeSvc">The finance managment service</param>
-    /// <param name="productsSvc">The products service of the application</param>
     /// <param name="stockSvc">The stock batches managment service</param>
     /// <param name="uow">The unit of work of the app</param>
     public PurchasesService(
         IFinanceService financeSvc,
-        IProductsService productsSvc,
         IStockBatchesService stockSvc,
         IUnitOfWork uow)
     {
         _financeSvc = financeSvc;
-        _productsSvc = productsSvc;
         _stockSvc = stockSvc;
         _uow = uow;
     }
