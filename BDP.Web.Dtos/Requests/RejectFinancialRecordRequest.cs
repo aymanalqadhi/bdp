@@ -6,11 +6,6 @@ namespace BDP.Web.Dtos.Requests;
 public class RejectFinancialRecordRequest
 {
     /// <summary>
-    /// Gets or sets the id of the record to decline
-    /// </summary>
-    public Guid RecordId { get; set; }
-
-    /// <summary>
     /// Gets or sets optional notes to be attached to the declination
     /// </summary>
     public string? Note { get; set; }
