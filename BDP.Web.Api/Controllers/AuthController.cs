@@ -1,11 +1,11 @@
-﻿using AutoMapper;
-using BDP.Domain.Services;
-
+﻿using BDP.Domain.Services;
 using BDP.Web.Api.Auth.Jwt;
 using BDP.Web.Api.Extensions;
 using BDP.Web.Dtos;
 using BDP.Web.Dtos.Requests;
 using BDP.Web.Dtos.Responses;
+
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -40,8 +40,8 @@ public class AuthController : ControllerBase
 
     #region Actions
 
-    [AllowAnonymous]
     [HttpPost("[action]")]
+    [AllowAnonymous]
     public async Task<IActionResult> SignInAsync([FromBody] SignInRequest form)
     {
         var deviceInfo = new LoginDeviceInfo
@@ -58,13 +58,13 @@ public class AuthController : ControllerBase
             () => JwtUtils.GenerateRefereshToken(_jwt),
             deviceInfo);
 
-        var accessToken = JwtUtils.GenerateAccessToekn(user, user.Groups, _jwt);
+        var accessToken = JwtUtils.GenerateAccessToekn(user, _jwt);
 
         return Ok(new SignInResponse(accessToken, refreshToken.Token));
     }
 
-    [AllowAnonymous]
     [HttpPost("[action]")]
+    [AllowAnonymous]
     public async Task<IActionResult> SignUpAsync([FromBody] SignUpRequest form)
     {
         var user = await _authSvc.SignUpAsync(form.Username, form.Email, form.Password);
@@ -85,6 +85,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("[action]")]
+    [AllowAnonymous]
     public async Task<IActionResult> RefreshAsync([FromBody] RefreshTokenRequest form)
     {
         if (!JwtUtils.ValidateRefreshToken(form.RefreshToken, _jwt) ||
@@ -93,7 +94,6 @@ public class AuthController : ControllerBase
 
         var accessPrincipal = JwtUtils.GetPrincipalFromExpiredToken(form.AccessToken, _jwt);
         var user = await _usersSvc.GetByUsername(accessPrincipal.GetUsername())
-            .Include(u => u.Groups)
             .FirstAsync();
 
         if (!await _authSvc.IsTokenValidAsync(user.Id, form.RefreshToken, form.UniqueIdentifier))
@@ -101,12 +101,12 @@ public class AuthController : ControllerBase
 
         return Ok(new
         {
-            accessToken = JwtUtils.GenerateAccessToekn(user, user.Groups, _jwt)
+            accessToken = JwtUtils.GenerateAccessToekn(user, _jwt)
         });
     }
 
-    [AllowAnonymous]
     [HttpGet("confirm/{token}")]
+    [AllowAnonymous]
     public async Task<IActionResult> ConfirmWithTokenAsync(string token)
     {
         await _authSvc.ConfirmWithToken(token);
@@ -114,8 +114,8 @@ public class AuthController : ControllerBase
         return Ok();
     }
 
-    [AllowAnonymous]
     [HttpPost("confirm")]
+    [AllowAnonymous]
     public async Task<IActionResult> ConfirmWithOtpAsync([FromBody] ConfirmWithOtpRequest form)
     {
         await _authSvc.ConfirmWithOtp(form.Otp);
