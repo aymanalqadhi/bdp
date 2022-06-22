@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Xunit;
+using BDP.Domain.Entities;
 
 namespace BDP.Tests.Infrastructure.Repositories.EntityFramework;
 
@@ -61,7 +62,7 @@ public class QueryBuilderTests
         {
             var exception = await Assert.ThrowsAsync<AggregateException>(async () =>
             {
-                await _uow.Logs.Query().FirstAsync(l => l.Id == Guid.NewGuid());
+                await _uow.Logs.Query().FirstAsync(l => l.Id == new EntityKey<Log>(Guid.NewGuid()));
             });
 
             Assert.IsType<InvalidOperationException>(exception.InnerException);
