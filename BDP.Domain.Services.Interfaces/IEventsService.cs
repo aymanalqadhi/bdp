@@ -23,7 +23,7 @@ public interface IEventsService
     /// Asynchronously creates a new event
     /// </summary>
     /// <param name="userId">The id of the user which to create the event for</param>
-    /// <param name="typeid">The id of the type of the event</param>
+    /// <param name="typeId">The id of the type of the event</param>
     /// <param name="title">the title of the event</param>
     /// <param name="description">The description of the event</param>
     /// <param name="takesPlaceAt">The date at which the event takes place</param>
