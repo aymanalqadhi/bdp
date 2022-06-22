@@ -81,22 +81,25 @@ public sealed class ProductsService : IProductsService
     /// <inheritdoc/>
     public async Task RemoveAsync(EntityKey<Product> productId, bool cancelPurchases = false)
     {
-        if (!cancelPurchases && await _purchasesSvc.HasPendingPurchasesAsync(productId))
-            throw new PendingPurchasesLeftException(productId);
+        if (await _purchasesSvc.HasPendingPurchasesAsync(productId))
+        {
+            if (!cancelPurchases)
+                throw new PendingPurchasesLeftException(productId);
+
+            var transactions = await _purchasesSvc.GetReservationsFor(productId, true)
+                .Select(r => r.Payment)
+                .AsAsyncEnumerable()
+                .ToListAsync();
+
+            transactions.AddRange(await _purchasesSvc.GetOrdersFor(productId, true)
+                .Select(o => o.Payment)
+                .AsAsyncEnumerable()
+                .ToListAsync());
+
+            await Task.WhenAll(transactions.Select(t => _transactionsSvc.CancelAsync(t.To.Id, t.Id)));
+        }
 
         var product = await _uow.Products.Query().FindAsync(productId);
-
-        var transactions = await _purchasesSvc.PendingReservations(productId)
-            .Select(r => r.Payment)
-            .AsAsyncEnumerable()
-            .ToListAsync();
-
-        transactions.AddRange(await _purchasesSvc.PendingOrders(productId)
-            .Select(o => o.Payment)
-            .AsAsyncEnumerable()
-            .ToListAsync());
-
-        await Task.WhenAll(transactions.Select(t => _transactionsSvc.CancelAsync(t.To.Id, t.Id)));
 
         _uow.Products.Remove(product);
         await _uow.CommitAsync();
