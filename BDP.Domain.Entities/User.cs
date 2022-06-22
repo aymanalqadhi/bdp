@@ -34,6 +34,11 @@ public sealed class User : AuditableEntity<User>
     /// Gets or sets the role of the user
     /// </summary>
     public UserRole Role { get; set; } = UserRole.None;
+
+    /// <summary>
+    /// Gets or sets the profile of the user
+    /// </summary>
+    public UserProfile Profile { get; set; } = null!;
 }
 
 /// <summary>
