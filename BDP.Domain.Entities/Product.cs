@@ -34,4 +34,9 @@ public sealed class Product : AuditableEntity<Product>
     /// Gets or sets the collection of reviews
     /// </summary>
     public ICollection<ProductReview> Reviews { get; set; } = new List<ProductReview>();
+
+    /// <summary>
+    /// Gets or sets the collection of variants of the product
+    /// </summary>
+    public ICollection<ProductVariant> Variants { get; set; } = new List<ProductVariant>();
 }
