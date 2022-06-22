@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace BDP.Web.Dtos.Requests;
 
-public class CreateProductVariantRequest
+public sealed class CreateProductVariantRequest
 {
     /// <summary>
     /// Gets or sets the name of the variant
