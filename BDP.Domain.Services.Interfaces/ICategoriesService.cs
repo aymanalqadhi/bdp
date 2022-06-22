@@ -18,7 +18,15 @@ public interface ICategoriesService
     /// Asynchronously adds a product cateogry
     /// </summary>
     /// <param name="name">the name of the category</param>
-    /// <param name="parent">The parent of the category (optional)</param>
+    /// <param name="parent">The id of the parent of the category (optional)</param>
     /// <returns>The created category object</returns>
-    Task<Category> AddAsync(string name, Category? parent = null);
+    Task<Category> AddAsync(string name, EntityKey<Category>? parent = null);
+
+    /// <summary>
+    /// Asynchrnously updates a category
+    /// </summary>
+    /// <param name="categoryId">The id of the category to update</param>
+    /// <param name="name">The new name of the category</param>
+    /// <returns>The updated category</returns>
+    Task<Category> UpdateAsync(EntityKey<Category> categoryId, string name);
 }
