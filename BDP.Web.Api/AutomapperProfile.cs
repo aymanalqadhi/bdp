@@ -18,6 +18,9 @@ public class AutomapperProfile : Profile
     /// </summary>
     public AutomapperProfile()
     {
+        // categories
+        CreateMap<Category, CategoryDto>();
+
         // events
         CreateMap<Event, EventDto>()
             .ForMember(
