@@ -6,7 +6,7 @@ namespace BDP.Web.Dtos;
 /// A data-transfer object for <see cref="ProductVariant"/>
 /// </summary>
 
-public abstract class ProductVariantDto : MutableEntityDto<ProductVariant>
+public sealed class ProductVariantDto : MutableEntityDto<ProductVariant>
 {
     /// <summary>
     /// Gets or sets the name of the variant
