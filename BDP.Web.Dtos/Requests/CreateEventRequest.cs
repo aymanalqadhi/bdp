@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BDP.Domain.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace BDP.Web.Dtos.Requests;
 
@@ -26,5 +27,5 @@ public class CreateEventRequest
     /// The id of the event type
     /// </summary>
     [Required]
-    public Guid EventTypeId { get; set; }
+    public EntityKey<EventType> EventTypeId { get; set; } = null!;
 }
