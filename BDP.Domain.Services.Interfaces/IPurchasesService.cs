@@ -46,32 +46,20 @@ public interface IPurchasesService
     Task<bool> HasPendingPurchasesAsync(EntityKey<Product> productId);
 
     /// <summary>
-    /// Gets pending orders for all sellable variants of a specific product
-    /// </summary>
-    /// <param name="productId">The id of the product to get pending orders for</param>
-    /// <returns></returns>
-    IQueryBuilder<Order> PendingOrders(EntityKey<Product> productId);
-
-    /// <summary>
-    /// Gets pending reservations for all reservable variants of a specific product
-    /// </summary>
-    /// <param name="productId">The id of the product to get pending reservations for</param>
-    /// <returns></returns>
-    IQueryBuilder<Reservation> PendingReservations(EntityKey<Product> productId);
-
-    /// <summary>
     /// Gets all orders for all sellable variants of a specific product
     /// </summary>
     /// <param name="productId">The id of the product to get pending orders for</param>
+    /// <param name="pending">If true, only pending orders will be fetched</param>
     /// <returns></returns>
-    IQueryBuilder<Order> GetOrders(EntityKey<Product> productId);
+    IQueryBuilder<Order> GetOrdersFor(EntityKey<Product> productId, bool pending = false);
 
     /// <summary>
     /// Gets all reservations for all reservable variants of a specific product
     /// </summary>
     /// <param name="productId">The id of the product to get pending reservations for</param>
+    /// <param name="pending">If true, only pending reservations will be fetched</param>
     /// <returns></returns>
-    IQueryBuilder<Reservation> GetReservations(EntityKey<Product> productId);
+    IQueryBuilder<Reservation> GetReservationsFor(EntityKey<Product> productId, bool pending = false);
 
     /// <summary>
     /// Gets orders for a specific user
