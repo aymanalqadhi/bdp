@@ -17,8 +17,8 @@ public class PurchasesController : ControllerBase
 {
     #region Private fields
 
-    private readonly IPurchasesService _purchasesSvc;
     private readonly IMapper _mapper;
+    private readonly IPurchasesService _purchasesSvc;
 
     #endregion Private fields
 
