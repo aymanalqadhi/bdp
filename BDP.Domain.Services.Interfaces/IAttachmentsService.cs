@@ -23,7 +23,7 @@ public interface IAttachmentsService
     /// </summary>
     /// <param name="path">the path of the file</param>
     /// <returns></returns>
-    Task DeleteAsync(string path);
+    Task DeleteAsync(Uri path);
 }
 
 public interface IUploadFile
@@ -31,7 +31,7 @@ public interface IUploadFile
     /// <summary>
     /// Gets the file length in bytes.
     /// </summary>
-    long Length { get; }
+    ulong Length { get; }
 
     /// <summary>
     /// Gets the file name from the Content-Disposition header.

@@ -27,12 +27,12 @@ public class LocalAttachmentsService : IAttachmentsService
     public async Task<Attachment> SaveAsync(IUploadFile file)
     {
         var untrustedName = Path.GetFileName(file.FileName);
-        var newPath = Path.Combine(_settings.UploadPath, GetUniqueFilename(untrustedName));
+        var newPath = new Uri(Path.Combine(_settings.UploadPath, GetUniqueFilename(untrustedName)));
 
         if (!File.Exists(_settings.UploadPath))
             Directory.CreateDirectory(_settings.UploadPath);
 
-        var actualPath = Path.Combine("wwwroot", newPath);
+        var actualPath = Path.Combine("wwwroot", newPath.LocalPath);
 
         using (var fs = File.OpenWrite(actualPath))
             await file.CopyToAsync(fs);
@@ -56,7 +56,7 @@ public class LocalAttachmentsService : IAttachmentsService
         }
         catch
         {
-            File.Delete(newPath);
+            File.Delete(newPath.AbsolutePath);
             throw;
         }
     }
@@ -69,7 +69,7 @@ public class LocalAttachmentsService : IAttachmentsService
     }
 
     /// <inheritdoc/>
-    public async Task DeleteAsync(string path)
+    public async Task DeleteAsync(Uri path)
     {
         var attachment = await _uow.Attachments.Query().FirstOrDefaultAsync(a => a.FullPath == path);
 
