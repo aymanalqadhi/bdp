@@ -33,7 +33,7 @@ public sealed class ReservationWindowsService : IReservationWindowsService
     #region Public Methods
 
     /// <inheritdoc/>
-    public async Task<ReservationWindow> AddReservationWindowAsync(
+    public async Task<ReservationWindow> AddAsync(
         EntityKey<ProductVariant> variantId,
         Weekday weekdays,
         TimeOnly start,
@@ -58,7 +58,7 @@ public sealed class ReservationWindowsService : IReservationWindowsService
     }
 
     /// <inheritdoc/>
-    public async Task RemoveReservationWindowAsync(EntityKey<ReservationWindow> windowId)
+    public async Task RemoveAsync(EntityKey<ReservationWindow> windowId)
     {
         var window = await _uow.ReservationWindows.Query().FindAsync(windowId);
 
@@ -67,8 +67,8 @@ public sealed class ReservationWindowsService : IReservationWindowsService
     }
 
     /// <inheritdoc/>
-    public IQueryBuilder<ReservationWindow> ReservationWindowsFor(EntityKey<ProductVariant> variantId)
-        => _uow.ReservationWindows.Query().Where(w => w.Variant.Id == variantId);
+    public IQueryBuilder<ReservationWindow> GetReservationWindows(EntityKey<ProductVariant> variantId)
+        => _uow.ReservationWindows.Query().Where(b => b.Variant.Id == variantId);
 
     #endregion Public Methods
 }

@@ -12,6 +12,13 @@ public interface IReservationWindowsService
     #region Public Methods
 
     /// <summary>
+    /// Gets a reservable proudct variant reservation windows
+    /// </summary>
+    /// <param name="variantId">The id of the product variant to get reservation windows for</param>
+    /// <returns>A query builder for the product variant reservation windows</returns>
+    IQueryBuilder<ReservationWindow> GetReservationWindows(EntityKey<ProductVariant> variantId);
+
+    /// <summary>
     /// Asynchrnously adds a reservation window for a reservable variant
     /// </summary>
     /// <param name="variantId">The id of the variant</param>
@@ -20,7 +27,7 @@ public interface IReservationWindowsService
     /// <param name="end"></param>
     /// <returns>The created reservation window</returns>
     /// <exception cref="InvalidProductVaraintTypeException"></exception>
-    Task<ReservationWindow> AddReservationWindowAsync(
+    Task<ReservationWindow> AddAsync(
         EntityKey<ProductVariant> variantId,
         Weekday weekdays,
         TimeOnly start,
@@ -31,16 +38,7 @@ public interface IReservationWindowsService
     /// </summary>
     /// <param name="windowId"></param>
     /// <returns></returns>
-    Task RemoveReservationWindowAsync(EntityKey<ReservationWindow> windowId);
-
-    /// <summary>
-    /// Gets resrvation windows for a reservable product variant
-    /// </summary>
-    /// <param name="variantId">
-    /// The id of the product variant which to get the reservation windows for
-    /// </param>
-    /// <returns>A query builder for the reservation windows </returns>
-    IQueryBuilder<ReservationWindow> ReservationWindowsFor(EntityKey<ProductVariant> variantId);
+    Task RemoveAsync(EntityKey<ReservationWindow> windowId);
 
     #endregion Public Methods
 }
