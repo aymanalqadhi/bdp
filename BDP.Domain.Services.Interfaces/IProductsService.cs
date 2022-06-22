@@ -5,7 +5,7 @@ using BDP.Domain.Services.Exceptions;
 namespace BDP.Domain.Services;
 
 /// <summary>
-/// A service to manage products
+/// An interface to be implemented by products services
 /// </summary>
 public interface IProductsService
 {
@@ -23,7 +23,7 @@ public interface IProductsService
         EntityKey<User> userId,
         string title,
         string description,
-        IEnumerable<Category> categoryIds);
+        IEnumerable<EntityKey<Category>> categoryIds);
 
     /// <summary>
     /// Asynchronously adds a reservable product variant
@@ -105,6 +105,14 @@ public interface IProductsService
     IQueryBuilder<Product> Search(string query);
 
     /// <summary>
+    /// Searches products within a user's profile
+    /// </summary>
+    /// <param name="query">The query to look for</param>
+    /// <param name="userId">The id of the user to search in his/her profile</param>
+    /// <returns></returns>
+    IQueryBuilder<Product> Search(string query, EntityKey<User> userId);
+
+    /// <summary>
     /// Asynchronously adds a stock batch to a sellable product variant
     /// </summary>
     /// <param name="variantId">The id of the variant to add the stock batch for</param>
@@ -161,6 +169,22 @@ public interface IProductsService
     /// </param>
     /// <returns>A query builder for the reservation windows </returns>
     IQueryBuilder<ReservationWindow> ReservationWindowsFor(EntityKey<ProductVariant> variantId);
+
+    /// <summary>
+    /// Asynchrnonously updates a product
+    /// </summary>
+    /// <param name="productId">The id of the product to update</param>
+    /// <param name="title">The title of the product</param>
+    /// <param name="description">The description of the product</param>
+    /// <returns>The updated product</returns>
+    Task<Product> UpdateAsync(EntityKey<Product> productId, string title, string description);
+
+    /// <summary>
+    /// Asynchrnonously removes a product
+    /// </summary>
+    /// <param name="productId">the product to remove</param>
+    /// <returns></returns>
+    Task RemoveAsync(EntityKey<Product> productId);
 
     #endregion Public Methods
 }
