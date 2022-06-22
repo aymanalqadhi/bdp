@@ -13,7 +13,6 @@ public sealed class ProductsService : IProductsService
 {
     #region Fields
 
-    private readonly IAttachmentsService _attachmentsSvc;
     private readonly IPurchasesService _purchasesSvc;
     private readonly ITransactionsService _transactionsSvc;
     private readonly IUnitOfWork _uow;
@@ -27,16 +26,14 @@ public sealed class ProductsService : IProductsService
     /// </summary>
     /// <param name="uow">The unit of work of the application</param>
     /// <param name="purchasesSvc">Purchase managment service</param>
-    /// <param name="attachmentsSvc">Attachment managment service</param>
+    /// <param name="transactionsSvc">Transactions service</param>
     public ProductsService(
         IUnitOfWork uow,
         IPurchasesService purchasesSvc,
-        IAttachmentsService attachmentsSvc,
         ITransactionsService transactionsSvc)
     {
         _uow = uow;
         _purchasesSvc = purchasesSvc;
-        _attachmentsSvc = attachmentsSvc;
         _transactionsSvc = transactionsSvc;
     }
 
@@ -67,85 +64,6 @@ public sealed class ProductsService : IProductsService
         await _uow.CommitAsync();
 
         return product;
-    }
-
-    /// <inheritdoc/>
-    public Task<ProductVariant> AddReservableVariantAsync(
-        EntityKey<Product> productId,
-        string name,
-        string? description,
-        decimal price,
-        IEnumerable<IUploadFile>? attachments = null)
-    {
-        return AddVariantAsync(
-            productId,
-            ProductVariantType.Reservable,
-            name,
-            description,
-            price,
-            attachments);
-    }
-
-    /// <inheritdoc/>
-    public async Task<ReservationWindow> AddReservationWindowAsync(
-        EntityKey<ProductVariant> variantId,
-        Weekday weekdays,
-        TimeOnly start,
-        TimeOnly end)
-    {
-        var variant = await _uow.ProductVariants.Query().FindAsync(variantId);
-
-        if (variant.Type != ProductVariantType.Reservable)
-            throw new InvalidProductVaraintTypeException(variantId, ProductVariantType.Reservable, variant.Type);
-
-        var window = new ReservationWindow
-        {
-            AvailableDays = weekdays,
-            Start = start,
-            End = end,
-        };
-
-        _uow.ReservationWindows.Add(window);
-        await _uow.CommitAsync();
-
-        return window;
-    }
-
-    /// <inheritdoc/>
-    public Task<ProductVariant> AddSellableVariantAsync(
-        EntityKey<Product> productId,
-        string name,
-        string? description,
-        decimal price,
-        IEnumerable<IUploadFile>? attachments = null)
-    {
-        return AddVariantAsync(
-            productId,
-            ProductVariantType.Reservable,
-            name,
-            description,
-            price,
-            attachments);
-    }
-
-    /// <inheritdoc/>
-    public async Task<StockBatch> AddStockBatchAsync(EntityKey<ProductVariant> variantId, uint quantity)
-    {
-        var variant = await _uow.ProductVariants.Query().FindAsync(variantId);
-
-        if (variant.Type != ProductVariantType.Sellable)
-            throw new InvalidProductVaraintTypeException(variantId, ProductVariantType.Sellable, variant.Type);
-
-        var batch = new StockBatch
-        {
-            Quantity = quantity,
-            Variant = variant,
-        };
-
-        _uow.StockBatches.Add(batch);
-        await _uow.CommitAsync();
-
-        return batch;
     }
 
     /// <inheritdoc/>
@@ -185,42 +103,13 @@ public sealed class ProductsService : IProductsService
     }
 
     /// <inheritdoc/>
-    public async Task RemoveReservationWindowAsync(EntityKey<ReservationWindow> windowId)
+    public async Task RemoveAsync(EntityKey<Product> productId)
     {
-        var window = await _uow.ReservationWindows.Query().FindAsync(windowId);
+        var product = await _uow.Products.Query().FindAsync(productId);
 
-        _uow.ReservationWindows.Remove(window);
+        _uow.Products.Remove(product);
         await _uow.CommitAsync();
     }
-
-    /// <inheritdoc/>
-    public async Task RemoveStockBatchAsync(EntityKey<StockBatch> batchId)
-    {
-        var batch = await _uow.StockBatches.Query()
-            .Include(b => b.Variant)
-            .FindAsync(batchId);
-
-        await using var tx = await _uow.BeginTransactionAsync();
-
-        if (await TotalAvailableQuantityAsync(batch.Variant.Id) < batch.Quantity)
-            throw new NotEnoughStockException(batch.Variant.Id, batch.Quantity);
-
-        _uow.StockBatches.Remove(batch);
-        await _uow.CommitAsync(tx);
-    }
-
-    /// <inheritdoc/>
-    public async Task RemoveVariantAsync(EntityKey<ProductVariant> variantid)
-    {
-        var variant = await _uow.ProductVariants.Query().FindAsync(variantid);
-
-        _uow.ProductVariants.Remove(variant);
-        await _uow.CommitAsync();
-    }
-
-    /// <inheritdoc/>
-    public IQueryBuilder<ReservationWindow> ReservationWindowsFor(EntityKey<ProductVariant> variantId)
-        => _uow.ReservationWindows.Query().Where(w => w.Variant.Id == variantId);
 
     /// <inheritdoc/>
     public IQueryBuilder<Product> Search(string query)
@@ -232,57 +121,6 @@ public sealed class ProductsService : IProductsService
         => _uow.Products.Query()
             .Where(p => p.OfferedBy.Id == userId)
             .Where(s => s.Title.Contains(query, StringComparison.OrdinalIgnoreCase));
-
-    /// <inheritdoc/>
-    public async Task<long> TotalAvailableQuantityAsync(EntityKey<ProductVariant> variantId)
-    {
-        var availableQuantity = await _uow.StockBatches.Query()
-            .Where(b => b.Variant.Id == variantId)
-            .AsAsyncEnumerable()
-            .SumAsync(b => b.Quantity);
-
-        var totalOrderedQuantity = await _uow.Orders.Query()
-            .Where(o => o.Variant.Id == variantId)
-            .Where(o => o.Payment.Confirmation == null || o.Payment.Confirmation.IsAccepted)
-            .AsAsyncEnumerable()
-            .SumAsync(o => o.Quantity);
-
-        return availableQuantity - totalOrderedQuantity;
-    }
-
-    #endregion Public Methods
-
-    #region Private Methods
-
-    private async Task<ProductVariant> AddVariantAsync(
-            EntityKey<Product> productId,
-        ProductVariantType type,
-        string name,
-        string? description,
-        decimal price,
-        IEnumerable<IUploadFile>? attachments = null)
-    {
-        if (price <= 0 || price > 1_000_000)
-            throw new InvalidPriceException(price);
-
-        var product = await _uow.Products.Query().Include(p => p.OfferedBy).FindAsync(productId);
-        var variant = new ProductVariant
-        {
-            Name = name,
-            Description = description,
-            Price = price,
-            Type = type,
-            Product = product,
-        };
-
-        if (attachments is not null)
-            variant.Attachments = await _attachmentsSvc.SaveAllAsync(attachments).ToListAsync();
-
-        _uow.ProductVariants.Add(variant);
-        await _uow.CommitAsync();
-
-        return variant;
-    }
 
     /// <inheritdoc/>
     public async Task<Product> UpdateAsync(EntityKey<Product> productId, string title, string description)
@@ -298,14 +136,5 @@ public sealed class ProductsService : IProductsService
         return product;
     }
 
-    /// <inheritdoc/>
-    public async Task RemoveAsync(EntityKey<Product> productId)
-    {
-        var product = await _uow.Products.Query().FindAsync(productId);
-
-        _uow.Products.Remove(product);
-        await _uow.CommitAsync();
-    }
-
-    #endregion Private Methods
+    #endregion Public Methods
 }
