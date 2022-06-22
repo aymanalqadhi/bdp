@@ -53,6 +53,10 @@ public class AutomapperProfile : Profile
         CreateMap<Order, OrderDto>();
         CreateMap<Reservation, ReservationDto>();
 
+        // product variant type-specific classes
+        CreateMap<ReservationWindow, ReservationWindowDto>();
+        CreateMap<StockBatch, StockBatchDto>();
+
         // transactions
         CreateMap<Transaction, TransactionDto>();
         CreateMap<TransactionConfirmation, TransactionConfirmationDto>();
