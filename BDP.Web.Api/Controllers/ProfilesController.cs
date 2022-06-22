@@ -4,12 +4,11 @@ using BDP.Domain.Services;
 using BDP.Web.Api.Extensions;
 using BDP.Web.Dtos;
 using BDP.Web.Dtos.Parameters;
-
-using AutoMapper;
-
-using Microsoft.AspNetCore.Mvc;
 using BDP.Web.Dtos.Requests;
 using BDP.Web.Api.Auth;
+
+using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BDP.Web.Api.Controllers;
 
@@ -49,7 +48,7 @@ public class ProfilesController : ControllerBase
         return Ok(ret);
     }
 
-    [HttpGet("search")]
+    [HttpGet("[action]")]
     public IAsyncEnumerable<UserProfileDto> Search(string query, [FromQuery] PagingParameters paging)
     {
         return _userProfilesSvc.Search(query)
@@ -59,8 +58,8 @@ public class ProfilesController : ControllerBase
             .AsAsyncEnumerable();
     }
 
-    [HttpPost("finish-profile")]
-    public async Task<IActionResult> FinishProfileAsync([FromForm] FinishProfileRequest form)
+    [HttpPost("[action]")]
+    public async Task<IActionResult> FinishProfile([FromForm] FinishProfileRequest form)
     {
         var role = UserRoleConverter.Parse(form.AccountType);
 
