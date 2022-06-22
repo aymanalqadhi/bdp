@@ -13,11 +13,14 @@ public class WebUploadFile : IUploadFile
     /// <param name="file">Inner wrapped file</param>
     public WebUploadFile(IFormFile file)
     {
+        if (file.Length < 0)
+            throw new InvalidDataException($"invalid upload file length: {file.Length}");
+
         _file = file;
     }
 
     /// <inheritdoc/>
-    public long Length => _file.Length;
+    public ulong Length => (ulong)_file.Length;
 
     /// <inheritdoc/>
     public string FileName => _file.FileName;
