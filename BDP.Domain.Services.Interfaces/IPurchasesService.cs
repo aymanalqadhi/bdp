@@ -73,5 +73,21 @@ public interface IPurchasesService
     /// <returns></returns>
     IQueryBuilder<Reservation> GetReservations(EntityKey<Product> productId);
 
+    /// <summary>
+    /// Gets orders for a specific user
+    /// </summary>
+    /// <param name="userId">The id of the user to get the orders for</param>
+    /// <param name="pending">If true, only pending orders will be fetched</param>
+    /// <returns>A query builder for user orders</returns>
+    IQueryBuilder<Order> GetOrdersFor(EntityKey<User> userId, bool pending = false);
+
+    /// <summary>
+    /// Gets resrvations for a specific user
+    /// </summary>
+    /// <param name="userId">The id of the user to get the reservations for</param>
+    /// <param name="pending">If true, only pending reservations will be fetched</param>
+    /// <returns>A query builder for user reservations</returns>
+    IQueryBuilder<Reservation> GetReservationsFor(EntityKey<User> userId, bool pending = false);
+
     #endregion Public Methods
 }
