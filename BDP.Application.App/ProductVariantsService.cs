@@ -184,8 +184,7 @@ public sealed class ProductVariantsService : IProductVariantsService
         decimal price,
         IEnumerable<IUploadFile>? attachments = null)
     {
-        if (price <= 0 || price > 1_000_000)
-            throw new InvalidPriceException(price);
+        InvalidPriceException.ValidatePrice(price);
 
         var product = await _uow.Products.Query().Include(p => p.OfferedBy).FindAsync(productId);
         var variant = new ProductVariant
@@ -201,6 +200,23 @@ public sealed class ProductVariantsService : IProductVariantsService
             variant.Attachments = await _attachmentsSvc.SaveAllAsync(attachments).ToListAsync();
 
         _uow.ProductVariants.Add(variant);
+        await _uow.CommitAsync();
+
+        return variant;
+    }
+
+    /// <inheritdoc/>
+    public async Task<ProductVariant> UpdateAsync(EntityKey<ProductVariant> variantId, string name, string? description, decimal price)
+    {
+        InvalidPriceException.ValidatePrice(price);
+
+        var variant = await _uow.ProductVariants.Query().FindAsync(variantId);
+
+        variant.Name = name;
+        variant.Description = description;
+        variant.Price = price;
+
+        _uow.ProductVariants.Update(variant);
         await _uow.CommitAsync();
 
         return variant;
