@@ -33,7 +33,7 @@ public sealed class StockBatchesService : IStockBatchesService
     #region Public Methods
 
     /// <inheritdoc/>
-    public async Task<StockBatch> AddStockBatchAsync(EntityKey<ProductVariant> variantId, uint quantity)
+    public async Task<StockBatch> AddAsync(EntityKey<ProductVariant> variantId, uint quantity)
     {
         var variant = await _uow.ProductVariants.Query().FindAsync(variantId);
 
@@ -53,7 +53,11 @@ public sealed class StockBatchesService : IStockBatchesService
     }
 
     /// <inheritdoc/>
-    public async Task RemoveStockBatchAsync(EntityKey<StockBatch> batchId)
+    public IQueryBuilder<StockBatch> GetStockBatches(EntityKey<ProductVariant> variantId)
+        => _uow.StockBatches.Query().Where(b => b.Variant.Id == variantId);
+
+    /// <inheritdoc/>
+    public async Task RemoveAsync(EntityKey<StockBatch> batchId)
     {
         var batch = await _uow.StockBatches.Query()
             .Include(b => b.Variant)

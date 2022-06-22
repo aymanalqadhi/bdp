@@ -1,4 +1,5 @@
 ﻿using BDP.Domain.Entities;
+using BDP.Domain.Repositories;
 
 namespace BDP.Domain.Services;
 
@@ -11,13 +12,20 @@ public interface IStockBatchesService
     #region Public Methods
 
     /// <summary>
+    /// Gets a sellable proudct variant stock batches
+    /// </summary>
+    /// <param name="variantId">The id of the product variant to get stock batches for</param>
+    /// <returns>A query builder for the product variant stock batches</returns>
+    IQueryBuilder<StockBatch> GetStockBatches(EntityKey<ProductVariant> variantId);
+
+    /// <summary>
     /// Asynchronously adds a stock batch to a sellable product variant
     /// </summary>
     /// <param name="variantId">The id of the variant to add the stock batch for</param>
     /// <param name="quantity">The quantity of the stock batch</param>
     /// <returns>The created stock batch</returns>
     /// <exception cref="InvalidProductVaraintTypeException"></exception>
-    Task<StockBatch> AddStockBatchAsync(EntityKey<ProductVariant> variantId, uint quantity);
+    Task<StockBatch> AddAsync(EntityKey<ProductVariant> variantId, uint quantity);
 
     /// <summary>
     /// Asynchronously removes a sellable product variant stock batch
@@ -25,7 +33,7 @@ public interface IStockBatchesService
     /// <param name="batchId">The id of the batch to remove</param>
     /// <returns></returns>
     /// <exception cref="NotEnoughStockException"></exception>
-    Task RemoveStockBatchAsync(EntityKey<StockBatch> batchId);
+    Task RemoveAsync(EntityKey<StockBatch> batchId);
 
     /// <summary>
     /// Asynchronously calculates the total available quantity of a sellable product
