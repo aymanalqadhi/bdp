@@ -6,12 +6,16 @@ using BDP.Domain.Services.Exceptions;
 
 namespace BDP.Application.App;
 
+/// <summary>
+/// A service to manage application purchases
+/// </summary>
 public class PurchasesService : IPurchasesService
 {
     #region Fields
 
     private readonly IFinanceService _financeSvc;
     private readonly IProductsService _productsSvc;
+    private readonly IStockBatchesService _stockSvc;
     private readonly IUnitOfWork _uow;
 
     #endregion Fields
@@ -21,14 +25,20 @@ public class PurchasesService : IPurchasesService
     /// <summary>
     /// Default constructor
     /// </summary>
-    /// <param name="uow">The unit of work of the app</param>
+    /// <param name="financeSvc">The finance managment service</param>
     /// <param name="productsSvc">The products service of the application</param>
-    /// <param name="financeSvc"></param>
-    public PurchasesService(IUnitOfWork uow, IProductsService productsSvc, IFinanceService financeSvc)
+    /// <param name="stockSvc">The stock batches managment service</param>
+    /// <param name="uow">The unit of work of the app</param>
+    public PurchasesService(
+        IFinanceService financeSvc,
+        IProductsService productsSvc,
+        IStockBatchesService stockSvc,
+        IUnitOfWork uow)
     {
-        _uow = uow;
-        _productsSvc = productsSvc;
         _financeSvc = financeSvc;
+        _productsSvc = productsSvc;
+        _stockSvc = stockSvc;
+        _uow = uow;
     }
 
     #endregion Public Constructors
@@ -36,18 +46,56 @@ public class PurchasesService : IPurchasesService
     #region Public Methods
 
     /// <inheritdoc/>
-    public IQueryBuilder<Order> GetOrders(EntityKey<Product> productId)
-        => _uow.Orders.Query().Where(o => o.Variant.Product.Id == productId);
+    public IQueryBuilder<Order> GetOrdersFor(EntityKey<Product> productId, bool pending = false)
+    {
+        var query = _uow.Orders.Query().Where(o => o.Variant.Product.Id == productId);
+
+        if (pending)
+            return query.Where(o => o.Payment.Confirmation == null);
+
+        return query;
+    }
 
     /// <inheritdoc/>
-    public IQueryBuilder<Reservation> GetReservations(EntityKey<Product> productId)
-        => _uow.Reservations.Query().Where(o => o.Variant.Product.Id == productId);
+    public IQueryBuilder<Order> GetOrdersFor(EntityKey<User> userId, bool pending = false)
+    {
+        var query = _uow.Orders.Query()
+            .Where(o => o.Payment.From.Id == userId || o.Payment.To.Id == userId);
+
+        if (pending)
+            return query.Where(o => o.Payment.Confirmation == null);
+
+        return query;
+    }
+
+    /// <inheritdoc/>
+    public IQueryBuilder<Reservation> GetReservationsFor(EntityKey<Product> productId, bool pending = false)
+    {
+        var query = _uow.Reservations.Query().Where(r => r.Variant.Product.Id == productId);
+
+        if (pending)
+            return query.Where(r => r.Payment.Confirmation == null);
+
+        return query;
+    }
+
+    /// <inheritdoc/>
+    public IQueryBuilder<Reservation> GetReservationsFor(EntityKey<User> userId, bool pending = false)
+    {
+        var query = _uow.Reservations.Query()
+            .Where(r => r.Payment.From.Id == userId || r.Payment.To.Id == userId);
+
+        if (pending)
+            return query.Where(r => r.Payment.Confirmation == null);
+
+        return query;
+    }
 
     /// <inheritdoc/>
     public async Task<bool> HasPendingPurchasesAsync(EntityKey<Product> productId)
     {
-        return await PendingOrders(productId).AnyAsync() ||
-               await PendingReservations(productId).AnyAsync();
+        return await GetOrdersFor(productId, true).AnyAsync() ||
+               await GetReservationsFor(productId, true).AnyAsync();
     }
 
     /// <inheritdoc/>
@@ -65,7 +113,7 @@ public class PurchasesService : IPurchasesService
 
         var totalPrice = variant.Price * quantity;
 
-        if (await _productsSvc.TotalAvailableQuantityAsync(variantId) < quantity)
+        if (await _stockSvc.AvailableQuantityAsync(variantId) < quantity)
             throw new NotEnoughStockException(variantId, quantity);
 
         if (await _financeSvc.CalculateTotalUsableAsync(userId) < totalPrice)
@@ -87,14 +135,6 @@ public class PurchasesService : IPurchasesService
 
         return order;
     }
-
-    /// <inheritdoc/>
-    public IQueryBuilder<Order> PendingOrders(EntityKey<Product> productId)
-        => GetOrders(productId).Where(r => r.Payment.Confirmation == null);
-
-    /// <inheritdoc/>
-    public IQueryBuilder<Reservation> PendingReservations(EntityKey<Product> productId)
-        => GetReservations(productId).Where(r => r.Payment.Confirmation == null);
 
     /// <inheritdoc/>
     public async Task<Reservation> ReserveAsync(EntityKey<User> userId, EntityKey<ProductVariant> variantId)
