@@ -6,7 +6,9 @@ using BDP.Domain.Services.Exceptions;
 
 namespace BDP.Application.App;
 
-/// <inheritdoc/>
+/// <summary>
+/// A service to manage products
+/// </summary>
 public sealed class ProductsService : IProductsService
 {
     #region Fields
@@ -47,10 +49,10 @@ public sealed class ProductsService : IProductsService
         EntityKey<User> userId,
         string title,
         string description,
-        IEnumerable<Category> categoryIds)
+        IEnumerable<EntityKey<Category>> categoryIds)
     {
         var user = await _uow.Users.Query().FindAsync(userId);
-        var categories = _uow.Categories.Query().Where(c => categoryIds.Contains(c));
+        var categories = _uow.Categories.Query().Where(c => categoryIds.Contains(c.Id));
 
         var product = new Product
         {
@@ -222,7 +224,14 @@ public sealed class ProductsService : IProductsService
 
     /// <inheritdoc/>
     public IQueryBuilder<Product> Search(string query)
-        => _uow.Products.Query().Where(s => s.Title.Contains(query, StringComparison.OrdinalIgnoreCase));
+        => _uow.Products.Query()
+            .Where(s => s.Title.Contains(query, StringComparison.OrdinalIgnoreCase));
+
+    /// <inheritdoc/>
+    public IQueryBuilder<Product> Search(string query, EntityKey<User> userId)
+        => _uow.Products.Query()
+            .Where(p => p.OfferedBy.Id == userId)
+            .Where(s => s.Title.Contains(query, StringComparison.OrdinalIgnoreCase));
 
     /// <inheritdoc/>
     public async Task<long> TotalAvailableQuantityAsync(EntityKey<ProductVariant> variantId)
@@ -273,6 +282,29 @@ public sealed class ProductsService : IProductsService
         await _uow.CommitAsync();
 
         return variant;
+    }
+
+    /// <inheritdoc/>
+    public async Task<Product> UpdateAsync(EntityKey<Product> productId, string title, string description)
+    {
+        var product = await _uow.Products.Query().FindAsync(productId);
+
+        product.Title = title;
+        product.Description = description;
+
+        _uow.Products.Update(product);
+        await _uow.CommitAsync();
+
+        return product;
+    }
+
+    /// <inheritdoc/>
+    public async Task RemoveAsync(EntityKey<Product> productId)
+    {
+        var product = await _uow.Products.Query().FindAsync(productId);
+
+        _uow.Products.Remove(product);
+        await _uow.CommitAsync();
     }
 
     #endregion Private Methods
