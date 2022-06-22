@@ -43,7 +43,7 @@ public interface IStockBatchesService
     /// The id of the product variant to calculate the total quantity for
     /// </param>
     /// <returns>The total available quantity</returns>
-    Task<long> TotalAvailableQuantityAsync(EntityKey<ProductVariant> variantId);
+    Task<long> AvailableQuantityAsync(EntityKey<ProductVariant> variantId);
 
     #endregion Public Methods
 }

@@ -65,7 +65,7 @@ public sealed class StockBatchesService : IStockBatchesService
 
         await using var tx = await _uow.BeginTransactionAsync();
 
-        if (await TotalAvailableQuantityAsync(batch.Variant.Id) < batch.Quantity)
+        if (await AvailableQuantityAsync(batch.Variant.Id) < batch.Quantity)
             throw new NotEnoughStockException(batch.Variant.Id, batch.Quantity);
 
         _uow.StockBatches.Remove(batch);
@@ -73,7 +73,7 @@ public sealed class StockBatchesService : IStockBatchesService
     }
 
     /// <inheritdoc/>
-    public async Task<long> TotalAvailableQuantityAsync(EntityKey<ProductVariant> variantId)
+    public async Task<long> AvailableQuantityAsync(EntityKey<ProductVariant> variantId)
     {
         var availableQuantity = await _uow.StockBatches.Query()
             .Where(b => b.Variant.Id == variantId)

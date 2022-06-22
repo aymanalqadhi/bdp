@@ -52,7 +52,7 @@ public class StockController : ControllerBase
         EntityKey<Product> productId,
         EntityKey<ProductVariant> variantId)
     {
-        var quantity = await _stockSvc.TotalAvailableQuantityAsync(variantId);
+        var quantity = await _stockSvc.AvailableQuantityAsync(variantId);
 
         return Ok(new { quantity });
     }
