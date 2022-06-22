@@ -104,6 +104,7 @@ builder.Services.AddScoped<ITransactionsService, TransactionsService>();
 builder.Services.AddScoped<IFinanceService, FinanceService>();
 builder.Services.AddScoped<IProductReviewsService, ProductReviewsService>();
 builder.Services.AddScoped<IProductsService, ProductsService>();
+builder.Services.AddScoped<IProductVariantsService, ProductVariantsService>();
 builder.Services.AddScoped<IPurchasesService, PurchasesService>();
 builder.Services.AddScoped<ISearchSuggestionsService, SearchSuggestionsService>();
 builder.Services.AddScoped<IEventsService, EventsService>();
