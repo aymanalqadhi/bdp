@@ -1,5 +1,6 @@
 ﻿using BDP.Domain.Entities;
 using BDP.Domain.Repositories;
+using BDP.Domain.Repositories.Extensions;
 using BDP.Domain.Services;
 using BDP.Domain.Services.Exceptions;
 
@@ -49,14 +50,19 @@ public class TransactionsService : ITransactionsService
         => await TotalInAsync(userId, true) - await TotalOutAsync(userId, true);
 
     /// <inheritdoc/>
-    public async Task<TransactionConfirmation> ConfirmAsync(EntityKey<User> userId, string confirmationToken)
+    public async Task<TransactionConfirmation> ConfirmAsync(
+        EntityKey<User> userId,
+        EntityKey<Transaction> transactionId,
+        string confirmationToken)
     {
         await using var tx = await _uow.BeginTransactionAsync();
 
         var transaction = await _uow.Transactions
             .Query()
             .Include(t => t.Confirmation!)
-            .FirstAsync(t => t.ConfirmationToken == confirmationToken && t.To.Id == userId);
+            .Where(t => t.From.Id == userId || t.To.Id == userId)
+            .Where(t => t.ConfirmationToken == confirmationToken)
+            .FindAsync(transactionId);
 
         return await DoCreateConfirmation(transaction, true, tx);
     }

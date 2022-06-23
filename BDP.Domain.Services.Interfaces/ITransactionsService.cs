@@ -48,10 +48,14 @@ public interface ITransactionsService
     /// Asynchronously confirms a transaction
     /// </summary>
     /// <param name="senderId">The id of the sender of the transaction</param>
+    /// <param name="transactionId">The id of the transaction to confirm</param>
     /// <param name="confirmationToken">The token to confirm with</param>
     /// <returns>The transaction confirmation</returns>
     /// <exception cref="TransactionAlreadyConfirmedException"></exception>
-    Task<TransactionConfirmation> ConfirmAsync(EntityKey<User> senderId, string confirmationToken);
+    Task<TransactionConfirmation> ConfirmAsync(
+        EntityKey<User> senderId,
+        EntityKey<Transaction> transactionId,
+        string confirmationToken);
 
     /// <summary>
     /// Asynchronously cancels a transaction
