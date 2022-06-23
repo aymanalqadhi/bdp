@@ -13,7 +13,7 @@ public class ProductTypeConfiguration : EntityTypeConfiguration<Product>
 
         // relationships
         builder
-            .HasMany<Category>()
-            .WithMany(p => p.Products);
+            .HasMany(p => p.Categories)
+            .WithMany(c => c.Products);
     }
 }

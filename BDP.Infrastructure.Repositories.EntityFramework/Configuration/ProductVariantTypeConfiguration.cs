@@ -19,7 +19,7 @@ public sealed class ProductVariantTypeConfiguration : EntityTypeConfiguration<Pr
         // relationships
         builder
             .HasOne(s => s.Product)
-            .WithMany()
+            .WithMany(p => p.Variants)
             .OnDelete(DeleteBehavior.Restrict);
 
         // field precision
