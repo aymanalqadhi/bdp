@@ -25,7 +25,6 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
             modelBuilder.Entity("BDP.Domain.Entities.Attachment", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
@@ -49,25 +48,52 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("SellableId")
+                    b.Property<Guid?>("ProductVariantId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<long>("Size")
-                        .HasColumnType("bigint");
+                    b.Property<decimal>("Size")
+                        .HasColumnType("decimal(20,0)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("EventId");
 
-                    b.HasIndex("SellableId");
+                    b.HasIndex("ProductVariantId");
 
                     b.ToTable("Attachments");
+                });
+
+            modelBuilder.Entity("BDP.Domain.Entities.Category", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<Guid?>("ParentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.HasIndex("ParentId");
+
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("BDP.Domain.Entities.Confirmation", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
@@ -100,7 +126,6 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
             modelBuilder.Entity("BDP.Domain.Entities.Event", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
@@ -141,7 +166,6 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
             modelBuilder.Entity("BDP.Domain.Entities.EventType", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
@@ -152,51 +176,54 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("EventTypes");
 
                     b.HasData(
                         new
                         {
-                            Id = new Guid("2a487690-f070-4056-ac83-a214779cd9fa"),
+                            Id = new Guid("34d724b5-6914-49c0-a361-440465e742f7"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Wedding"
                         },
                         new
                         {
-                            Id = new Guid("bd8df582-4645-449f-8694-b04bc0e64ab7"),
+                            Id = new Guid("a1e1f8e9-d623-48d9-9d9d-cf7131a23f1b"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Birth Day"
                         },
                         new
                         {
-                            Id = new Guid("dce7bfa9-54e1-4386-9938-902c9d656916"),
+                            Id = new Guid("2af1553b-5461-483c-92f1-eae50339064c"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Engagement Party"
                         },
                         new
                         {
-                            Id = new Guid("ca6c9eaa-7538-4559-bb03-410f0712788f"),
+                            Id = new Guid("3f2e1bb5-1351-465d-aef3-8ba0838d8a8a"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Graduation Ceremony"
                         },
                         new
                         {
-                            Id = new Guid("3ee383a0-04ab-4573-8ff0-c296c9c92fac"),
+                            Id = new Guid("dc098853-9982-4c13-8ffb-9c09acae1832"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Graduation Party"
                         },
                         new
                         {
-                            Id = new Guid("2c8261c7-a1f6-4289-8970-a74f0fb39111"),
+                            Id = new Guid("7137c539-405a-4d73-a389-70b197c28667"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Other"
@@ -206,7 +233,6 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
             modelBuilder.Entity("BDP.Domain.Entities.FinancialRecord", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Amount")
@@ -235,7 +261,6 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
             modelBuilder.Entity("BDP.Domain.Entities.FinancialRecordVerification", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
@@ -247,14 +272,14 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                     b.Property<Guid>("FinancialRecordId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<bool>("IsApproved")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Notes")
+                    b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Outcome")
-                        .HasColumnType("int");
 
                     b.Property<Guid>("VerifiedById")
                         .HasColumnType("uniqueidentifier");
@@ -274,7 +299,6 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
             modelBuilder.Entity("BDP.Domain.Entities.Log", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
@@ -301,7 +325,6 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
             modelBuilder.Entity("BDP.Domain.Entities.LogTag", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
@@ -319,69 +342,142 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                     b.ToTable("LogTags");
                 });
 
-            modelBuilder.Entity("BDP.Domain.Entities.PhoneNumber", b =>
+            modelBuilder.Entity("BDP.Domain.Entities.Order", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsEarlyAccepted")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Number")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid>("PaymentId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("UserId")
+                    b.Property<long>("Quantity")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid>("VariantId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("PaymentId");
 
-                    b.ToTable("PhoneNumbers");
+                    b.HasIndex("VariantId");
+
+                    b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("BDP.Domain.Entities.Purchase", b =>
+            modelBuilder.Entity("BDP.Domain.Entities.Product", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Discriminator")
+                    b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("EventId")
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("OfferedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OfferedById");
+
+                    b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("BDP.Domain.Entities.ProductReview", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("LeftById")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("TransactionId")
+                    b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("Rating")
+                        .HasColumnType("float");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EventId");
+                    b.HasIndex("LeftById");
 
-                    b.HasIndex("TransactionId");
+                    b.HasIndex("ProductId");
 
-                    b.ToTable("Purchases");
+                    b.ToTable("ProductReviews");
+                });
 
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Purchase");
+            modelBuilder.Entity("BDP.Domain.Entities.ProductVariant", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<decimal>("Price")
+                        .HasPrecision(18, 6)
+                        .HasColumnType("decimal(18,6)");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductVariants");
                 });
 
             modelBuilder.Entity("BDP.Domain.Entities.RefreshToken", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
@@ -424,86 +520,92 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                     b.ToTable("RefreshTokens");
                 });
 
-            modelBuilder.Entity("BDP.Domain.Entities.Sellable", b =>
+            modelBuilder.Entity("BDP.Domain.Entities.Reservation", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsAvailable")
+                    b.Property<bool>("IsEarlyAccepted")
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("OfferedById")
+                    b.Property<Guid>("PaymentId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal>("Price")
-                        .HasPrecision(18, 6)
-                        .HasColumnType("decimal(18,6)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid>("VariantId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OfferedById");
+                    b.HasIndex("PaymentId");
 
-                    b.ToTable("Sellables");
+                    b.HasIndex("VariantId");
 
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Sellable");
+                    b.ToTable("Reservations");
                 });
 
-            modelBuilder.Entity("BDP.Domain.Entities.SellableReview", b =>
+            modelBuilder.Entity("BDP.Domain.Entities.ReservationWindow", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Comment")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<byte>("AvailableDays")
+                        .HasColumnType("tinyint");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("ItemId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("LeftById")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<TimeSpan>("End")
+                        .HasColumnType("time");
 
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<double>("Rating")
-                        .HasColumnType("float");
+                    b.Property<TimeSpan>("Start")
+                        .HasColumnType("time");
+
+                    b.Property<Guid>("VariantId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ItemId");
+                    b.HasIndex("VariantId");
 
-                    b.HasIndex("LeftById");
+                    b.ToTable("ReservationWindows");
+                });
 
-                    b.ToTable("SellableReviews");
+            modelBuilder.Entity("BDP.Domain.Entities.StockBatch", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("Quantity")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid>("VariantId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VariantId");
+
+                    b.ToTable("StockBatches");
                 });
 
             modelBuilder.Entity("BDP.Domain.Entities.Transaction", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Amount")
@@ -528,8 +630,7 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ConfirmationToken")
-                        .IsUnique();
+                    b.HasIndex("ConfirmationToken");
 
                     b.HasIndex("FromId");
 
@@ -541,17 +642,16 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
             modelBuilder.Entity("BDP.Domain.Entities.TransactionConfirmation", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsAccepted")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("Outcome")
-                        .HasColumnType("int");
 
                     b.Property<Guid>("TransactionId")
                         .HasColumnType("uniqueidentifier");
@@ -567,8 +667,53 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
             modelBuilder.Entity("BDP.Domain.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("Role")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("Username")
+                        .IsUnique();
+
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("BDP.Domain.Entities.UserProfile", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Bio")
                         .HasColumnType("nvarchar(max)");
@@ -579,76 +724,50 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("FullName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsConfirmed")
-                        .HasColumnType("bit");
 
                     b.Property<bool>("IsVerified")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Location")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("PasswordHash")
-                        .IsRequired()
+                    b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("ProfilePictureId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CoverPictureId");
 
-                    b.HasIndex("Email")
-                        .IsUnique();
-
                     b.HasIndex("ProfilePictureId");
 
-                    b.HasIndex("Username")
+                    b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("UserProfiles");
                 });
 
-            modelBuilder.Entity("BDP.Domain.Entities.UserGroup", b =>
+            modelBuilder.Entity("CategoryProduct", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<Guid>("CategoriesId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<Guid>("ProductsId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("ModifiedAt")
-                        .HasColumnType("datetime2");
+                    b.HasKey("CategoriesId", "ProductsId");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.HasIndex("ProductsId");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("UserGroups");
+                    b.ToTable("CategoryProduct");
                 });
 
             modelBuilder.Entity("LogLogTag", b =>
@@ -666,80 +785,24 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                     b.ToTable("LogLogTag");
                 });
 
-            modelBuilder.Entity("UserUserGroup", b =>
-                {
-                    b.Property<Guid>("GroupsId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("UsersId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("GroupsId", "UsersId");
-
-                    b.HasIndex("UsersId");
-
-                    b.ToTable("UserUserGroup");
-                });
-
-            modelBuilder.Entity("BDP.Domain.Entities.Product", b =>
-                {
-                    b.HasBaseType("BDP.Domain.Entities.Sellable");
-
-                    b.Property<long>("Quantity")
-                        .HasColumnType("bigint");
-
-                    b.HasDiscriminator().HasValue("Product");
-                });
-
-            modelBuilder.Entity("BDP.Domain.Entities.ProductOrder", b =>
-                {
-                    b.HasBaseType("BDP.Domain.Entities.Purchase");
-
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<long>("Quantity")
-                        .HasColumnType("bigint");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasDiscriminator().HasValue("ProductOrder");
-                });
-
-            modelBuilder.Entity("BDP.Domain.Entities.Service", b =>
-                {
-                    b.HasBaseType("BDP.Domain.Entities.Sellable");
-
-                    b.Property<DateTime>("AvailableBegin")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("AvailableEnd")
-                        .HasColumnType("datetime2");
-
-                    b.HasDiscriminator().HasValue("Service");
-                });
-
-            modelBuilder.Entity("BDP.Domain.Entities.ServiceReservation", b =>
-                {
-                    b.HasBaseType("BDP.Domain.Entities.Purchase");
-
-                    b.Property<Guid>("ServiceId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasIndex("ServiceId");
-
-                    b.HasDiscriminator().HasValue("ServiceReservation");
-                });
-
             modelBuilder.Entity("BDP.Domain.Entities.Attachment", b =>
                 {
                     b.HasOne("BDP.Domain.Entities.Event", null)
                         .WithMany("Pictures")
                         .HasForeignKey("EventId");
 
-                    b.HasOne("BDP.Domain.Entities.Sellable", null)
+                    b.HasOne("BDP.Domain.Entities.ProductVariant", null)
                         .WithMany("Attachments")
-                        .HasForeignKey("SellableId");
+                        .HasForeignKey("ProductVariantId");
+                });
+
+            modelBuilder.Entity("BDP.Domain.Entities.Category", b =>
+                {
+                    b.HasOne("BDP.Domain.Entities.Category", "Parent")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentId");
+
+                    b.Navigation("Parent");
                 });
 
             modelBuilder.Entity("BDP.Domain.Entities.Confirmation", b =>
@@ -808,26 +871,64 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                     b.Navigation("VerifiedBy");
                 });
 
-            modelBuilder.Entity("BDP.Domain.Entities.PhoneNumber", b =>
+            modelBuilder.Entity("BDP.Domain.Entities.Order", b =>
                 {
-                    b.HasOne("BDP.Domain.Entities.User", null)
-                        .WithMany("PhoneNumbers")
-                        .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("BDP.Domain.Entities.Purchase", b =>
-                {
-                    b.HasOne("BDP.Domain.Entities.Event", null)
-                        .WithMany("Purchases")
-                        .HasForeignKey("EventId");
-
-                    b.HasOne("BDP.Domain.Entities.Transaction", "Transaction")
+                    b.HasOne("BDP.Domain.Entities.Transaction", "Payment")
                         .WithMany()
-                        .HasForeignKey("TransactionId")
+                        .HasForeignKey("PaymentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Transaction");
+                    b.HasOne("BDP.Domain.Entities.ProductVariant", "Variant")
+                        .WithMany()
+                        .HasForeignKey("VariantId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Payment");
+
+                    b.Navigation("Variant");
+                });
+
+            modelBuilder.Entity("BDP.Domain.Entities.Product", b =>
+                {
+                    b.HasOne("BDP.Domain.Entities.User", "OfferedBy")
+                        .WithMany()
+                        .HasForeignKey("OfferedById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("OfferedBy");
+                });
+
+            modelBuilder.Entity("BDP.Domain.Entities.ProductReview", b =>
+                {
+                    b.HasOne("BDP.Domain.Entities.User", "LeftBy")
+                        .WithMany()
+                        .HasForeignKey("LeftById")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("BDP.Domain.Entities.Product", "Product")
+                        .WithMany("Reviews")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("LeftBy");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("BDP.Domain.Entities.ProductVariant", b =>
+                {
+                    b.HasOne("BDP.Domain.Entities.Product", "Product")
+                        .WithMany("Variants")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("BDP.Domain.Entities.RefreshToken", b =>
@@ -841,34 +942,45 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                     b.Navigation("Owner");
                 });
 
-            modelBuilder.Entity("BDP.Domain.Entities.Sellable", b =>
+            modelBuilder.Entity("BDP.Domain.Entities.Reservation", b =>
                 {
-                    b.HasOne("BDP.Domain.Entities.User", "OfferedBy")
+                    b.HasOne("BDP.Domain.Entities.Transaction", "Payment")
                         .WithMany()
-                        .HasForeignKey("OfferedById")
+                        .HasForeignKey("PaymentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("OfferedBy");
+                    b.HasOne("BDP.Domain.Entities.ProductVariant", "Variant")
+                        .WithMany()
+                        .HasForeignKey("VariantId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Payment");
+
+                    b.Navigation("Variant");
                 });
 
-            modelBuilder.Entity("BDP.Domain.Entities.SellableReview", b =>
+            modelBuilder.Entity("BDP.Domain.Entities.ReservationWindow", b =>
                 {
-                    b.HasOne("BDP.Domain.Entities.Sellable", "Item")
-                        .WithMany("Reviews")
-                        .HasForeignKey("ItemId")
+                    b.HasOne("BDP.Domain.Entities.ProductVariant", "Variant")
+                        .WithMany()
+                        .HasForeignKey("VariantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BDP.Domain.Entities.User", "LeftBy")
+                    b.Navigation("Variant");
+                });
+
+            modelBuilder.Entity("BDP.Domain.Entities.StockBatch", b =>
+                {
+                    b.HasOne("BDP.Domain.Entities.ProductVariant", "Variant")
                         .WithMany()
-                        .HasForeignKey("LeftById")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasForeignKey("VariantId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Item");
-
-                    b.Navigation("LeftBy");
+                    b.Navigation("Variant");
                 });
 
             modelBuilder.Entity("BDP.Domain.Entities.Transaction", b =>
@@ -901,7 +1013,7 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                     b.Navigation("Transaction");
                 });
 
-            modelBuilder.Entity("BDP.Domain.Entities.User", b =>
+            modelBuilder.Entity("BDP.Domain.Entities.UserProfile", b =>
                 {
                     b.HasOne("BDP.Domain.Entities.Attachment", "CoverPicture")
                         .WithMany()
@@ -911,9 +1023,32 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                         .WithMany()
                         .HasForeignKey("ProfilePictureId");
 
+                    b.HasOne("BDP.Domain.Entities.User", "User")
+                        .WithOne("Profile")
+                        .HasForeignKey("BDP.Domain.Entities.UserProfile", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("CoverPicture");
 
                     b.Navigation("ProfilePicture");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("CategoryProduct", b =>
+                {
+                    b.HasOne("BDP.Domain.Entities.Category", null)
+                        .WithMany()
+                        .HasForeignKey("CategoriesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BDP.Domain.Entities.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("LogLogTag", b =>
@@ -931,48 +1066,14 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("UserUserGroup", b =>
+            modelBuilder.Entity("BDP.Domain.Entities.Category", b =>
                 {
-                    b.HasOne("BDP.Domain.Entities.UserGroup", null)
-                        .WithMany()
-                        .HasForeignKey("GroupsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BDP.Domain.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("UsersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("BDP.Domain.Entities.ProductOrder", b =>
-                {
-                    b.HasOne("BDP.Domain.Entities.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("BDP.Domain.Entities.ServiceReservation", b =>
-                {
-                    b.HasOne("BDP.Domain.Entities.Service", "Service")
-                        .WithMany()
-                        .HasForeignKey("ServiceId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Service");
+                    b.Navigation("Children");
                 });
 
             modelBuilder.Entity("BDP.Domain.Entities.Event", b =>
                 {
                     b.Navigation("Pictures");
-
-                    b.Navigation("Purchases");
                 });
 
             modelBuilder.Entity("BDP.Domain.Entities.FinancialRecord", b =>
@@ -980,11 +1081,16 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                     b.Navigation("Verification");
                 });
 
-            modelBuilder.Entity("BDP.Domain.Entities.Sellable", b =>
+            modelBuilder.Entity("BDP.Domain.Entities.Product", b =>
+                {
+                    b.Navigation("Reviews");
+
+                    b.Navigation("Variants");
+                });
+
+            modelBuilder.Entity("BDP.Domain.Entities.ProductVariant", b =>
                 {
                     b.Navigation("Attachments");
-
-                    b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("BDP.Domain.Entities.Transaction", b =>
@@ -994,7 +1100,8 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
 
             modelBuilder.Entity("BDP.Domain.Entities.User", b =>
                 {
-                    b.Navigation("PhoneNumbers");
+                    b.Navigation("Profile")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
