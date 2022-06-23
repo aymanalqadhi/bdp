@@ -99,6 +99,7 @@ builder.Services.AddSingleton<IEmailService, SmtpEmailService>();
 builder.Services.AddScoped<IAttachmentsService, LocalAttachmentsService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUsersService, UsersService>();
+builder.Services.AddScoped<IUserProfilesService, UserProfilesService>();
 builder.Services.AddScoped<IFinancialRecordsService, FinancialRecordsService>();
 builder.Services.AddScoped<ITransactionsService, TransactionsService>();
 builder.Services.AddScoped<IFinanceService, FinanceService>();
@@ -109,6 +110,8 @@ builder.Services.AddScoped<IPurchasesService, PurchasesService>();
 builder.Services.AddScoped<ISearchSuggestionsService, SearchSuggestionsService>();
 builder.Services.AddScoped<IEventsService, EventsService>();
 builder.Services.AddScoped<ICategoriesService, CategoriesService>();
+builder.Services.AddScoped<IReservationWindowsService, ReservationWindowsService>();
+builder.Services.AddScoped<IStockBatchesService, StockBatchesService>();
 
 // Autmapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
