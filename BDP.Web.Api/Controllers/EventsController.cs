@@ -43,7 +43,7 @@ public class EventsController : ControllerBase
 
     [HttpGet("{eventId}")]
     [Authorize]
-    public async Task<IActionResult> GetById(EntityKey<Event> eventId)
+    public async Task<IActionResult> GetById([FromRoute] EntityKey<Event> eventId)
         => Ok(_mapper.Map<EventDto>(await _eventsSvc.GetEvents().FindAsync(eventId)));
 
     [HttpGet("types")]
@@ -60,7 +60,7 @@ public class EventsController : ControllerBase
     [HttpGet]
     [Authorize]
     public IAsyncEnumerable<EventDto> GetEvents(
-        [Required] EntityKey<User> userId,
+        [Required][FromQuery] EntityKey<User> userId,
         [FromQuery] PagingParameters paging)
     {
         var ret = _eventsSvc.ForUser(userId)
@@ -91,7 +91,7 @@ public class EventsController : ControllerBase
     [HttpPatch("{eventId}")]
     [IsCustomer]
     public async Task<IActionResult> Update(
-        EntityKey<Event> eventId,
+        [FromRoute] EntityKey<Event> eventId,
         [FromBody] UpdateEventRequest form)
     {
         var @event = await _eventsSvc.GetEvents().FindAsync(eventId);
@@ -113,7 +113,7 @@ public class EventsController : ControllerBase
 
     [HttpDelete("{eventId}")]
     [IsCustomer]
-    public async Task<IActionResult> Delete(EntityKey<Event> eventId)
+    public async Task<IActionResult> Delete([FromRoute] EntityKey<Event> eventId)
     {
         // TODO:
         // move ownership logic to the service
@@ -131,7 +131,7 @@ public class EventsController : ControllerBase
     [HttpPost("{eventId}/images")]
     [IsCustomer]
     public async Task<IActionResult> AddImage(
-        EntityKey<Event> eventId,
+        [FromRoute] EntityKey<Event> eventId,
         [FromForm] AddImageToEventRequest form)
     {
         // TODO:
@@ -153,7 +153,7 @@ public class EventsController : ControllerBase
     [HttpPut("{eventId}/progress")]
     [IsCustomer]
     public async Task<IActionResult> UpdateProgress(
-        EntityKey<Event> eventId,
+        [FromRoute] EntityKey<Event> eventId,
         [FromBody] UpdateEventProgressRequess form)
     {
         // TODO:

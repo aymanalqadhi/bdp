@@ -40,12 +40,12 @@ public class ProductsController : ControllerBase
     #endregion Ctors
 
     [HttpGet("{productId}")]
-    public async Task<IActionResult> GetById(EntityKey<Product> productId)
+    public async Task<IActionResult> GetById([FromRoute] EntityKey<Product> productId)
         => Ok(_mapper.Map<ProductDto>(await _productsSvc.GetProducts().FindAsync(productId)));
 
     [HttpGet]
     public IAsyncEnumerable<ProductDto> GetByUserPaged(
-        [Required] EntityKey<User> userId,
+        [Required][FromQuery] EntityKey<User> userId,
         [FromQuery] PagingParameters paging)
     {
         var ret = _productsSvc.GetFor(userId)
@@ -100,7 +100,7 @@ public class ProductsController : ControllerBase
     [HttpPatch("{productId}")]
     [IsProvider]
     public async Task<IActionResult> Update(
-        EntityKey<Product> productId,
+        [FromRoute] EntityKey<Product> productId,
         [FromBody] UpdateProductRequest form)
     {
         // TODO:
@@ -118,7 +118,7 @@ public class ProductsController : ControllerBase
 
     [HttpDelete("{productId}")]
     [IsProvider]
-    public async Task<IActionResult> Delete(EntityKey<Product> productId)
+    public async Task<IActionResult> Delete([FromRoute] EntityKey<Product> productId)
     {
         // TODO:
         // Move ownership verification to services

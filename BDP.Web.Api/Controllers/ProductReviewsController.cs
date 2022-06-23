@@ -38,7 +38,7 @@ public class ProductReviewsController : ControllerBase
 
     [HttpGet("[action]")]
     [Authorize]
-    public async Task<IActionResult> CanReview(EntityKey<Product> productId)
+    public async Task<IActionResult> CanReview([FromRoute] EntityKey<Product> productId)
     {
         var ret = await _productReviewsSvc.CanReviewAsync(User.GetId(), productId);
 
@@ -47,7 +47,7 @@ public class ProductReviewsController : ControllerBase
 
     [HttpGet("[action]")]
     [Authorize]
-    public async Task<IActionResult> MyReview(EntityKey<Product> productId)
+    public async Task<IActionResult> MyReview([FromRoute] EntityKey<Product> productId)
     {
         var ret = await _productReviewsSvc
             .GetReviewForUser(User.GetId(), productId)
@@ -59,7 +59,7 @@ public class ProductReviewsController : ControllerBase
     [HttpPost("[action]")]
     [IsCustomer]
     public async Task<IActionResult> Review(
-        EntityKey<Product> productId,
+        [FromRoute] EntityKey<Product> productId,
         [FromBody] SellableReviewRequest form)
     {
         var ret = await _productReviewsSvc
@@ -69,7 +69,7 @@ public class ProductReviewsController : ControllerBase
     }
 
     [HttpGet("[action]")]
-    public async Task<IActionResult> ReviewSummary(EntityKey<Product> productId)
+    public async Task<IActionResult> ReviewSummary([FromRoute] EntityKey<Product> productId)
         => Ok(await _productReviewsSvc.SummaryForAsync(productId));
 
     #endregion Actions

@@ -44,7 +44,7 @@ public class ProductVariantsController : ControllerBase
     [HttpPost]
     [IsProvider]
     public async Task<IActionResult> Create(
-        EntityKey<Product> productId,
+        [FromRoute] EntityKey<Product> productId,
         [FromBody] CreateProductVariantRequest form)
     {
         Func<EntityKey<Product>, string, string?, decimal, IEnumerable<IUploadFile>?, Task<ProductVariant>> fn =
@@ -67,8 +67,8 @@ public class ProductVariantsController : ControllerBase
 
     [HttpGet("{variantId}")]
     public async Task<IActionResult> GetById(
-        EntityKey<Product> productId,
-        EntityKey<ProductVariant> variantid)
+        [FromRoute] EntityKey<Product> productId,
+        [FromRoute] EntityKey<ProductVariant> variantid)
     {
         return Ok(_mapper.Map<ProductVariantDto>(
             await _variantsSvc
@@ -78,7 +78,7 @@ public class ProductVariantsController : ControllerBase
 
     [HttpGet]
     public IAsyncEnumerable<ProductVariantDto> GetVariants(
-        EntityKey<Product> productId,
+        [FromRoute] EntityKey<Product> productId,
         [FromQuery] PagingParameters paging)
     {
         return _variantsSvc.GetVariants(productId)
@@ -91,8 +91,8 @@ public class ProductVariantsController : ControllerBase
     [HttpPatch("{variantId}")]
     [IsProvider]
     public async Task<IActionResult> Update(
-        EntityKey<Product> productId,
-        EntityKey<ProductVariant> variantId,
+        [FromRoute] EntityKey<Product> productId,
+        [FromRoute] EntityKey<ProductVariant> variantId,
         [FromBody] UpdateProductVariantRequest form)
     {
         // TODO:
@@ -107,8 +107,8 @@ public class ProductVariantsController : ControllerBase
     [HttpPost("{variantId}/order")]
     [IsCustomer]
     public async Task<IActionResult> Order(
-         EntityKey<Product> productId,
-         EntityKey<ProductVariant> variantId,
+         [FromRoute] EntityKey<Product> productId,
+         [FromRoute] EntityKey<ProductVariant> variantId,
         [FromBody] OrderRequest form)
     {
         var purchase = await _purchasesSvc.OrderAsync(User.GetId(), variantId, form.Quantity);
@@ -119,8 +119,8 @@ public class ProductVariantsController : ControllerBase
     [HttpPost("{variantId}/reserve")]
     [IsCustomer]
     public async Task<IActionResult> Reserve(
-     EntityKey<Product> productId,
-     EntityKey<ProductVariant> variantId)
+        [FromRoute] EntityKey<Product> productId,
+        [FromRoute] EntityKey<ProductVariant> variantId)
     {
         var purchase = await _purchasesSvc.ReserveAsync(User.GetId(), variantId);
 

@@ -55,7 +55,7 @@ public class FinancialRecordsController : ControllerBase
     [HttpPost("{recordId}/[action]")]
     [IsAdmin]
     public async Task<IActionResult> Verify(
-        EntityKey<FinancialRecord> recordId,
+        [FromRoute] EntityKey<FinancialRecord> recordId,
         [FromForm] VerifyFinancialRecordRequest form)
     {
         var ret = await _financialRecordsSvc.VerifyAsync(
@@ -70,7 +70,7 @@ public class FinancialRecordsController : ControllerBase
     [HttpPost("[action]")]
     [IsAdmin]
     public async Task<IActionResult> Decline(
-        EntityKey<FinancialRecord> recordId,
+        [FromRoute] EntityKey<FinancialRecord> recordId,
         [FromForm] RejectFinancialRecordRequest form)
     {
         var ret = await _financialRecordsSvc.DeclineAsync(

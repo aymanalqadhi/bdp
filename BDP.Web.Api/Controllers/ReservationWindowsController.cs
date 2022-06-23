@@ -38,8 +38,8 @@ public class ReservationWindowsController : ControllerBase
     [HttpGet]
     [IsProvider]
     public IAsyncEnumerable<ReservationWindowDto> GetReservationWindows(
-        EntityKey<Product> productId,
-        EntityKey<ProductVariant> variantId)
+        [FromRoute] EntityKey<Product> productId,
+        [FromRoute] EntityKey<ProductVariant> variantId)
     {
         return _reservationWindowsSvc.GetReservationWindows(variantId)
             .OrderDescending()
@@ -50,8 +50,8 @@ public class ReservationWindowsController : ControllerBase
     [HttpPost]
     [IsProvider]
     public async Task<IActionResult> Create(
-        EntityKey<Product> productId,
-        EntityKey<ProductVariant> variantId,
+        [FromRoute] EntityKey<Product> productId,
+        [FromRoute] EntityKey<ProductVariant> variantId,
         [FromBody] CreateReservationWindowRequest form)
     {
         var batch = await _reservationWindowsSvc.AddAsync(
@@ -66,9 +66,9 @@ public class ReservationWindowsController : ControllerBase
     [HttpDelete("{windowId}")]
     [IsProvider]
     public async Task<IActionResult> Remove(
-        EntityKey<Product> productId,
-        EntityKey<ProductVariant> variantId,
-        EntityKey<ReservationWindow> windowId)
+        [FromRoute] EntityKey<Product> productId,
+        [FromRoute] EntityKey<ProductVariant> variantId,
+        [FromRoute] EntityKey<ReservationWindow> windowId)
     {
         // TODO:
         // Move ownership verification to services

@@ -31,11 +31,11 @@ public class CategoriesController : ControllerBase
             .Map<Category, CategoryDto>(_mapper)
             .AsAsyncEnumerable();
 
-    [HttpGet("{id}")]
-    public IAsyncEnumerable<CategoryDto> GetSubCategories(EntityKey<Category> id)
+    [HttpGet("{categoryId}")]
+    public IAsyncEnumerable<CategoryDto> GetSubCategories([FromRoute] EntityKey<Category> categoryId)
         => _categoriesSvc
             .GetCategories()
-            .Where(c => c.Parent != null && c.Parent.Id == id)
+            .Where(c => c.Parent != null && c.Parent.Id == categoryId)
             .Map<Category, CategoryDto>(_mapper)
             .AsAsyncEnumerable();
 
@@ -48,9 +48,11 @@ public class CategoriesController : ControllerBase
         return Ok(_mapper.Map<CategoryDto>(res));
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{categoryId}")]
     [IsAdmin]
-    public async Task<IActionResult> Update(EntityKey<Category> categoryId, [FromBody] UpdateCategoryRequest form)
+    public async Task<IActionResult> Update(
+        [FromRoute] EntityKey<Category> categoryId,
+        [FromBody] UpdateCategoryRequest form)
     {
         var res = await _categoriesSvc.UpdateAsync(categoryId, form.Name);
 

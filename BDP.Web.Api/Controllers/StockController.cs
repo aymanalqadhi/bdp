@@ -37,8 +37,8 @@ public class StockController : ControllerBase
     [HttpGet]
     [IsProvider]
     public IAsyncEnumerable<StockBatchDto> GetStockBatches(
-        EntityKey<Product> productId,
-        EntityKey<ProductVariant> variantId)
+        [FromRoute] EntityKey<Product> productId,
+        [FromRoute] EntityKey<ProductVariant> variantId)
     {
         return _stockSvc.GetStockBatches(variantId)
             .OrderDescending()
@@ -49,8 +49,8 @@ public class StockController : ControllerBase
     [HttpGet("quantity")]
     [Authorize]
     public async Task<IActionResult> AvailableQuantity(
-        EntityKey<Product> productId,
-        EntityKey<ProductVariant> variantId)
+        [FromRoute] EntityKey<Product> productId,
+        [FromRoute] EntityKey<ProductVariant> variantId)
     {
         var quantity = await _stockSvc.AvailableQuantityAsync(variantId);
 
@@ -60,8 +60,8 @@ public class StockController : ControllerBase
     [HttpPost]
     [IsProvider]
     public async Task<IActionResult> Create(
-        EntityKey<Product> productId,
-        EntityKey<ProductVariant> variantId,
+        [FromRoute] EntityKey<Product> productId,
+        [FromRoute] EntityKey<ProductVariant> variantId,
         [FromBody] CreateStockBatchRequest form)
     {
         var batch = await _stockSvc.AddAsync(variantId, form.Quantity);
@@ -72,9 +72,9 @@ public class StockController : ControllerBase
     [HttpDelete("{batchId}")]
     [IsProvider]
     public async Task<IActionResult> Remove(
-        EntityKey<Product> productId,
-        EntityKey<ProductVariant> variantId,
-        EntityKey<StockBatch> batchId)
+        [FromRoute] EntityKey<Product> productId,
+        [FromRoute] EntityKey<ProductVariant> variantId,
+        [FromRoute] EntityKey<StockBatch> batchId)
     {
         // TODO:
         // Move ownership verification to services
