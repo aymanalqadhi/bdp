@@ -1,4 +1,6 @@
-﻿namespace BDP.Domain.Entities;
+﻿using System.ComponentModel;
+
+namespace BDP.Domain.Entities;
 
 public record EntityKey<TEntity, TValue>(TValue Value)
 {
@@ -6,4 +8,5 @@ public record EntityKey<TEntity, TValue>(TValue Value)
     public override string? ToString() => Value?.ToString();
 }
 
-public sealed record EntityKey<TEntity>(Guid Id) : EntityKey<TEntity, Guid>(Id);
+[TypeConverter(typeof(EntityKeyConverter))]
+public record EntityKey<TEntity>(Guid Value) : EntityKey<TEntity, Guid>(Value);
