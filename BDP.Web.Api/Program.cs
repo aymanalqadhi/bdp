@@ -124,26 +124,8 @@ builder.Services.AddSingleton<IAuthorizationPolicyProvider, PoliciesProvider>();
 builder.Services.AddControllers()
         .AddJsonOptions(options =>
         {
-            options.JsonSerializerOptions.Converters.Add(new StronglyTypedIdJsonConverter<Attachment>());
-            options.JsonSerializerOptions.Converters.Add(new StronglyTypedIdJsonConverter<Category>());
-            options.JsonSerializerOptions.Converters.Add(new StronglyTypedIdJsonConverter<Confirmation>());
-            options.JsonSerializerOptions.Converters.Add(new StronglyTypedIdJsonConverter<Event>());
-            options.JsonSerializerOptions.Converters.Add(new StronglyTypedIdJsonConverter<EventType>());
-            options.JsonSerializerOptions.Converters.Add(new StronglyTypedIdJsonConverter<FinancialRecord>());
-            options.JsonSerializerOptions.Converters.Add(new StronglyTypedIdJsonConverter<FinancialRecordVerification>());
-            options.JsonSerializerOptions.Converters.Add(new StronglyTypedIdJsonConverter<Log>());
-            options.JsonSerializerOptions.Converters.Add(new StronglyTypedIdJsonConverter<LogTag>());
-            options.JsonSerializerOptions.Converters.Add(new StronglyTypedIdJsonConverter<Order>());
-            options.JsonSerializerOptions.Converters.Add(new StronglyTypedIdJsonConverter<Product>());
-            options.JsonSerializerOptions.Converters.Add(new StronglyTypedIdJsonConverter<ProductReview>());
-            options.JsonSerializerOptions.Converters.Add(new StronglyTypedIdJsonConverter<ProductVariant>());
-            options.JsonSerializerOptions.Converters.Add(new StronglyTypedIdJsonConverter<RefreshToken>());
-            options.JsonSerializerOptions.Converters.Add(new StronglyTypedIdJsonConverter<ReservationWindow>());
-            options.JsonSerializerOptions.Converters.Add(new StronglyTypedIdJsonConverter<StockBatch>());
-            options.JsonSerializerOptions.Converters.Add(new StronglyTypedIdJsonConverter<Transaction>());
-            options.JsonSerializerOptions.Converters.Add(new StronglyTypedIdJsonConverter<TransactionConfirmation>());
-            options.JsonSerializerOptions.Converters.Add(new StronglyTypedIdJsonConverter<User>());
-            options.JsonSerializerOptions.Converters.Add(new StronglyTypedIdJsonConverter<UserProfile>());
+            options.JsonSerializerOptions.Converters.Add(
+                new EntityKeyJsonConverterFactory());
         });
 
 #endregion Services
