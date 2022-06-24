@@ -44,7 +44,7 @@ public class SearchSuggestionsService : ISearchSuggestionsService
                 .Page(1, length)
                 .Select(u => new SearchSuggestion
                 {
-                    ItemId = u.Id.Id,
+                    ItemId = u.Id.Value,
                     Title = u.FullName,
                     Type = $"user - @{u.User.Username}",
                 })
@@ -60,7 +60,7 @@ public class SearchSuggestionsService : ISearchSuggestionsService
                 .Page(1, length)
                 .Select(s => new SearchSuggestion
                 {
-                    ItemId = s.Id.Id,
+                    ItemId = s.Id.Value,
                     Title = s.Title,
                     Type = "product",
                 })

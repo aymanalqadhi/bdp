@@ -30,7 +30,7 @@ public class StronglyTypedIdJsonConverter<TEntity, TValue>
         if (value is null)
             writer.WriteNullValue();
         else
-            JsonSerializer.Serialize(writer, value.Id, options);
+            JsonSerializer.Serialize(writer, value.Value, options);
     }
 }
 

@@ -23,7 +23,7 @@ public class NotEnoughStockException : Exception
     /// <param name="variantid">The product lacking stock</param>
     /// <param name="requestedQuantity">The requested quantity</param>
     public NotEnoughStockException(EntityKey<ProductVariant> variantid, uint requestedQuantity)
-        : base($"product variant #{variantid.Id} does not have {requestedQuantity} stock left")
+        : base($"product variant #{variantid.Value} does not have {requestedQuantity} stock left")
     {
         _variantid = variantid;
         _requestedQuantity = requestedQuantity;

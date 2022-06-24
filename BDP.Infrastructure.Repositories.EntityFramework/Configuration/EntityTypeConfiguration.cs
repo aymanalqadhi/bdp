@@ -14,6 +14,6 @@ public abstract class EntityTypeConfiguration<TEntity> : IEntityTypeConfiguratio
     {
         builder
             .Property(e => e.Id)
-            .HasConversion(i => i.Id, g => new EntityKey<TEntity>(g));
+            .HasConversion(i => i.Value, g => new EntityKey<TEntity>(g));
     }
 }
