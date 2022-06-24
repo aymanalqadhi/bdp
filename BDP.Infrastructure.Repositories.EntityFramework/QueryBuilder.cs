@@ -51,19 +51,28 @@ public sealed class QueryBuilder<T> : IQueryBuilder<T> where T : class
         => _query.CountAsync(pred, cancellationToken);
 
     /// <inheritdoc/>
-    public Task<T> FirstAsync(CancellationToken cancellationToken = default)
-        => _query.FirstAsync(cancellationToken);
+    public async Task<T> FirstAsync(CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            return await _query.FirstAsync(cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            throw new NotFoundException("no items were found", ex);
+        }
+    }
 
     /// <inheritdoc/>
-    public Task<T> FirstAsync(
+    public async Task<T> FirstAsync(
         Expression<Func<T, bool>> pred,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            return _query.FirstAsync(pred, cancellationToken);
+            return await _query.FirstAsync(pred, cancellationToken);
         }
-        catch (InvalidOperationException ex)
+        catch (Exception ex)
         {
             throw new NotFoundException("no items were found", ex);
         }
