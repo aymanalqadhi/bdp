@@ -1,5 +1,6 @@
 ﻿using BDP.Domain.Entities;
 using BDP.Domain.Services;
+using BDP.Domain.Repositories.Extensions;
 using BDP.Web.Api.Extensions;
 using BDP.Web.Dtos;
 using BDP.Web.Api.Auth.Attributes;
@@ -23,6 +24,13 @@ public class CategoriesController : ControllerBase
         _categoriesSvc = categoriesSvc;
     }
 
+    [HttpGet("{categoryId}")]
+    public async Task<IActionResult> GetCategory([FromRoute] EntityKey<Category> categoryId)
+        => Ok(_mapper.Map<CategoryDto>(await _categoriesSvc
+            .GetCategories()
+            .Where(c => c.Parent == null)
+            .FindAsync(categoryId)));
+
     [HttpGet]
     public IAsyncEnumerable<CategoryDto> GetTopLevelCategoreis()
         => _categoriesSvc
@@ -31,7 +39,7 @@ public class CategoriesController : ControllerBase
             .Map<Category, CategoryDto>(_mapper)
             .AsAsyncEnumerable();
 
-    [HttpGet("{categoryId}")]
+    [HttpGet("{categoryId}/subCategories")]
     public IAsyncEnumerable<CategoryDto> GetSubCategories([FromRoute] EntityKey<Category> categoryId)
         => _categoriesSvc
             .GetCategories()
