@@ -7,25 +7,24 @@ using System.Collections.Concurrent;
 namespace BDP.Web.Dtos.Converters;
 
 /// <inheritdoc/>
-public class StronglyTypedIdJsonConverter<TEntity, TValue>
-    : JsonConverter<EntityKey<TEntity, TValue>>
+public class EntityKeyJsonConverter<TKey, TEntity> : JsonConverter<TKey>
+    where TEntity : class
+    where TKey : EntityKey<TEntity>
 {
     /// <inheritdoc/>
-    public override EntityKey<TEntity, TValue>? Read(
-        ref Utf8JsonReader reader,
-        Type typeToConvert,
-        JsonSerializerOptions options)
+    public override TKey? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         if (reader.TokenType is JsonTokenType.Null)
-            return null;
+            return default;
 
-        var value = JsonSerializer.Deserialize<TValue>(ref reader, options);
+        var value = JsonSerializer.Deserialize<Guid>(ref reader, options);
+        var factory = EntityKeyHelper.GetFactory<Guid>(typeToConvert);
 
-        return new EntityKey<TEntity, TValue>(value!);
+        return (TKey)factory(value);
     }
 
     /// <inheritdoc/>
-    public override void Write(Utf8JsonWriter writer, EntityKey<TEntity, TValue> value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, TKey value, JsonSerializerOptions options)
     {
         if (value is null)
             writer.WriteNullValue();
@@ -35,7 +34,29 @@ public class StronglyTypedIdJsonConverter<TEntity, TValue>
 }
 
 /// <inheritdoc/>
-public class StronglyTypedIdJsonConverter<TEntity>
-    : StronglyTypedIdJsonConverter<TEntity, Guid>
+public class EntityKeyJsonConverterFactory : JsonConverterFactory
 {
+    private static readonly ConcurrentDictionary<Type, JsonConverter> _cache = new();
+
+    /// <inheritdoc/>
+    public override bool CanConvert(Type typeToConvert)
+    {
+        return EntityKeyHelper.IsStronglyTypedId(typeToConvert);
+    }
+
+    /// <inheritdoc/>
+    public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)
+    {
+        return _cache.GetOrAdd(typeToConvert, CreateConverter!);
+    }
+
+    private static JsonConverter? CreateConverter(Type typeToConvert)
+    {
+        if (!EntityKeyHelper.IsStronglyTypedId(typeToConvert, out var valueType))
+            throw new InvalidOperationException($"Cannot create converter for '{typeToConvert}'");
+
+        var type = typeof(EntityKeyJsonConverter<,>).MakeGenericType(typeToConvert, valueType);
+
+        return Activator.CreateInstance(type) as JsonConverter;
+    }
 }
