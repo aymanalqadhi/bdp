@@ -53,16 +53,21 @@ public class TransactionsController : ControllerBase
         return ret;
     }
 
-    [HttpPost("[action]")]
+    [HttpPost("{transactionId}/[action]")]
     [Authorize]
-    public async Task<IActionResult> Confirm([FromBody] ConfirmTransactionRequest form)
+    public async Task<IActionResult> Confirm(
+        [FromRoute] EntityKey<Transaction> transactionId,
+        [FromBody] ConfirmTransactionRequest form)
     {
-        var ret = await _transactionsSvc.ConfirmAsync(User.GetId(), form.Token);
+        var ret = await _transactionsSvc.ConfirmAsync(
+            User.GetId(),
+            transactionId,
+            form.Token);
 
         return Ok(_mapper.Map<TransactionConfirmationDto>(ret));
     }
 
-    [HttpPost("{id}/[action]")]
+    [HttpPost("{transactionId}/[action]")]
     [Authorize]
     public async Task<IActionResult> Cancel([FromRoute] EntityKey<Transaction> transactionId)
     {
@@ -71,7 +76,7 @@ public class TransactionsController : ControllerBase
         return Ok(_mapper.Map<TransactionConfirmationDto>(ret));
     }
 
-    [HttpGet("{id}/token")]
+    [HttpGet("{transactionId}/token")]
     [Authorize]
     public async Task<IActionResult> GetConfirmationToken(
         [FromRoute] EntityKey<Transaction> transactionId)
