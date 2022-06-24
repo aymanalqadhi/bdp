@@ -88,7 +88,7 @@ public class EntityKeyConverter : TypeConverter
     }
 }
 
-internal static class EntityKeyHelper
+public static class EntityKeyHelper
 {
     private static readonly ConcurrentDictionary<Type, Delegate> _keyFactories = new();
 
