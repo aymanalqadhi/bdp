@@ -9,6 +9,24 @@ namespace BDP.Domain.Entities;
 public class EntityKeyConverter<TEntity> : TypeConverter
     where TEntity : class
 {
+    #region Fields
+
+    [SuppressMessage("CodeQuality", "IDE0052:Remove unread private members", Justification = "The field is used via reflection")]
+    private readonly Type _type;
+
+    #endregion Fields
+
+    #region Public Constructors
+
+    public EntityKeyConverter(Type type)
+    {
+        _type = type;
+    }
+
+    #endregion Public Constructors
+
+    #region Public Methods
+
     /// <inheritdoc/>
     public override bool CanConvertFrom(ITypeDescriptorContext? context, Type sourceType)
     {
@@ -46,19 +64,44 @@ public class EntityKeyConverter<TEntity> : TypeConverter
 
         return base.ConvertTo(context, culture, value, destinationType);
     }
+
+    #endregion Public Methods
+
+    #region Private Methods
+
+    private static TypeConverter GetIdValueConverter()
+    {
+        var converter = TypeDescriptor.GetConverter(typeof(TEntity));
+        if (!converter.CanConvertFrom(typeof(string)))
+            throw new InvalidOperationException(
+                $"Type '{typeof(TEntity)}' doesn't have a converter that can convert from string");
+        return converter;
+    }
+
+    #endregion Private Methods
 }
 
 /// <inheritdoc/>
 public class EntityKeyConverter : TypeConverter
 {
+    #region Fields
+
     private static readonly ConcurrentDictionary<Type, TypeConverter> _actualConverters = new();
 
     private readonly TypeConverter _innerConverter;
+
+    #endregion Fields
+
+    #region Public Constructors
 
     public EntityKeyConverter(Type stronglyTypedIdType)
     {
         _innerConverter = _actualConverters.GetOrAdd(stronglyTypedIdType, CreateActualConverter);
     }
+
+    #endregion Public Constructors
+
+    #region Public Methods
 
     /// <inheritdoc/>
     public override bool CanConvertFrom(ITypeDescriptorContext? context, Type sourceType)
@@ -76,6 +119,10 @@ public class EntityKeyConverter : TypeConverter
     public override object? ConvertTo(ITypeDescriptorContext? context, CultureInfo? culture, object? value, Type destinationType)
         => _innerConverter.ConvertTo(context, culture, value, destinationType);
 
+    #endregion Public Methods
+
+    #region Private Methods
+
     /// <inheritdoc/>
     private static TypeConverter CreateActualConverter(Type keyType)
     {
@@ -86,11 +133,19 @@ public class EntityKeyConverter : TypeConverter
 
         return (TypeConverter)Activator.CreateInstance(actualConverterType, keyType)!;
     }
+
+    #endregion Private Methods
 }
 
 public static class EntityKeyHelper
 {
+    #region Fields
+
     private static readonly ConcurrentDictionary<Type, Delegate> _keyFactories = new();
+
+    #endregion Fields
+
+    #region Public Methods
 
     public static Func<TValue, object> GetFactory<TValue>(Type keyType)
         where TValue : notnull
@@ -98,28 +153,6 @@ public static class EntityKeyHelper
         return (Func<TValue, object>)_keyFactories.GetOrAdd(
             keyType,
             CreateFactory<TValue>);
-    }
-
-    private static Func<TValue, object> CreateFactory<TValue>(Type keyType)
-        where TValue : notnull
-    {
-        if (!IsStronglyTypedId(keyType))
-            throw new ArgumentException($"Type '{keyType}' is not a strongly-typed id type", nameof(keyType));
-
-        var ctor = keyType.GetConstructor(new[] { typeof(TValue) });
-
-        if (ctor is null)
-        {
-            throw new ArgumentException(
-                $"Type '{keyType}' doesn't have a constructor with one parameter of type '{typeof(TValue)}'",
-                nameof(keyType));
-        }
-
-        var param = Expression.Parameter(typeof(TValue), "value");
-        var body = Expression.New(ctor, param);
-        var lambda = Expression.Lambda<Func<TValue, object>>(body, param);
-
-        return lambda.Compile();
     }
 
     public static bool IsStronglyTypedId(Type type) => IsStronglyTypedId(type, out _);
@@ -141,4 +174,32 @@ public static class EntityKeyHelper
 
         return false;
     }
+
+    #endregion Public Methods
+
+    #region Private Methods
+
+    private static Func<TValue, object> CreateFactory<TValue>(Type keyType)
+                where TValue : notnull
+    {
+        if (!IsStronglyTypedId(keyType))
+            throw new ArgumentException($"Type '{keyType}' is not a strongly-typed id type", nameof(keyType));
+
+        var ctor = keyType.GetConstructor(new[] { typeof(TValue) });
+
+        if (ctor is null)
+        {
+            throw new ArgumentException(
+                $"Type '{keyType}' doesn't have a constructor with one parameter of type '{typeof(TValue)}'",
+                nameof(keyType));
+        }
+
+        var param = Expression.Parameter(typeof(TValue), "value");
+        var body = Expression.New(ctor, param);
+        var lambda = Expression.Lambda<Func<TValue, object>>(body, param);
+
+        return lambda.Compile();
+    }
+
+    #endregion Private Methods
 }
