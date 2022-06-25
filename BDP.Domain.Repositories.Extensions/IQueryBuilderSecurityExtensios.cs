@@ -47,15 +47,45 @@ public static class IQueryBuilderSecurityExtensions
     {
         var resource = await self.FindAsync(resourceId);
 
-        if (resource.OwnedBy.Id != userId)
+        return ValidateOwner(userId, resource, resource.OwnedBy);
+    }
+
+    /// <summary>
+    /// Asynchrnously gets a resource, then validates its owner. The owner is manually selected
+    /// rather being extracted using <see cref="IOwnable"/> interface
+    /// </summary>
+    /// <typeparam name="TEntity">The type of the resource</typeparam>
+    /// <param name="self"></param>
+    /// <param name="userId">The id of the user who owns the resource</param>
+    /// <param name="resourceId">The id of the resource to get</param>
+    /// <param name="ownerSelector">A delegate to select the owner of the resource</param>
+    /// <returns>The ownership-validated resource</returns>
+    /// <exception cref="InsufficientPermissionsException"></exception>
+    public static async Task<TEntity> FindWithOwnershipValidationAsync<TEntity>(
+        this IQueryBuilder<TEntity> self,
+        EntityKey<User> userId,
+        EntityKey<TEntity> resourceId,
+        Func<TEntity, User> ownerSelector) where TEntity : AuditableEntity<TEntity>
+
+    {
+        var resource = await self.FindAsync(resourceId);
+        var owner = ownerSelector(resource);
+
+        return ValidateOwner(userId, resource, owner);
+    }
+
+    private static TEntity ValidateOwner<TEntity>(EntityKey<User> userId, TEntity item, User owner)
+        where TEntity : AuditableEntity<TEntity>
+    {
+        if (owner.Id != userId)
         {
             var typeName = typeof(TEntity).Name;
 
             throw new InsufficientPermissionsException(
                 userId,
-                $"user #{userId} does not own the {typeName.ToLower()} with id #{resource.Id}");
+                $"user #{userId} does not own the {typeName.ToLower()} with id #{item.Id}");
         }
 
-        return resource;
+        return item;
     }
 }
