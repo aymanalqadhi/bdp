@@ -1,6 +1,6 @@
 ﻿using BDP.Domain.Entities;
 
-namespace BDP.Domain.Services.Exceptions;
+namespace BDP.Domain.Repositories.Extensions.Exceptions;
 
 /// <summary>
 /// An exception to be thrown when a user with insufficient permissions
