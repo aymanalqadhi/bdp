@@ -94,6 +94,9 @@ public class EventsController : ControllerBase
         [FromRoute] EntityKey<Event> eventId,
         [FromBody] UpdateEventRequest form)
     {
+        // TODO:
+        // move ownership logic to the service
+
         var @event = await _eventsSvc.GetEvents().FindAsync(eventId);
 
         if (@event.CreatedBy.Id != User.GetId())
