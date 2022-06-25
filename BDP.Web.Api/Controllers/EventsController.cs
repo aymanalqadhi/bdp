@@ -10,9 +10,9 @@ using BDP.Web.Dtos.Requests;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 using System.ComponentModel.DataAnnotations;
-using Microsoft.Extensions.Logging;
 
 namespace BDP.Web.Api.Controllers;
 
@@ -67,7 +67,7 @@ public class EventsController : ControllerBase
             .PageDescending(paging.Page, paging.PageLength)
             .Include(e => e.Pictures)
             .Include(e => e.Type)
-            .Include(e => e.CreatedBy)
+            .Include(e => e.OwnedBy)
             .Map<Event, EventDto>(_mapper)
             .AsAsyncEnumerable();
 
@@ -94,17 +94,10 @@ public class EventsController : ControllerBase
         [FromRoute] EntityKey<Event> eventId,
         [FromBody] UpdateEventRequest form)
     {
-        // TODO:
-        // move ownership logic to the service
-
-        var @event = await _eventsSvc.GetEvents().FindAsync(eventId);
-
-        if (@event.CreatedBy.Id != User.GetId())
-            return Unauthorized(new { message = "you do not own the event" });
-
         var type = await _eventsSvc.GetEventTypes().FindAsync(form.EventTypeId);
         var ret = await _eventsSvc.UpdateAsync(
-            @event.Id,
+            User.GetId(),
+            eventId,
             type.Id,
             form.Title,
             form.Description,
@@ -118,15 +111,7 @@ public class EventsController : ControllerBase
     [IsCustomer]
     public async Task<IActionResult> Delete([FromRoute] EntityKey<Event> eventId)
     {
-        // TODO:
-        // move ownership logic to the service
-
-        var @event = await _eventsSvc.GetEvents().FindAsync(eventId);
-
-        if (@event.CreatedBy.Id != User.GetId())
-            return Unauthorized(new { message = "you do not own the event" });
-
-        await _eventsSvc.RemoveAsync(@event.Id);
+        await _eventsSvc.RemoveAsync(User.GetId(), eventId);
 
         return Ok();
     }
@@ -137,18 +122,7 @@ public class EventsController : ControllerBase
         [FromRoute] EntityKey<Event> eventId,
         [FromForm] AddImageToEventRequest form)
     {
-        // TODO:
-        // move ownership logic to the service
-
-        var @event = await _eventsSvc.GetEvents().FindAsync(eventId);
-
-        if (@event.CreatedBy.Id != User.GetId())
-            return Unauthorized(new { message = "you do not own the event" });
-
-        if (@event.Pictures.Count >= 12)
-            return Unauthorized(new { message = "you have reached the limit of images" });
-
-        await _eventsSvc.AddImageAsync(@event.Id, new WebUploadFile(form.Image));
+        await _eventsSvc.AddImageAsync(User.GetId(), eventId, new WebUploadFile(form.Image));
 
         return Ok();
     }
@@ -159,15 +133,7 @@ public class EventsController : ControllerBase
         [FromRoute] EntityKey<Event> eventId,
         [FromBody] UpdateEventProgressRequess form)
     {
-        // TODO:
-        // move ownership logic to the service
-
-        var @event = await _eventsSvc.GetEvents().FindAsync(eventId);
-
-        if (@event.CreatedBy.Id != User.GetId())
-            return Unauthorized(new { message = "you do not own the event" });
-
-        await _eventsSvc.UpdateProgressAsync(@event.Id, form.Progress);
+        await _eventsSvc.UpdateProgressAsync(User.GetId(), eventId, form.Progress);
 
         return Ok();
     }
