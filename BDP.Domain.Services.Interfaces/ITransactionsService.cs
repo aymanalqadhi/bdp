@@ -4,6 +4,9 @@ using BDP.Domain.Services.Exceptions;
 
 namespace BDP.Domain.Services;
 
+/// <summary>
+/// An interface to be implemented by transaction managment services
+/// </summary>
 public interface ITransactionsService
 {
     /// <summary>
