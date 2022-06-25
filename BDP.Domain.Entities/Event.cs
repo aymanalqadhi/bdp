@@ -3,7 +3,7 @@
 /// <summary>
 /// A class to represent an event
 /// </summary>
-public class Event : AuditableEntity<Event>
+public class Event : AuditableEntity<Event>, IOwnable
 {
     /// <summary>
     /// Gets or sets the event title
@@ -38,5 +38,5 @@ public class Event : AuditableEntity<Event>
     /// <summary>
     /// Gets or sets the user who created the event
     /// </summary>
-    public User CreatedBy { get; set; } = null!;
+    public User OwnedBy { get; set; } = null!;
 }

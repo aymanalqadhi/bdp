@@ -3,7 +3,7 @@
 /// <summary>
 /// A class to represent a transaction made between two users
 /// </summary>
-public sealed class Transaction : AuditableEntity<Transaction>
+public sealed class Transaction : AuditableEntity<Transaction>, IOwnable
 {
     /// <summary>
     /// Gets or sets the amount associated with the transaction
@@ -29,4 +29,7 @@ public sealed class Transaction : AuditableEntity<Transaction>
     /// Gets or set the confirmation of the transaction
     /// </summary>
     public TransactionConfirmation? Confirmation { get; set; }
+
+    /// <inheritdoc/>
+    public User OwnedBy => From;
 }
