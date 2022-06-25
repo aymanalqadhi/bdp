@@ -66,19 +66,6 @@ public class EntityKeyConverter<TEntity> : TypeConverter
     }
 
     #endregion Public Methods
-
-    #region Private Methods
-
-    private static TypeConverter GetIdValueConverter()
-    {
-        var converter = TypeDescriptor.GetConverter(typeof(TEntity));
-        if (!converter.CanConvertFrom(typeof(string)))
-            throw new InvalidOperationException(
-                $"Type '{typeof(TEntity)}' doesn't have a converter that can convert from string");
-        return converter;
-    }
-
-    #endregion Private Methods
 }
 
 /// <inheritdoc/>
