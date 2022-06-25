@@ -1,4 +1,5 @@
 ﻿using BDP.Domain.Entities;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -34,5 +35,8 @@ public class TransactionTypeConfiguration : EntityTypeConfiguration<Transaction>
             .HasOne(t => t.Confirmation)
             .WithOne(c => c.Transaction)
             .HasForeignKey<TransactionConfirmation>(t => t.TransactionId);
+
+        // ignore ownership property
+        builder.Ignore(t => t.OwnedBy);
     }
 }
