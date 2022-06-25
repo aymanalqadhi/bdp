@@ -164,5 +164,49 @@ public class PurchasesService : IPurchasesService
         return reservation;
     }
 
+    /// <inheritdoc/>
+    public async Task<Order> EarlyOrderConfirmAsync(
+        EntityKey<User> userId,
+        EntityKey<Order> orderId,
+        bool isAccepted)
+    {
+        var order = await _uow.Orders.Query()
+            .Include(o => o.Payment)
+            .Include(o => o.Payment.To)
+            .FindWithOwnershipValidationAsync(userId, orderId, o => o.Payment.To);
+
+        if (order.IsEarlyAccepted is not null)
+            throw new OrderAlreadyEarlyConfirmedException(orderId);
+
+        order.IsEarlyAccepted = isAccepted;
+
+        _uow.Orders.Update(order);
+        await _uow.CommitAsync();
+
+        return order;
+    }
+
+    /// <inheritdoc/>
+    public async Task<Reservation> EarlyResrvationConfirmAsync(
+        EntityKey<User> userId,
+        EntityKey<Reservation> reservationId,
+        bool isAccepted)
+    {
+        var reservation = await _uow.Reservations.Query()
+            .Include(o => o.Payment)
+            .Include(o => o.Payment.To)
+            .FindWithOwnershipValidationAsync(userId, reservationId, o => o.Payment.To);
+
+        if (reservation.IsEarlyAccepted is not null)
+            throw new ReservationAlreadyEarlyConfirmedException(reservationId);
+
+        reservation.IsEarlyAccepted = isAccepted;
+
+        _uow.Reservations.Update(reservation);
+        await _uow.CommitAsync();
+
+        return reservation;
+    }
+
     #endregion Public Methods
 }

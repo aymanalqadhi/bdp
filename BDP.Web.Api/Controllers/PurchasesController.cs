@@ -39,6 +39,7 @@ public class PurchasesController : ControllerBase
     #region Actions
 
     [HttpGet("orders")]
+    [Authorize]
     public IAsyncEnumerable<OrderDto> GetOrders([FromQuery] PagingParameters paging, bool pending = false)
     {
         var ret = _purchasesSvc.GetOrdersFor(User.GetId(), pending)
@@ -51,6 +52,7 @@ public class PurchasesController : ControllerBase
     }
 
     [HttpGet("reservations")]
+    [Authorize]
     public IAsyncEnumerable<ReservationDto> GetReservations([FromQuery] PagingParameters paging, bool pending = false)
     {
         var ret = _purchasesSvc.GetReservationsFor(User.GetId(), pending)
@@ -61,6 +63,10 @@ public class PurchasesController : ControllerBase
 
         return ret;
     }
+
+    [HttpPost("{purchaseId}")]
+    public Task<IActionResult> EarlyOrderAccept(EntityKey<Purchase> )
+
 
     #endregion Actions
 }
