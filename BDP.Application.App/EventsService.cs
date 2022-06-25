@@ -34,9 +34,19 @@ public class EventsService : IEventsService
     #region Public Methods
 
     /// <inheritdoc/>
-    public async Task AddImageAsync(EntityKey<Event> eventId, IUploadFile image)
+    public async Task AddImageAsync(
+        EntityKey<User> userId,
+        EntityKey<Event> eventId,
+        IUploadFile image)
     {
-        var @event = await _uow.Events.Query().FindAsync(eventId);
+        var @event = await _uow.Events.Query()
+            .Include(e => e.OwnedBy)
+            .Include(e => e.Pictures)
+            .FindWithOwnershipValidationAsync(userId, eventId);
+
+        if (@event.Pictures.Count >= 12)
+            throw new EventPicturesLimitReachedException(eventId);
+
         var attachment = await _attachmentsSvc.SaveAsync(image);
 
         @event.Pictures.Add(attachment);
@@ -53,12 +63,12 @@ public class EventsService : IEventsService
         string description,
         DateTime takesPlaceAt)
     {
-        var user = await _uow.Users.Query().FindAsync(userId);
+        var user = await _uow.Users.Query().FindWithRoleValidationAsync(userId, UserRole.Customer);
         var type = await _uow.EventTypes.Query().FindAsync(typeId);
 
         var @event = new Event
         {
-            CreatedBy = user,
+            OwnedBy = user,
             Type = type,
             Title = title,
             Description = description,
@@ -74,11 +84,7 @@ public class EventsService : IEventsService
 
     /// <inheritdoc/>
     public IQueryBuilder<Event> ForUser(EntityKey<User> userId)
-        => GetEvents().Where(e => e.CreatedBy.Id == userId);
-
-    /// <inheritdoc/>
-    public IQueryBuilder<Event> ForUserAsync(EntityKey<User> userId)
-        => _uow.Events.Query().Where(e => e.CreatedBy.Id == userId);
+        => GetEvents().Where(e => e.OwnedBy.Id == userId);
 
     /// <inheritdoc/>
     public IQueryBuilder<Event> GetEvents()
@@ -89,9 +95,11 @@ public class EventsService : IEventsService
         => _uow.EventTypes.Query();
 
     /// <inheritdoc/>
-    public async Task RemoveAsync(EntityKey<Event> eventId)
+    public async Task RemoveAsync(EntityKey<User> userId, EntityKey<Event> eventId)
     {
-        var @event = await _uow.Events.Query().FindAsync(eventId);
+        var @event = await _uow.Events.Query()
+            .Include(e => e.OwnedBy)
+            .FindWithOwnershipValidationAsync(userId, eventId);
 
         _uow.Events.Remove(@event);
         await _uow.CommitAsync();
@@ -99,13 +107,17 @@ public class EventsService : IEventsService
 
     /// <inheritdoc/>
     public async Task<Event> UpdateAsync(
+        EntityKey<User> userId,
         EntityKey<Event> eventId,
         EntityKey<EventType> typeId,
         string title,
         string description,
         DateTime takesPlaceAt)
     {
-        var @event = await _uow.Events.Query().FindAsync(eventId);
+        var @event = await _uow.Events.Query()
+            .Include(e => e.OwnedBy)
+            .FindWithOwnershipValidationAsync(userId, eventId);
+
         var type = await _uow.EventTypes.Query().FindAsync(typeId);
 
         @event.Type = type;
@@ -120,12 +132,17 @@ public class EventsService : IEventsService
     }
 
     /// <inheritdoc/>
-    public async Task UpdateProgressAsync(EntityKey<Event> eventId, double progress)
+    public async Task UpdateProgressAsync(
+        EntityKey<User> userId,
+        EntityKey<Event> eventId,
+        double progress)
     {
         if (progress > 1 || progress < 0)
             throw new InvalidRangeException(progress, 0, 1);
 
-        var @event = await _uow.Events.Query().FindAsync(eventId);
+        var @event = await _uow.Events.Query()
+            .Include(e => e.OwnedBy)
+            .FindWithOwnershipValidationAsync(userId, eventId);
 
         @event.Progress = progress;
 
