@@ -124,10 +124,6 @@ public sealed class BdpUnitOfWork : IUnitOfWork, IDisposable, IAsyncDisposable
         => new AsyncDatabaseTransaction(await _ctx.Database.BeginTransactionAsync(cancellationToken));
 
     /// <inheritdoc/>
-    public int Commit()
-        => _ctx.SaveChanges();
-
-    /// <inheritdoc/>
     public Task<int> CommitAsync(CancellationToken cancellationToken = default)
         => _ctx.SaveChangesAsync(cancellationToken);
 

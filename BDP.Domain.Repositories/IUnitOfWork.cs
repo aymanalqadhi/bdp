@@ -123,12 +123,6 @@ public interface IUnitOfWork : IDisposable, IAsyncDisposable
     Task<IAsyncDatabaseTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Commits changes to the database
-    /// </summary>
-    /// <returns></returns>
-    int Commit();
-
-    /// <summary>
     /// Asynchronously commits changes to data backend
     /// </summary>
     /// <param name="cancellationToken">The task cancellation token</param>
