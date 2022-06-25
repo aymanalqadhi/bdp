@@ -77,5 +77,31 @@ public interface IPurchasesService
     /// <returns>A query builder for user reservations</returns>
     IQueryBuilder<Reservation> GetReservationsFor(EntityKey<User> userId, bool pending = false);
 
+    /// <summary>
+    /// Asyncrhonously early confirm (accept/delcine) an order
+    /// </summary>
+    /// <param name="userId">The id of the user to early-confirm with</param>
+    /// <param name="oderId">The id of the order to early confirm</param>
+    /// <param name="isAccepted">If true, the order is accepted, declined otherwise</param>
+    /// <returns>The confirmed order</returns>
+    /// <exception cref="OrderAlreadyEarlyConfirmedException"></exception>
+    Task<Order> EarlyOrderConfirmAsync(
+        EntityKey<User> userId,
+        EntityKey<Order> oderId,
+        bool isAccepted);
+
+    /// <summary>
+    /// Asyncrhonously early confirm (accept/delcine) a reservation
+    /// </summary>
+    /// <param name="userId">The id of the user to early-confirm with</param>
+    /// <param name="reservationId">The id of the reservation to early confirm</param>
+    /// <param name="isAccepted">If true, the reservation is accepted, declined otherwise</param>
+    /// <returns>The confirmed reservation</returns>
+    /// <exception cref="OrderAlreadyEarlyConfirmedException"></exception>
+    Task<Reservation> EarlyResrvationConfirmAsync(
+        EntityKey<User> userId,
+        EntityKey<Reservation> reservationId,
+        bool isAccepted);
+
     #endregion Public Methods
 }
