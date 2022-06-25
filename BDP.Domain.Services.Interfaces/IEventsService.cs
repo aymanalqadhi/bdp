@@ -19,6 +19,7 @@ public interface IEventsService
     /// <param name="image">The image to be added</param>
     /// <returns></returns>
     /// <exception cref="InsufficientPermissionsException"></exception>
+    /// <exception cref="EventPicturesLimitReachedException"></exception>
     Task AddImageAsync(EntityKey<User> userId, EntityKey<Event> eventId, IUploadFile image);
 
     /// <summary>
