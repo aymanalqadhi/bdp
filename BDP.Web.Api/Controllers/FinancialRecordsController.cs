@@ -67,7 +67,7 @@ public class FinancialRecordsController : ControllerBase
         return Ok(_mapper.Map<FinancialRecordVerificationDto>(ret));
     }
 
-    [HttpPost("[action]")]
+    [HttpPost("{recordId}/[action]")]
     [IsAdmin]
     public async Task<IActionResult> Decline(
         [FromRoute] EntityKey<FinancialRecord> recordId,
