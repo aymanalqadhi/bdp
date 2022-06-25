@@ -6,7 +6,7 @@ public abstract class Purchase<TEntity> : AuditableEntity<TEntity>
     /// <summary>
     /// Gets or sets whether the purchase was accepted by the offering party
     /// </summary>
-    public bool IsEarlyAccepted { get; set; } = false;
+    public bool? IsEarlyAccepted { get; set; }
 
     /// <summary>
     /// Gets or sets the payment transaction of the purchase
