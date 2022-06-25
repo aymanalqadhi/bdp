@@ -1,6 +1,7 @@
 ﻿using BDP.Domain.Entities;
 using BDP.Domain.Repositories;
 using BDP.Domain.Repositories.Extensions;
+using BDP.Domain.Repositories.Extensions.Exceptions;
 using BDP.Domain.Services;
 using BDP.Domain.Services.Exceptions;
 
