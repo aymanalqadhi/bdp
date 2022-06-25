@@ -14,10 +14,12 @@ public interface IEventsService
     /// <summary>
     /// Asynchronously adds an image to the image
     /// </summary>
+    /// <param name="userId">The id of the user which to create the event for</param>
     /// <param name=eventId">The image which to add the image to</param>
     /// <param name="image">The image to be added</param>
     /// <returns></returns>
-    Task AddImageAsync(EntityKey<Event> eventId, IUploadFile image);
+    /// <exception cref="InsufficientPermissionsException"></exception>
+    Task AddImageAsync(EntityKey<User> userId, EntityKey<Event> eventId, IUploadFile image);
 
     /// <summary>
     /// Asynchronously creates a new event
@@ -28,6 +30,7 @@ public interface IEventsService
     /// <param name="description">The description of the event</param>
     /// <param name="takesPlaceAt">The date at which the event takes place</param>
     /// <returns>The created event</returns>
+    /// <exception cref="InsufficientPermissionsException"></exception>
     Task<Event> CreateAsync(
         EntityKey<User> userId,
         EntityKey<EventType> typeId,
@@ -57,22 +60,27 @@ public interface IEventsService
     /// <summary>
     /// Asynchronously removes an event
     /// </summary>
-    /// <param name=eventId"></param>
+    /// <param name="userId">The id of the user who owns the event</param>
+    /// <param name=eventId">The id of the event to remove</param>
     /// <returns></returns>
-    Task RemoveAsync(EntityKey<Event> eventId);
+    /// <exception cref="InsufficientPermissionsException"></exception>
+    Task RemoveAsync(EntityKey<User> userId, EntityKey<Event> eventId);
 
     /// <summary>
     /// Asynchronsoulsy updates a event
     /// </summary>
+    /// <param name="userId">The id of the user who owns the event</param>
     /// <param name=eventId">The id of the event to update</param>
     /// <param name="typeId">The id of the new type for the event</param>
     /// <param name="title">The new title of the event</param>
     /// <param name="description">The new description of the event</param>
     /// <param name="takesPlaceAt">The new taking place date</param>
-    /// <returns></returns>
+    /// <returns>The updated event</returns>
+    /// <exception cref="InsufficientPermissionsException"></exception>
     Task<Event> UpdateAsync(
+        EntityKey<User> userId,
         EntityKey<Event> eventId,
-        EntityKey<EventType> typeType,
+        EntityKey<EventType> typeId,
         string title,
         string description,
         DateTime takesPlaceAt
@@ -81,11 +89,13 @@ public interface IEventsService
     /// <summary>
     /// Asynchronously updates the progress of an event
     /// </summary>
+    /// <param name="userId">The id of the user who owns the event</param>
     /// <param name=eventId">The id of the event which to update</param>
     /// <param name="progress">The new progress value</param>
     /// <returns></returns>
     /// <exception cref="InvalidRangeException"></exception>
-    Task UpdateProgressAsync(EntityKey<Event> eventId, double progress);
+    /// <exception cref="InsufficientPermissionsException"></exception>
+    Task UpdateProgressAsync(EntityKey<User> userId, EntityKey<Event> eventId, double progress);
 
     #endregion Public Methods
 }
