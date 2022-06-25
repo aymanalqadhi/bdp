@@ -1,4 +1,5 @@
 ﻿using BDP.Domain.Services;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace BDP.Web.Api.Controllers;
@@ -24,7 +25,7 @@ public class SearchController : ControllerBase
 
     #region Actions
 
-    [HttpGet]
+    [HttpGet("suggestions")]
     public async Task<IActionResult> Suggestions(string query)
         => Ok(await _searchSuggestionsSvc.FindSuggestionsAsync(query));
 
