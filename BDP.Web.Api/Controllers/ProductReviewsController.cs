@@ -2,6 +2,7 @@
 using BDP.Domain.Services;
 using BDP.Web.Api.Auth.Attributes;
 using BDP.Web.Api.Extensions;
+using BDP.Web.Dtos;
 using BDP.Web.Dtos.Requests;
 
 using AutoMapper;
@@ -45,18 +46,29 @@ public class ProductReviewsController : ControllerBase
         return Ok(new { Result = ret });
     }
 
-    [HttpGet("[action]")]
+    [HttpGet]
+    public IAsyncEnumerable<ProductReviewDto> Reviews([FromRoute] EntityKey<Product> productId)
+    {
+        return _productReviewsSvc.GetFor(productId)
+            .Include(r => r.LeftBy)
+            .Map<ProductReview, ProductReviewDto>(_mapper)
+            .AsAsyncEnumerable();
+    }
+
+    [HttpGet("[action]/{userId}")]
     [Authorize]
-    public async Task<IActionResult> MyReview([FromRoute] EntityKey<Product> productId)
+    public async Task<IActionResult> Of(
+        [FromRoute] EntityKey<Product> productId,
+        [FromRoute] EntityKey<User> userId)
     {
         var ret = await _productReviewsSvc
-            .GetReviewForUser(User.GetId(), productId)
+            .GetReviewForUser(userId, productId)
             .FirstOrDefaultAsync();
 
         return Ok(ret is not null ? _mapper.Map<ProductReview>(ret) : null);
     }
 
-    [HttpPost("[action]")]
+    [HttpPost]
     [IsCustomer]
     public async Task<IActionResult> Review(
         [FromRoute] EntityKey<Product> productId,
@@ -69,7 +81,7 @@ public class ProductReviewsController : ControllerBase
     }
 
     [HttpGet("[action]")]
-    public async Task<IActionResult> ReviewSummary([FromRoute] EntityKey<Product> productId)
+    public async Task<IActionResult> Summary([FromRoute] EntityKey<Product> productId)
         => Ok(await _productReviewsSvc.SummaryForAsync(productId));
 
     #endregion Actions
