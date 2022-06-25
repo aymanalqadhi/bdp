@@ -59,7 +59,7 @@ public class ProfilesController : ControllerBase
     }
 
     [HttpPost("[action]")]
-    public async Task<IActionResult> FinishProfile([FromForm] FinishProfileRequest form)
+    public async Task<IActionResult> Create([FromForm] FinishProfileRequest form)
     {
         var role = UserRoleConverter.Parse(form.AccountType);
 
