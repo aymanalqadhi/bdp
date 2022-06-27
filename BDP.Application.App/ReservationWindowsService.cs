@@ -34,12 +34,16 @@ public sealed class ReservationWindowsService : IReservationWindowsService
 
     /// <inheritdoc/>
     public async Task<ReservationWindow> AddAsync(
+        EntityKey<User> userId,
         EntityKey<ProductVariant> variantId,
         Weekday weekdays,
         TimeOnly start,
         TimeOnly end)
     {
-        var variant = await _uow.ProductVariants.Query().FindAsync(variantId);
+        var variant = await _uow.ProductVariants.Query()
+            .Include(v => v.Product)
+            .Include(v => v.Product.OfferedBy)
+            .FindWithOwnershipValidationAsync(userId, variantId, v => v.Product.OfferedBy);
 
         if (variant.Type != ProductVariantType.Reservable)
             throw new InvalidProductVaraintTypeException(variantId, ProductVariantType.Reservable, variant.Type);
@@ -58,9 +62,13 @@ public sealed class ReservationWindowsService : IReservationWindowsService
     }
 
     /// <inheritdoc/>
-    public async Task RemoveAsync(EntityKey<ReservationWindow> windowId)
+    public async Task RemoveAsync(EntityKey<User> userId, EntityKey<ReservationWindow> windowId)
     {
-        var window = await _uow.ReservationWindows.Query().FindAsync(windowId);
+        var window = await _uow.ReservationWindows.Query()
+            .Include(b => b.Variant)
+            .Include(b => b.Variant.Product)
+            .Include(b => b.Variant.Product.OfferedBy)
+            .FindWithOwnershipValidationAsync(userId, windowId, b => b.Variant.Product.OfferedBy);
 
         _uow.ReservationWindows.Remove(window);
         await _uow.CommitAsync();
