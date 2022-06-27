@@ -50,7 +50,7 @@ public class ProductsController : ControllerBase
     {
         var ret = _productsSvc.GetFor(userId)
             .PageDescending(paging.Page, paging.PageLength)
-            .Include(p => p.OfferedBy)
+            .Include(p => p.OwnedBy)
             .Include(p => p.Variants)
             .Include(p => p.Variants.Select(v => v.Attachments))
             .Map<Product, ProductDto>(_mapper)
@@ -71,7 +71,7 @@ public class ProductsController : ControllerBase
 
         var ret = searchQuery
             .PageDescending(paging.Page, paging.PageLength)
-            .Include(p => p.OfferedBy)
+            .Include(p => p.OwnedBy)
             .Include(p => p.Variants)
             .Include(p => p.Variants.Select(v => v.Attachments))
             .Map<Product, ProductDto>(_mapper)
@@ -103,15 +103,7 @@ public class ProductsController : ControllerBase
         [FromRoute] EntityKey<Product> productId,
         [FromBody] UpdateProductRequest form)
     {
-        // TODO:
-        // Move ownership verification to services
-
-        var product = await _productsSvc.GetProducts().FindAsync(productId);
-
-        if (product.OfferedBy.Id != User.GetId())
-            return Unauthorized(new { message = "you do not own the product" });
-
-        await _productsSvc.UpdateAsync(productId, form.Title, form.Description);
+        await _productsSvc.UpdateAsync(User.GetId(), productId, form.Title, form.Description);
 
         return Ok();
     }
@@ -120,15 +112,7 @@ public class ProductsController : ControllerBase
     [IsProvider]
     public async Task<IActionResult> Delete([FromRoute] EntityKey<Product> productId)
     {
-        // TODO:
-        // Move ownership verification to services
-
-        var product = await _productsSvc.GetProducts().FindAsync(productId);
-
-        if (product.OfferedBy.Id != User.GetId())
-            return Unauthorized(new { message = "you do not own the product" });
-
-        await _productsSvc.RemoveAsync(productId);
+        await _productsSvc.RemoveAsync(User.GetId(), productId);
 
         return Ok();
     }
