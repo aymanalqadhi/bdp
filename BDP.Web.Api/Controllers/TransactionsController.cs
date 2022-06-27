@@ -81,15 +81,9 @@ public class TransactionsController : ControllerBase
     public async Task<IActionResult> GetConfirmationToken(
         [FromRoute] EntityKey<Transaction> transactionId)
     {
-        // TODO:
-        // Move ownership validation to service
+        var token = await _transactionsSvc.GetConfirmationTokenAsync(User.GetId(), transactionId);
 
-        var tx = await _transactionsSvc.GetById(transactionId).FirstAsync();
-
-        if (tx.From.Id != User.GetId())
-            return Unauthorized(new { message = "you did not make the transaction" });
-
-        return Ok(new { token = tx.ConfirmationToken });
+        return Ok(new { token });
     }
 
     #endregion Actions
