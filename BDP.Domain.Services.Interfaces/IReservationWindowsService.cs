@@ -21,6 +21,7 @@ public interface IReservationWindowsService
     /// <summary>
     /// Asynchrnously adds a reservation window for a reservable variant
     /// </summary>
+    /// <param name="userId">The id of the user owning the product variant</param>
     /// <param name="variantId">The id of the variant</param>
     /// <param name="weekdays">The weekdays of reservation window</param>
     /// <param name="start">The start of the reservation </param>
@@ -28,6 +29,7 @@ public interface IReservationWindowsService
     /// <returns>The created reservation window</returns>
     /// <exception cref="InvalidProductVaraintTypeException"></exception>
     Task<ReservationWindow> AddAsync(
+        EntityKey<User> userId,
         EntityKey<ProductVariant> variantId,
         Weekday weekdays,
         TimeOnly start,
@@ -36,9 +38,10 @@ public interface IReservationWindowsService
     /// <summary>
     /// Asynchrnously removes a reservable product variant reservation window
     /// </summary>
+    /// <param name="userId">The id of the user owning the product variant</param>
     /// <param name="windowId"></param>
     /// <returns></returns>
-    Task RemoveAsync(EntityKey<ReservationWindow> windowId);
+    Task RemoveAsync(EntityKey<User> userId, EntityKey<ReservationWindow> windowId);
 
     #endregion Public Methods
 }
