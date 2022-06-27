@@ -8,13 +8,13 @@ namespace BDP.Application.App;
 
 public class TransactionsService : ITransactionsService
 {
-    #region Private fields
+    #region Fields
 
     private readonly IUnitOfWork _uow;
 
-    #endregion Private fields
+    #endregion Fields
 
-    #region Ctors
+    #region Public Constructors
 
     /// <summary>
     /// Default constructor
@@ -25,29 +25,32 @@ public class TransactionsService : ITransactionsService
         _uow = uow;
     }
 
-    #endregion Ctors
+    #endregion Public Constructors
 
-    #region Public methods
+    #region Enums
 
-    /// <inheritdoc/>
-    public IQueryBuilder<Transaction> GetById(EntityKey<Transaction> id)
-        => _uow.Transactions.Query().Where(t => t.Id == id);
+    private enum TransactionDirection
+    {
+        Incoming,
+        Outgoing,
+    }
 
-    /// <inheritdoc/>
-    public IQueryBuilder<Transaction> ForUserAsync(EntityKey<User> userId)
-        => _uow.Transactions.Query().Where(t => t.From.Id == userId || t.To.Id == userId);
+    #endregion Enums
 
-    /// <inheritdoc/>
-    public Task<decimal> TotalInAsync(EntityKey<User> userId, bool confirmedOnly = false)
-        => DoCalculateTotal(userId, TransactionDirection.Incoming, confirmedOnly);
+    #region Public Methods
 
     /// <inheritdoc/>
-    public Task<decimal> TotalOutAsync(EntityKey<User> userId, bool confirmedOnly = false)
-        => DoCalculateTotal(userId, TransactionDirection.Outgoing, confirmedOnly);
+    public async Task<TransactionConfirmation> CancelAsync(EntityKey<User> userId, EntityKey<Transaction> transactionId)
+    {
+        await using var tx = await _uow.BeginTransactionAsync();
 
-    /// <inheritdoc/>
-    public async Task<decimal> TotalUsableAsync(EntityKey<User> userId)
-        => await TotalInAsync(userId, true) - await TotalOutAsync(userId, true);
+        var transaction = await _uow.Transactions
+            .Query()
+            .Include(t => t.Confirmation!)
+            .FirstAsync(t => t.Id == transactionId && t.To.Id == userId);
+
+        return await DoCreateConfirmation(transaction, false, tx);
+    }
 
     /// <inheritdoc/>
     public async Task<TransactionConfirmation> ConfirmAsync(
@@ -68,21 +71,40 @@ public class TransactionsService : ITransactionsService
     }
 
     /// <inheritdoc/>
-    public async Task<TransactionConfirmation> CancelAsync(EntityKey<User> userId, EntityKey<Transaction> transactionId)
+    public IQueryBuilder<Transaction> ForUserAsync(EntityKey<User> userId)
+        => _uow.Transactions.Query().Where(t => t.From.Id == userId || t.To.Id == userId);
+
+    /// <inheritdoc/>
+    public IQueryBuilder<Transaction> GetById(EntityKey<Transaction> id)
+        => _uow.Transactions.Query().Where(t => t.Id == id);
+
+    /// <inheritdoc/>
+    public async Task<string> GetConfirmationTokenAsync(
+        EntityKey<User> userId,
+        EntityKey<Transaction> transactionId)
     {
-        await using var tx = await _uow.BeginTransactionAsync();
+        var transaction = await _uow.Transactions.Query()
+            .Include(t => t.From)
+            .FindWithOwnershipValidationAsync(userId, transactionId, t => t.From);
 
-        var transaction = await _uow.Transactions
-            .Query()
-            .Include(t => t.Confirmation!)
-            .FirstAsync(t => t.Id == transactionId && t.To.Id == userId);
-
-        return await DoCreateConfirmation(transaction, false, tx);
+        return transaction.ConfirmationToken;
     }
 
-    #endregion Public methods
+    /// <inheritdoc/>
+    public Task<decimal> TotalInAsync(EntityKey<User> userId, bool confirmedOnly = false)
+        => DoCalculateTotal(userId, TransactionDirection.Incoming, confirmedOnly);
 
-    #region Private methods
+    /// <inheritdoc/>
+    public Task<decimal> TotalOutAsync(EntityKey<User> userId, bool confirmedOnly = false)
+        => DoCalculateTotal(userId, TransactionDirection.Outgoing, confirmedOnly);
+
+    /// <inheritdoc/>
+    public async Task<decimal> TotalUsableAsync(EntityKey<User> userId)
+        => await TotalInAsync(userId, true) - await TotalOutAsync(userId, true);
+
+    #endregion Public Methods
+
+    #region Private Methods
 
     private async Task<decimal> DoCalculateTotal(
         EntityKey<User> userId,
@@ -133,11 +155,5 @@ public class TransactionsService : ITransactionsService
         return confirmation;
     }
 
-    #endregion Private methods
-
-    private enum TransactionDirection
-    {
-        Incoming,
-        Outgoing,
-    }
+    #endregion Private Methods
 }
