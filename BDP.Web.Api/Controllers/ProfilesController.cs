@@ -63,7 +63,7 @@ public class ProfilesController : ControllerBase
     {
         var role = UserRoleConverter.Parse(form.AccountType);
 
-        if (role != UserRole.Customer && role != UserRole.Provider)
+        if (!role.HasFlag(UserRole.Customer) && !role.HasFlag(UserRole.Provider))
             return BadRequest(new { message = "invalid account type" });
 
         await _userProfilesSvc.CreateAsync(
