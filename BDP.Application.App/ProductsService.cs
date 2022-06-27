@@ -57,7 +57,7 @@ public sealed class ProductsService : IProductsService
             Title = title,
             Description = description,
             IsAvailable = true,
-            OfferedBy = user,
+            OwnedBy = user,
         };
 
         _uow.Products.Add(product);
@@ -72,15 +72,21 @@ public sealed class ProductsService : IProductsService
 
     /// <inheritdoc/>
     public IQueryBuilder<Product> GetFor(EntityKey<User> userId)
-        => _uow.Products.Query().Where(s => s.OfferedBy.Id == userId);
+        => _uow.Products.Query().Where(s => s.OwnedBy.Id == userId);
 
     /// <inheritdoc/>
     public IQueryBuilder<Product> GetProducts()
         => _uow.Products.Query();
 
     /// <inheritdoc/>
-    public async Task RemoveAsync(EntityKey<Product> productId, bool cancelPurchases = false)
+    public async Task RemoveAsync(
+        EntityKey<User> userId,
+        EntityKey<Product> productId,
+        bool cancelPurchases = false)
     {
+        var product = await _uow.Products.Query()
+            .FindWithOwnershipValidationAsync(userId, productId);
+
         if (await _purchasesSvc.HasPendingPurchasesAsync(productId))
         {
             if (!cancelPurchases)
@@ -99,17 +105,6 @@ public sealed class ProductsService : IProductsService
             await Task.WhenAll(transactions.Select(t => _transactionsSvc.CancelAsync(t.To.Id, t.Id)));
         }
 
-        var product = await _uow.Products.Query().FindAsync(productId);
-
-        _uow.Products.Remove(product);
-        await _uow.CommitAsync();
-    }
-
-    /// <inheritdoc/>
-    public async Task RemoveAsync(EntityKey<Product> productId)
-    {
-        var product = await _uow.Products.Query().FindAsync(productId);
-
         _uow.Products.Remove(product);
         await _uow.CommitAsync();
     }
@@ -122,13 +117,18 @@ public sealed class ProductsService : IProductsService
     /// <inheritdoc/>
     public IQueryBuilder<Product> Search(string query, EntityKey<User> userId)
         => _uow.Products.Query()
-            .Where(p => p.OfferedBy.Id == userId)
+            .Where(p => p.OwnedBy.Id == userId)
             .Where(s => s.Title.Contains(query, StringComparison.OrdinalIgnoreCase));
 
     /// <inheritdoc/>
-    public async Task<Product> UpdateAsync(EntityKey<Product> productId, string title, string description)
+    public async Task<Product> UpdateAsync(
+        EntityKey<User> userId,
+        EntityKey<Product> productId,
+        string title,
+        string description)
     {
-        var product = await _uow.Products.Query().FindAsync(productId);
+        var product = await _uow.Products.Query()
+            .FindWithOwnershipValidationAsync(userId, productId);
 
         product.Title = title;
         product.Description = description;
