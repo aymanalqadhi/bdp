@@ -1,5 +1,6 @@
 ﻿using BDP.Domain.Entities;
 using BDP.Domain.Repositories;
+using BDP.Domain.Services.Exceptions;
 
 namespace BDP.Domain.Services;
 
@@ -21,19 +22,24 @@ public interface IStockBatchesService
     /// <summary>
     /// Asynchronously adds a stock batch to a sellable product variant
     /// </summary>
+    /// <param name="userId">The id of the user owning the product variant</param>
     /// <param name="variantId">The id of the variant to add the stock batch for</param>
     /// <param name="quantity">The quantity of the stock batch</param>
     /// <returns>The created stock batch</returns>
     /// <exception cref="InvalidProductVaraintTypeException"></exception>
-    Task<StockBatch> AddAsync(EntityKey<ProductVariant> variantId, uint quantity);
+    Task<StockBatch> AddAsync(
+        EntityKey<User> userId,
+        EntityKey<ProductVariant> variantId,
+        uint quantity);
 
     /// <summary>
     /// Asynchronously removes a sellable product variant stock batch
     /// </summary>
+    /// <param name="userId">The id of the user owning the product variant</param>
     /// <param name="batchId">The id of the batch to remove</param>
     /// <returns></returns>
     /// <exception cref="NotEnoughStockException"></exception>
-    Task RemoveAsync(EntityKey<StockBatch> batchId);
+    Task RemoveAsync(EntityKey<User> userId, EntityKey<StockBatch> batchId);
 
     /// <summary>
     /// Asynchronously calculates the total available quantity of a sellable product
