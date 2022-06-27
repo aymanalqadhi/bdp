@@ -40,7 +40,9 @@ public class TransactionsService : ITransactionsService
     #region Public Methods
 
     /// <inheritdoc/>
-    public async Task<TransactionConfirmation> CancelAsync(EntityKey<User> userId, EntityKey<Transaction> transactionId)
+    public async Task<TransactionConfirmation> CancelAsync(
+        EntityKey<User> userId,
+        EntityKey<Transaction> transactionId)
     {
         await using var tx = await _uow.BeginTransactionAsync();
 
@@ -71,7 +73,7 @@ public class TransactionsService : ITransactionsService
     }
 
     /// <inheritdoc/>
-    public IQueryBuilder<Transaction> ForUserAsync(EntityKey<User> userId)
+    public IQueryBuilder<Transaction> ForUser(EntityKey<User> userId)
         => _uow.Transactions.Query().Where(t => t.From.Id == userId || t.To.Id == userId);
 
     /// <inheritdoc/>

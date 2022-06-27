@@ -42,7 +42,7 @@ public class TransactionsController : ControllerBase
     [Authorize]
     public IAsyncEnumerable<TransactionDto> MyTransactions([FromQuery] PagingParameters paging)
     {
-        var ret = _transactionsSvc.ForUserAsync(User.GetId())
+        var ret = _transactionsSvc.ForUser(User.GetId())
             .PageDescending(paging.Page, paging.PageLength)
             .Include(t => t.From)
             .Include(t => t.To)

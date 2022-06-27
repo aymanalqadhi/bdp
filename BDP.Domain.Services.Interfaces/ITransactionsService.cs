@@ -36,12 +36,12 @@ public interface ITransactionsService
         string confirmationToken);
 
     /// <summary>
-    /// Asynchrnously gets transactions that a user has either sent or recieved
+    /// Gets transactions that a user has either sent or recieved
     /// limited by pagination
     /// </summary>
     /// <param name="userId">The id of the user which to get transactions for</param>
     /// <returns></returns>
-    IQueryBuilder<Transaction> ForUserAsync(EntityKey<User> userId);
+    IQueryBuilder<Transaction> ForUser(EntityKey<User> userId);
 
     /// <summary>
     /// Asynchronously gets confirmation token of a transaction
