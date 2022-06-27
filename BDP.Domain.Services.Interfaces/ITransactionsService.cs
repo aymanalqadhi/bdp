@@ -44,13 +44,6 @@ public interface ITransactionsService
     IQueryBuilder<Transaction> ForUserAsync(EntityKey<User> userId);
 
     /// <summary>
-    /// Asynchronously gets a transaction by id
-    /// </summary>
-    /// <param name="id">The id of the transaction</param>
-    /// <returns>The transaction with the passed id</returns>
-    IQueryBuilder<Transaction> GetById(EntityKey<Transaction> id);
-
-    /// <summary>
     /// Asynchronously gets confirmation token of a transaction
     /// </summary>
     /// <param name="userId">The id of the owner of the transaction (from)</param>

@@ -75,10 +75,6 @@ public class TransactionsService : ITransactionsService
         => _uow.Transactions.Query().Where(t => t.From.Id == userId || t.To.Id == userId);
 
     /// <inheritdoc/>
-    public IQueryBuilder<Transaction> GetById(EntityKey<Transaction> id)
-        => _uow.Transactions.Query().Where(t => t.Id == id);
-
-    /// <inheritdoc/>
     public async Task<string> GetConfirmationTokenAsync(
         EntityKey<User> userId,
         EntityKey<Transaction> transactionId)
