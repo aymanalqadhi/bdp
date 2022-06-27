@@ -33,9 +33,12 @@ public sealed class StockBatchesService : IStockBatchesService
     #region Public Methods
 
     /// <inheritdoc/>
-    public async Task<StockBatch> AddAsync(EntityKey<ProductVariant> variantId, uint quantity)
+    public async Task<StockBatch> AddAsync(EntityKey<User> userId, EntityKey<ProductVariant> variantId, uint quantity)
     {
-        var variant = await _uow.ProductVariants.Query().FindAsync(variantId);
+        var variant = await _uow.ProductVariants.Query()
+            .Include(v => v.Product)
+            .Include(v => v.Product.OfferedBy)
+            .FindWithOwnershipValidationAsync(userId, variantId, v => v.Product.OfferedBy);
 
         if (variant.Type != ProductVariantType.Sellable)
             throw new InvalidProductVaraintTypeException(variantId, ProductVariantType.Sellable, variant.Type);
@@ -57,11 +60,13 @@ public sealed class StockBatchesService : IStockBatchesService
         => _uow.StockBatches.Query().Where(b => b.Variant.Id == variantId);
 
     /// <inheritdoc/>
-    public async Task RemoveAsync(EntityKey<StockBatch> batchId)
+    public async Task RemoveAsync(EntityKey<User> userId, EntityKey<StockBatch> batchId)
     {
         var batch = await _uow.StockBatches.Query()
             .Include(b => b.Variant)
-            .FindAsync(batchId);
+            .Include(b => b.Variant.Product)
+            .Include(b => b.Variant.Product.OfferedBy)
+            .FindWithOwnershipValidationAsync(userId, batchId, b => b.Variant.Product.OfferedBy);
 
         await using var tx = await _uow.BeginTransactionAsync();
 
