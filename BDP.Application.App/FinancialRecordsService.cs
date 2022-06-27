@@ -89,7 +89,7 @@ public class FinancialRecordsService : IFinancialRecordsService
 
         var user = await _uow.Users.Query().FindAsync(userId);
 
-        if (user.Role != UserRole.Admin)
+        if (!user.Role.HasFlag(UserRole.Admin))
         {
             throw new InsufficientPermissionsException(
                 userId,
