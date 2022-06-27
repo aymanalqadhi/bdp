@@ -67,5 +67,7 @@ public interface ITransactionsService
     /// <param name="transactionId">The id of the transaction to cancel</param>
     /// <returns>The canceled transaction confirmation</returns>
     /// <exception cref="TransactionAlreadyConfirmedException"></exception>
-    Task<TransactionConfirmation> CancelAsync(EntityKey<User> receiverId, EntityKey<Transaction> transactionId);
+    Task<TransactionConfirmation> CancelAsync(
+        EntityKey<User> receiverId,
+        EntityKey<Transaction> transactionId);
 }
