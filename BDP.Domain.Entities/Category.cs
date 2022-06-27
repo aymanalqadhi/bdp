@@ -16,6 +16,11 @@ public sealed class Category : AuditableEntity<Category>
     public Category? Parent { get; set; }
 
     /// <summary>
+    /// Gets or sets the user who added the category
+    /// </summary>
+    public User AddedBy { get; set; } = null!;
+
+    /// <summary>
     /// Gets or sets the collection of subcategories of this category
     /// </summary>
     public ICollection<Category> Children { get; set; } = new List<Category>();
