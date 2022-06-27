@@ -34,12 +34,18 @@ public sealed class CategoriesService : ICategoriesService
         => _uow.Categories.Query();
 
     /// <inheritdoc/>
-    public async Task<Category> AddAsync(string name, EntityKey<Category>? parent = null)
+    public async Task<Category> AddAsync(
+        EntityKey<User> userId,
+        string name,
+        EntityKey<Category>? parent = null)
     {
+        var user = await _uow.Users.Query().FindWithRoleValidationAsync(userId, UserRole.Admin);
+
         var category = new Category
         {
             Name = name,
             Parent = parent is not null ? await _uow.Categories.Query().FindAsync(parent) : null,
+            AddedBy = user,
         };
 
         _uow.Categories.Add(category);
@@ -49,8 +55,13 @@ public sealed class CategoriesService : ICategoriesService
     }
 
     /// <inheritdoc/>
-    public async Task<Category> UpdateAsync(EntityKey<Category> categoryId, string name)
+    public async Task<Category> UpdateAsync(
+        EntityKey<User> userId,
+        EntityKey<Category> categoryId,
+        string name)
     {
+        await _uow.Users.Query().FindWithRoleValidationAsync(userId, UserRole.Admin);
+
         var category = await _uow.Categories.Query().FindAsync(categoryId);
 
         category.Name = name;
