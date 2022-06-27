@@ -14,6 +14,7 @@ public interface IProductVariantsService
     /// <summary>
     /// Asynchronously adds a reservable product variant
     /// </summary>
+    /// <param name="userId">The id of the user owning the product variant</param>
     /// <param name="productId">The product to add the variant to</param>
     /// <param name="name">The name of the variant</param>
     /// <param name="description">The description of the variant</param>
@@ -22,6 +23,7 @@ public interface IProductVariantsService
     /// <returns>The created variant object</returns>
     /// <exception cref="InvalidPriceException"></exception>
     Task<ProductVariant> AddReservableAsync(
+        EntityKey<User> userId,
         EntityKey<Product> productId,
         string name,
         string? description,
@@ -32,6 +34,7 @@ public interface IProductVariantsService
     /// <summary>
     /// Asynchronously adds a sellable product variant
     /// </summary>
+    /// <param name="userId">The id of the user owning the product variant</param>
     /// <param name="productId">The product to add the variant to</param>
     /// <param name="name">The name of the variant</param>
     /// <param name="description">The description of the variant</param>
@@ -40,6 +43,7 @@ public interface IProductVariantsService
     /// <returns>The created variant object</returns>
     /// <exception cref="InvalidPriceException"></exception>
     Task<ProductVariant> AddSellableAsync(
+        EntityKey<User> userId,
         EntityKey<Product> productId,
         string name,
         string? description,
@@ -57,19 +61,22 @@ public interface IProductVariantsService
     /// <summary>
     /// Asynchronously removes a product variant
     /// </summary>
+    /// <param name="userId">The id of the user owning the product variant</param>
     /// <param name="variantid">The id of the product variant to be removed</param>
     /// <returns></returns>
-    Task RemoveVariantAsync(EntityKey<ProductVariant> variantid);
+    Task RemoveVariantAsync(EntityKey<User> userId, EntityKey<ProductVariant> variantid);
 
     /// <summary>
     /// Asynchronously adds a reservable product variant
     /// </summary>
+    /// <param name="userId">The id of the user owning the product variant</param>
     /// <param name="name">The name of the variant</param>
     /// <param name="description">The description of the variant</param>
     /// <param name="price">The price of the variant</param>
     /// <returns>The created variant object</returns>
     /// <exception cref="InvalidPriceException"></exception>
     Task<ProductVariant> UpdateAsync(
+        EntityKey<User> userId,
         EntityKey<ProductVariant> variantId,
         string name,
         string? description,
