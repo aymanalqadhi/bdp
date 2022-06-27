@@ -47,12 +47,17 @@ public class ProductVariantsController : ControllerBase
         [FromRoute] EntityKey<Product> productId,
         [FromBody] CreateProductVariantRequest form)
     {
-        Func<EntityKey<Product>, string, string?, decimal, IEnumerable<IUploadFile>?, Task<ProductVariant>> fn =
-            form.Type == ProductVariantType.Sellable
+        Func<EntityKey<User>,
+             EntityKey<Product>,
+             string,
+             string?,
+             decimal,
+             IEnumerable<IUploadFile>?, Task<ProductVariant>> fn = form.Type == ProductVariantType.Sellable
                 ? _variantsSvc.AddSellableAsync
                 : _variantsSvc.AddReservableAsync;
 
         var variant = await fn(
+            User.GetId(),
             productId,
             form.Name,
             form.Description,
@@ -91,15 +96,16 @@ public class ProductVariantsController : ControllerBase
     [HttpPatch("{variantId}")]
     [IsProvider]
     public async Task<IActionResult> Update(
-        [FromRoute] EntityKey<Product> productId,
+        [FromRoute] EntityKey<Product> _,
         [FromRoute] EntityKey<ProductVariant> variantId,
         [FromBody] UpdateProductVariantRequest form)
     {
-        // TODO:
-        // Move ownership verification to services
-
         var updatedVariant = await _variantsSvc.UpdateAsync(
-            variantId, form.Name, form.Description, form.Price);
+            User.GetId(),
+            variantId,
+            form.Name,
+            form.Description,
+            form.Price);
 
         return Ok(_mapper.Map<ProductVariantDto>(updatedVariant));
     }
@@ -107,7 +113,7 @@ public class ProductVariantsController : ControllerBase
     [HttpPost("{variantId}/order")]
     [IsCustomer]
     public async Task<IActionResult> Order(
-         [FromRoute] EntityKey<Product> productId,
+         [FromRoute] EntityKey<Product> _,
          [FromRoute] EntityKey<ProductVariant> variantId,
         [FromBody] OrderRequest form)
     {
@@ -119,7 +125,7 @@ public class ProductVariantsController : ControllerBase
     [HttpPost("{variantId}/reserve")]
     [IsCustomer]
     public async Task<IActionResult> Reserve(
-        [FromRoute] EntityKey<Product> productId,
+        [FromRoute] EntityKey<Product> _,
         [FromRoute] EntityKey<ProductVariant> variantId)
     {
         var purchase = await _purchasesSvc.ReserveAsync(User.GetId(), variantId);
