@@ -42,8 +42,8 @@ public sealed class ReservationWindowsService : IReservationWindowsService
     {
         var variant = await _uow.ProductVariants.Query()
             .Include(v => v.Product)
-            .Include(v => v.Product.OfferedBy)
-            .FindWithOwnershipValidationAsync(userId, variantId, v => v.Product.OfferedBy);
+            .Include(v => v.Product.OwnedBy)
+            .FindWithOwnershipValidationAsync(userId, variantId, v => v.Product.OwnedBy);
 
         if (variant.Type != ProductVariantType.Reservable)
             throw new InvalidProductVaraintTypeException(variantId, ProductVariantType.Reservable, variant.Type);
@@ -67,8 +67,8 @@ public sealed class ReservationWindowsService : IReservationWindowsService
         var window = await _uow.ReservationWindows.Query()
             .Include(b => b.Variant)
             .Include(b => b.Variant.Product)
-            .Include(b => b.Variant.Product.OfferedBy)
-            .FindWithOwnershipValidationAsync(userId, windowId, b => b.Variant.Product.OfferedBy);
+            .Include(b => b.Variant.Product.OwnedBy)
+            .FindWithOwnershipValidationAsync(userId, windowId, b => b.Variant.Product.OwnedBy);
 
         _uow.ReservationWindows.Remove(window);
         await _uow.CommitAsync();

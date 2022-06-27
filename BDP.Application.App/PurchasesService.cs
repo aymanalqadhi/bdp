@@ -99,7 +99,7 @@ public class PurchasesService : IPurchasesService
     {
         var variant = await _uow.ProductVariants.Query()
             .Include(v => v.Product)
-            .Include(v => v.Product.OfferedBy)
+            .Include(v => v.Product.OwnedBy)
             .FindAsync(variantId);
 
         if (variant.Type is not ProductVariantType.Sellable)
@@ -116,7 +116,7 @@ public class PurchasesService : IPurchasesService
             throw new InsufficientBalanceException(userId, totalPrice);
 
         var transaction = await _financeSvc.TransferUncomittedAsync(
-            userId, variant.Product.OfferedBy.Id, totalPrice);
+            userId, variant.Product.OwnedBy.Id, totalPrice);
 
         var order = new Order
         {
@@ -137,7 +137,7 @@ public class PurchasesService : IPurchasesService
     {
         var variant = await _uow.ProductVariants.Query()
             .Include(v => v.Product)
-            .Include(v => v.Product.OfferedBy)
+            .Include(v => v.Product.OwnedBy)
             .FindAsync(variantId);
 
         if (variant.Type is not ProductVariantType.Reservable)
@@ -150,7 +150,7 @@ public class PurchasesService : IPurchasesService
         if (await _financeSvc.CalculateTotalUsableAsync(userId) < variant.Price)
             throw new InsufficientBalanceException(userId, variant.Price);
 
-        var transaction = await _financeSvc.TransferUncomittedAsync(userId, variant.Product.OfferedBy.Id, variant.Price);
+        var transaction = await _financeSvc.TransferUncomittedAsync(userId, variant.Product.OwnedBy.Id, variant.Price);
         var reservation = new Reservation
         {
             Variant = variant,

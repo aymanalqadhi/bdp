@@ -37,8 +37,8 @@ public sealed class StockBatchesService : IStockBatchesService
     {
         var variant = await _uow.ProductVariants.Query()
             .Include(v => v.Product)
-            .Include(v => v.Product.OfferedBy)
-            .FindWithOwnershipValidationAsync(userId, variantId, v => v.Product.OfferedBy);
+            .Include(v => v.Product.OwnedBy)
+            .FindWithOwnershipValidationAsync(userId, variantId, v => v.Product.OwnedBy);
 
         if (variant.Type != ProductVariantType.Sellable)
             throw new InvalidProductVaraintTypeException(variantId, ProductVariantType.Sellable, variant.Type);
@@ -65,8 +65,8 @@ public sealed class StockBatchesService : IStockBatchesService
         var batch = await _uow.StockBatches.Query()
             .Include(b => b.Variant)
             .Include(b => b.Variant.Product)
-            .Include(b => b.Variant.Product.OfferedBy)
-            .FindWithOwnershipValidationAsync(userId, batchId, b => b.Variant.Product.OfferedBy);
+            .Include(b => b.Variant.Product.OwnedBy)
+            .FindWithOwnershipValidationAsync(userId, batchId, b => b.Variant.Product.OwnedBy);
 
         await using var tx = await _uow.BeginTransactionAsync();
 

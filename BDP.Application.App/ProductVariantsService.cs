@@ -112,7 +112,7 @@ public sealed class ProductVariantsService : IProductVariantsService
     {
         InvalidPriceException.ValidatePrice(price);
 
-        var product = await _uow.Products.Query().Include(p => p.OfferedBy).FindAsync(productId);
+        var product = await _uow.Products.Query().Include(p => p.OwnedBy).FindAsync(productId);
         var variant = new ProductVariant
         {
             Name = name,

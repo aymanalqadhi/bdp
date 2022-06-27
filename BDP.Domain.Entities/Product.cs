@@ -3,7 +3,7 @@
 /// <summary>
 /// A class to represent a product
 /// </summary>
-public sealed class Product : AuditableEntity<Product>
+public sealed class Product : AuditableEntity<Product>, IOwnable
 {
     /// <summary>
     /// Gets or sets the title of the sellable
@@ -15,10 +15,8 @@ public sealed class Product : AuditableEntity<Product>
     /// </summary
     public string Description { get; set; } = null!;
 
-    /// <summary>
-    /// Gets or sets the user who listed this sellable
-    /// </summary>
-    public User OfferedBy { get; set; } = null!;
+    /// <inheritdoc/>
+    public User OwnedBy { get; set; } = null!;
 
     /// <summary>
     /// Gets or sets whether the sellable is available
