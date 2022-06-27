@@ -51,7 +51,7 @@ public class CategoriesController : ControllerBase
     [IsAdmin]
     public async Task<IActionResult> Create([FromBody] CreateCategoryRequest form)
     {
-        var res = await _categoriesSvc.AddAsync(form.Name, form.Parent);
+        var res = await _categoriesSvc.AddAsync(User.GetId(), form.Name, form.Parent);
 
         return Ok(_mapper.Map<CategoryDto>(res));
     }
@@ -62,7 +62,7 @@ public class CategoriesController : ControllerBase
         [FromRoute] EntityKey<Category> categoryId,
         [FromBody] UpdateCategoryRequest form)
     {
-        var res = await _categoriesSvc.UpdateAsync(categoryId, form.Name);
+        var res = await _categoriesSvc.UpdateAsync(User.GetId(), categoryId, form.Name);
 
         return Ok(_mapper.Map<CategoryDto>(res));
     }
