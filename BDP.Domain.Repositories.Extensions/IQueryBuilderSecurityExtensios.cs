@@ -45,7 +45,9 @@ public static class IQueryBuilderSecurityExtensions
         EntityKey<TEntity> resourceId) where TEntity : AuditableEntity<TEntity>, IOwnable
 
     {
-        var resource = await self.FindAsync(resourceId);
+        var resource = await self
+            .Include(i => i.OwnedBy)
+            .FindAsync(resourceId);
 
         return ValidateOwner(userId, resource, resource.OwnedBy);
     }
