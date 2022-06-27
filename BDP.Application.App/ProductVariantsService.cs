@@ -36,6 +36,7 @@ public sealed class ProductVariantsService : IProductVariantsService
 
     /// <inheritdoc/>
     public Task<ProductVariant> AddReservableAsync(
+        EntityKey<User> userId,
         EntityKey<Product> productId,
         string name,
         string? description,
@@ -43,6 +44,7 @@ public sealed class ProductVariantsService : IProductVariantsService
         IEnumerable<IUploadFile>? attachments = null)
     {
         return AddVariantAsync(
+            userId,
             productId,
             ProductVariantType.Reservable,
             name,
@@ -53,6 +55,7 @@ public sealed class ProductVariantsService : IProductVariantsService
 
     /// <inheritdoc/>
     public Task<ProductVariant> AddSellableAsync(
+        EntityKey<User> userId,
         EntityKey<Product> productId,
         string name,
         string? description,
@@ -60,6 +63,7 @@ public sealed class ProductVariantsService : IProductVariantsService
         IEnumerable<IUploadFile>? attachments = null)
     {
         return AddVariantAsync(
+            userId,
             productId,
             ProductVariantType.Reservable,
             name,
@@ -73,20 +77,31 @@ public sealed class ProductVariantsService : IProductVariantsService
         => _uow.ProductVariants.Query().Where(v => v.Product.Id == productId);
 
     /// <inheritdoc/>
-    public async Task RemoveVariantAsync(EntityKey<ProductVariant> variantid)
+    public async Task RemoveVariantAsync(EntityKey<User> userId, EntityKey<ProductVariant> variantid)
     {
-        var variant = await _uow.ProductVariants.Query().FindAsync(variantid);
+        var variant = await _uow.ProductVariants.Query()
+            .Include(v => v.Product)
+            .Include(v => v.Product.OwnedBy)
+            .FindWithOwnershipValidationAsync(userId, variantid, v => v.Product.OwnedBy);
 
         _uow.ProductVariants.Remove(variant);
         await _uow.CommitAsync();
     }
 
     /// <inheritdoc/>
-    public async Task<ProductVariant> UpdateAsync(EntityKey<ProductVariant> variantId, string name, string? description, decimal price)
+    public async Task<ProductVariant> UpdateAsync(
+        EntityKey<User> userId,
+        EntityKey<ProductVariant> variantId,
+        string name,
+        string? description,
+        decimal price)
     {
         InvalidPriceException.ValidatePrice(price);
 
-        var variant = await _uow.ProductVariants.Query().FindAsync(variantId);
+        var variant = await _uow.ProductVariants.Query()
+            .Include(v => v.Product)
+            .Include(v => v.Product.OwnedBy)
+            .FindWithOwnershipValidationAsync(userId, variantId, v => v.Product.OwnedBy);
 
         variant.Name = name;
         variant.Description = description;
@@ -103,7 +118,8 @@ public sealed class ProductVariantsService : IProductVariantsService
     #region Private Methods
 
     private async Task<ProductVariant> AddVariantAsync(
-            EntityKey<Product> productId,
+        EntityKey<User> userId,
+        EntityKey<Product> productId,
         ProductVariantType type,
         string name,
         string? description,
@@ -112,7 +128,9 @@ public sealed class ProductVariantsService : IProductVariantsService
     {
         InvalidPriceException.ValidatePrice(price);
 
-        var product = await _uow.Products.Query().Include(p => p.OwnedBy).FindAsync(productId);
+        var product = await _uow.Products.Query()
+            .FindWithOwnershipValidationAsync(userId, productId);
+
         var variant = new ProductVariant
         {
             Name = name,
