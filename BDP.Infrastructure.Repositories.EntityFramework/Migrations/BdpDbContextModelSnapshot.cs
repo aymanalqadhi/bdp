@@ -68,6 +68,9 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("AddedById")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -81,12 +84,19 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                     b.Property<Guid?>("ParentId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("ProductId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("AddedById");
 
                     b.HasIndex("Name")
                         .IsUnique();
 
                     b.HasIndex("ParentId");
+
+                    b.HasIndex("ProductId");
 
                     b.ToTable("Categories");
                 });
@@ -131,15 +141,15 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("CreatedById")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid>("OwnedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<double>("Progress")
                         .HasColumnType("float");
@@ -156,7 +166,7 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedById");
+                    b.HasIndex("OwnedById");
 
                     b.HasIndex("TypeId");
 
@@ -188,42 +198,42 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("34d724b5-6914-49c0-a361-440465e742f7"),
+                            Id = new Guid("c30fa602-7d89-400d-95ac-18e5d0ba467f"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Wedding"
                         },
                         new
                         {
-                            Id = new Guid("a1e1f8e9-d623-48d9-9d9d-cf7131a23f1b"),
+                            Id = new Guid("469bae96-53c6-4e8e-af7c-bef5e5f9a3cb"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Birth Day"
                         },
                         new
                         {
-                            Id = new Guid("2af1553b-5461-483c-92f1-eae50339064c"),
+                            Id = new Guid("21ae20b9-99d1-4ce6-b47c-860236e52432"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Engagement Party"
                         },
                         new
                         {
-                            Id = new Guid("3f2e1bb5-1351-465d-aef3-8ba0838d8a8a"),
+                            Id = new Guid("2fd43a87-4d41-4a8e-b73d-6256d3178732"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Graduation Ceremony"
                         },
                         new
                         {
-                            Id = new Guid("dc098853-9982-4c13-8ffb-9c09acae1832"),
+                            Id = new Guid("22debde7-9b8f-4e6c-bf63-52f32fbadfd4"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Graduation Party"
                         },
                         new
                         {
-                            Id = new Guid("7137c539-405a-4d73-a389-70b197c28667"),
+                            Id = new Guid("e2fa40de-2986-4527-b38f-883c216cf1b2"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ModifiedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Other"
@@ -350,7 +360,7 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsEarlyAccepted")
+                    b.Property<bool?>("IsEarlyAccepted")
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("ModifiedAt")
@@ -392,7 +402,7 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("OfferedById")
+                    b.Property<Guid>("OwnedById")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Title")
@@ -401,7 +411,7 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OfferedById");
+                    b.HasIndex("OwnedById");
 
                     b.ToTable("Products");
                 });
@@ -528,7 +538,7 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsEarlyAccepted")
+                    b.Property<bool?>("IsEarlyAccepted")
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("ModifiedAt")
@@ -755,21 +765,6 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                     b.ToTable("UserProfiles");
                 });
 
-            modelBuilder.Entity("CategoryProduct", b =>
-                {
-                    b.Property<Guid>("CategoriesId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ProductsId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("CategoriesId", "ProductsId");
-
-                    b.HasIndex("ProductsId");
-
-                    b.ToTable("CategoryProduct");
-                });
-
             modelBuilder.Entity("LogLogTag", b =>
                 {
                     b.Property<Guid>("LogsId")
@@ -798,9 +793,21 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
 
             modelBuilder.Entity("BDP.Domain.Entities.Category", b =>
                 {
+                    b.HasOne("BDP.Domain.Entities.User", "AddedBy")
+                        .WithMany()
+                        .HasForeignKey("AddedById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("BDP.Domain.Entities.Category", "Parent")
                         .WithMany("Children")
                         .HasForeignKey("ParentId");
+
+                    b.HasOne("BDP.Domain.Entities.Product", null)
+                        .WithMany("Categories")
+                        .HasForeignKey("ProductId");
+
+                    b.Navigation("AddedBy");
 
                     b.Navigation("Parent");
                 });
@@ -818,9 +825,9 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
 
             modelBuilder.Entity("BDP.Domain.Entities.Event", b =>
                 {
-                    b.HasOne("BDP.Domain.Entities.User", "CreatedBy")
+                    b.HasOne("BDP.Domain.Entities.User", "OwnedBy")
                         .WithMany()
-                        .HasForeignKey("CreatedById")
+                        .HasForeignKey("OwnedById")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -830,7 +837,7 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CreatedBy");
+                    b.Navigation("OwnedBy");
 
                     b.Navigation("Type");
                 });
@@ -892,13 +899,13 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
 
             modelBuilder.Entity("BDP.Domain.Entities.Product", b =>
                 {
-                    b.HasOne("BDP.Domain.Entities.User", "OfferedBy")
+                    b.HasOne("BDP.Domain.Entities.User", "OwnedBy")
                         .WithMany()
-                        .HasForeignKey("OfferedById")
+                        .HasForeignKey("OwnedById")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("OfferedBy");
+                    b.Navigation("OwnedBy");
                 });
 
             modelBuilder.Entity("BDP.Domain.Entities.ProductReview", b =>
@@ -1036,21 +1043,6 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("CategoryProduct", b =>
-                {
-                    b.HasOne("BDP.Domain.Entities.Category", null)
-                        .WithMany()
-                        .HasForeignKey("CategoriesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BDP.Domain.Entities.Product", null)
-                        .WithMany()
-                        .HasForeignKey("ProductsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("LogLogTag", b =>
                 {
                     b.HasOne("BDP.Domain.Entities.Log", null)
@@ -1083,6 +1075,8 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
 
             modelBuilder.Entity("BDP.Domain.Entities.Product", b =>
                 {
+                    b.Navigation("Categories");
+
                     b.Navigation("Reviews");
 
                     b.Navigation("Variants");

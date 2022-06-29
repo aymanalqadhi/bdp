@@ -10,26 +10,6 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Categories",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ParentId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Categories", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Categories_Categories_ParentId",
-                        column: x => x.ParentId,
-                        principalTable: "Categories",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "EventTypes",
                 columns: table => new
                 {
@@ -149,7 +129,7 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                     Progress = table.Column<double>(type: "float", nullable: false),
                     TakesPlaceAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CreatedById = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OwnedById = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -163,8 +143,8 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Events_Users_CreatedById",
-                        column: x => x.CreatedById,
+                        name: "FK_Events_Users_OwnedById",
+                        column: x => x.OwnedById,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -199,7 +179,7 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OfferedById = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OwnedById = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IsAvailable = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -208,8 +188,8 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                 {
                     table.PrimaryKey("PK_Products", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Products_Users_OfferedById",
-                        column: x => x.OfferedById,
+                        name: "FK_Products_Users_OwnedById",
+                        column: x => x.OwnedById,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -272,25 +252,34 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CategoryProduct",
+                name: "Categories",
                 columns: table => new
                 {
-                    CategoriesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ProductsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ParentId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    AddedById = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CategoryProduct", x => new { x.CategoriesId, x.ProductsId });
+                    table.PrimaryKey("PK_Categories", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CategoryProduct_Categories_CategoriesId",
-                        column: x => x.CategoriesId,
+                        name: "FK_Categories_Categories_ParentId",
+                        column: x => x.ParentId,
                         principalTable: "Categories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_CategoryProduct_Products_ProductsId",
-                        column: x => x.ProductsId,
+                        name: "FK_Categories_Products_ProductId",
+                        column: x => x.ProductId,
                         principalTable: "Products",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Categories_Users_AddedById",
+                        column: x => x.AddedById,
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -405,7 +394,7 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                     Quantity = table.Column<long>(type: "bigint", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsEarlyAccepted = table.Column<bool>(type: "bit", nullable: false),
+                    IsEarlyAccepted = table.Column<bool>(type: "bit", nullable: true),
                     PaymentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     VariantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
@@ -433,7 +422,7 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsEarlyAccepted = table.Column<bool>(type: "bit", nullable: false),
+                    IsEarlyAccepted = table.Column<bool>(type: "bit", nullable: true),
                     PaymentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     VariantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
@@ -575,12 +564,12 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                 columns: new[] { "Id", "CreatedAt", "ModifiedAt", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("2af1553b-5461-483c-92f1-eae50339064c"), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Engagement Party" },
-                    { new Guid("34d724b5-6914-49c0-a361-440465e742f7"), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Wedding" },
-                    { new Guid("3f2e1bb5-1351-465d-aef3-8ba0838d8a8a"), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Graduation Ceremony" },
-                    { new Guid("7137c539-405a-4d73-a389-70b197c28667"), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Other" },
-                    { new Guid("a1e1f8e9-d623-48d9-9d9d-cf7131a23f1b"), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Birth Day" },
-                    { new Guid("dc098853-9982-4c13-8ffb-9c09acae1832"), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Graduation Party" }
+                    { new Guid("21ae20b9-99d1-4ce6-b47c-860236e52432"), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Engagement Party" },
+                    { new Guid("22debde7-9b8f-4e6c-bf63-52f32fbadfd4"), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Graduation Party" },
+                    { new Guid("2fd43a87-4d41-4a8e-b73d-6256d3178732"), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Graduation Ceremony" },
+                    { new Guid("469bae96-53c6-4e8e-af7c-bef5e5f9a3cb"), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Birth Day" },
+                    { new Guid("c30fa602-7d89-400d-95ac-18e5d0ba467f"), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Wedding" },
+                    { new Guid("e2fa40de-2986-4527-b38f-883c216cf1b2"), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Other" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -594,6 +583,11 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                 column: "ProductVariantId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Categories_AddedById",
+                table: "Categories",
+                column: "AddedById");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Categories_Name",
                 table: "Categories",
                 column: "Name",
@@ -605,9 +599,9 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                 column: "ParentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CategoryProduct_ProductsId",
-                table: "CategoryProduct",
-                column: "ProductsId");
+                name: "IX_Categories_ProductId",
+                table: "Categories",
+                column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Confirmations_ForUserId",
@@ -615,9 +609,9 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                 column: "ForUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Events_CreatedById",
+                name: "IX_Events_OwnedById",
                 table: "Events",
-                column: "CreatedById");
+                column: "OwnedById");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Events_TypeId",
@@ -677,9 +671,9 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products_OfferedById",
+                name: "IX_Products_OwnedById",
                 table: "Products",
-                column: "OfferedById");
+                column: "OwnedById");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductVariants_Name",
@@ -769,7 +763,7 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "CategoryProduct");
+                name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "Confirmations");
@@ -803,9 +797,6 @@ namespace BDP.Infrastructure.Repositories.EntityFramework.Migrations
 
             migrationBuilder.DropTable(
                 name: "UserProfiles");
-
-            migrationBuilder.DropTable(
-                name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "FinancialRecords");
