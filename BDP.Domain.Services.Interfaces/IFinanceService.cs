@@ -14,14 +14,14 @@ public interface IFinanceService
     /// </summary>
     /// <param name="userId">The id of the user to calcluate the balance for</param>
     /// <returns>The usable balance</returns>
-    Task<decimal> CalculateUsableBalanceAsync(EntityKey<User> userId);
+    Task<decimal> CalculateBalanceAsync(EntityKey<User> userId);
 
     /// <summary>
     /// Asynchronously and atomically calculates the usable balance of a user
     /// </summary>
     /// <param name="user">The id of the user to calcluate the balance for</param>
     /// <returns>The usable balance</returns>
-    Task<decimal> UsableBalanceAsync(EntityKey<User> user);
+    Task<decimal> BalanceAsync(EntityKey<User> user);
 
     /// <summary>
     /// Asynchronously creates a pending transaction from a user to another
