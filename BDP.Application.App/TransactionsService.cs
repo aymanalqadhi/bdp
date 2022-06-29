@@ -4,6 +4,8 @@ using BDP.Domain.Repositories.Extensions;
 using BDP.Domain.Services;
 using BDP.Domain.Services.Exceptions;
 
+using System.Linq.Expressions;
+
 namespace BDP.Application.App;
 
 public class TransactionsService : ITransactionsService
@@ -49,7 +51,8 @@ public class TransactionsService : ITransactionsService
         var transaction = await _uow.Transactions
             .Query()
             .Include(t => t.Confirmation!)
-            .FirstAsync(t => t.Id == transactionId && t.To.Id == userId);
+            .Where(t => t.To.Id == userId)
+            .FindAsync(transactionId);
 
         return await DoCreateConfirmation(transaction, false, tx);
     }
@@ -62,10 +65,7 @@ public class TransactionsService : ITransactionsService
     {
         await using var tx = await _uow.BeginTransactionAsync();
 
-        var transaction = await _uow.Transactions
-            .Query()
-            .Include(t => t.Confirmation!)
-            .Where(t => t.From.Id == userId || t.To.Id == userId)
+        var transaction = await ForUser(userId)
             .Where(t => t.ConfirmationToken == confirmationToken)
             .FindAsync(transactionId);
 
@@ -89,49 +89,26 @@ public class TransactionsService : ITransactionsService
     }
 
     /// <inheritdoc/>
-    public Task<decimal> TotalInAsync(EntityKey<User> userId, bool confirmedOnly = false)
-        => DoCalculateTotal(userId, TransactionDirection.Incoming, confirmedOnly);
+    public async Task<decimal> CalculateUsableAsync(EntityKey<User> userId)
+    {
+        var confirmedIn = await _uow.Transactions.Query()
+            .Where(t => t.To.Id == userId)
+            .Where(t => t.Confirmation != null && t.Confirmation.IsAccepted)
+            .AsAsyncEnumerable()
+            .SumAsync(t => t.Amount);
 
-    /// <inheritdoc/>
-    public Task<decimal> TotalOutAsync(EntityKey<User> userId, bool confirmedOnly = false)
-        => DoCalculateTotal(userId, TransactionDirection.Outgoing, confirmedOnly);
+        var notDeclinedOut = await _uow.Transactions.Query()
+            .Where(t => t.From.Id == userId)
+            .Where(t => t.Confirmation == null || t.Confirmation.IsAccepted)
+            .AsAsyncEnumerable()
+            .SumAsync(t => t.Amount);
 
-    /// <inheritdoc/>
-    public async Task<decimal> TotalUsableAsync(EntityKey<User> userId)
-        => await TotalInAsync(userId, true) - await TotalOutAsync(userId, true);
+        return confirmedIn - notDeclinedOut;
+    }
 
     #endregion Public Methods
 
     #region Private Methods
-
-    private async Task<decimal> DoCalculateTotal(
-        EntityKey<User> userId,
-        TransactionDirection direction,
-        bool confirmedOnly = false)
-    {
-        if (confirmedOnly)
-        {
-            var res = direction == TransactionDirection.Outgoing
-                ? _uow.Transactions
-                    .Query()
-                    .Where(t => t.Confirmation != null)
-                    .Where(t => t.Confirmation!.IsAccepted && t.From.Id == userId)
-                : _uow.Transactions
-                    .Query()
-                    .Where(t => t.Confirmation != null)
-                    .Where(t => t.Confirmation!.IsAccepted && t.To.Id == userId);
-
-            return await res.AsAsyncEnumerable().SumAsync(t => t.Amount);
-        }
-
-        return await _uow.Transactions
-            .Query()
-            .Where(direction == TransactionDirection.Outgoing
-                 ? t => t.From.Id == userId
-                 : t => t.To.Id == userId)
-            .AsAsyncEnumerable()
-            .SumAsync(t => t.Amount);
-    }
 
     private async Task<TransactionConfirmation> DoCreateConfirmation(
         Transaction transaction,
@@ -143,8 +120,8 @@ public class TransactionsService : ITransactionsService
 
         var confirmation = new TransactionConfirmation
         {
-            Transaction = transaction,
             IsAccepted = isAccepted,
+            Transaction = transaction,
         };
 
         _uow.TransactionConfirmations.Add(confirmation);
