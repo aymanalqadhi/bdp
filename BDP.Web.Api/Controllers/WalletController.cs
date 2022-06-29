@@ -60,10 +60,9 @@ public class WalletController : ControllerBase
     [Authorize]
     public async Task<IActionResult> Balance()
     {
-        var virtualBalance = await _financeSvc.TotalVirtualAsync(User.GetId());
-        var usableBalance = await _financeSvc.TotalUsableAsync(User.GetId());
+        var balance = await _financeSvc.BalanceAsync(User.GetId());
 
-        return Ok(new BalanceResponse(virtualBalance, usableBalance));
+        return Ok(new { balance });
     }
 
     [HttpPost("[action]")]
