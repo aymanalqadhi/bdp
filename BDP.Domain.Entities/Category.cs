@@ -24,9 +24,4 @@ public sealed class Category : AuditableEntity<Category>
     /// Gets or sets the collection of subcategories of this category
     /// </summary>
     public ICollection<Category> Children { get; set; } = new List<Category>();
-
-    /// <summary>
-    /// Gets or sets the collection of products in this category
-    /// </summary>
-    public ICollection<Product> Products { get; set; } = new List<Product>();
 }
