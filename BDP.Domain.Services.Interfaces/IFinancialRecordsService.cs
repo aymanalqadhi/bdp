@@ -13,15 +13,16 @@ public interface IFinancialRecordsService
     /// Gets financial records for a user
     /// </summary>
     /// <param name="userId">The id of the user to get financial records for</param>
+    /// <param name="pendingOnly">If true, only pending records will be fetched</param>
     /// <returns></returns>
-    IQueryBuilder<FinancialRecord> ForUser(EntityKey<User> userId);
+    IQueryBuilder<FinancialRecord> ForUser(EntityKey<User> userId, bool pendingOnly = false);
 
     /// <summary>
     /// Asynchronously gets pending financial records for a specific user
     /// </summary>
     /// <param name="userId">The id of the user to get pending records with</param>
     /// <returns></returns>
-    Task<IQueryBuilder<FinancialRecord>> PendingAsync(EntityKey<User> userId);
+    Task<IQueryBuilder<FinancialRecord>> Pending(EntityKey<User> userId);
 
     /// <summary>
     /// Asynchrnounsly gets the total balance from financial records
