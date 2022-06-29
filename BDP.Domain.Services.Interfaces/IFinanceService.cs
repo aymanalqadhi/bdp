@@ -3,39 +3,30 @@ using BDP.Domain.Services.Exceptions;
 
 namespace BDP.Domain.Services;
 
+/// <summary>
+/// An interface to be implemented by finance managment services
+/// </summary>
 public interface IFinanceService
 {
     /// <summary>
-    /// Asynchronously calculates the virtual balance of a user
-    /// </summary>
-    /// <param name="userId">The id of the user to calcluate the balance for</param>
-    /// <returns>The virutal balance</returns>
-    Task<decimal> CalculateTotalVirtualAsync(EntityKey<User> userId);
-
-    /// <summary>
-    /// Asynchronously calculates the usable balance of a user
+    /// Asynchronously calculates the usable balance of a user. This method does not use
+    /// transactions, so it is unsafe to use it outside one
     /// </summary>
     /// <param name="userId">The id of the user to calcluate the balance for</param>
     /// <returns>The usable balance</returns>
-    Task<decimal> CalculateTotalUsableAsync(EntityKey<User> userId);
-
-    /// <summary>
-    /// Asynchronously and atomically calculates the virtual balance of a user
-    /// </summary>
-    /// <param name="userId">The id of the user to calcluate the balance for</param>
-    /// <returns>The virutal balance</returns>
-    Task<decimal> TotalVirtualAsync(EntityKey<User> user);
+    Task<decimal> CalculateUsableBalanceAsync(EntityKey<User> userId);
 
     /// <summary>
     /// Asynchronously and atomically calculates the usable balance of a user
     /// </summary>
     /// <param name="user">The id of the user to calcluate the balance for</param>
     /// <returns>The usable balance</returns>
-    Task<decimal> TotalUsableAsync(EntityKey<User> user);
+    Task<decimal> UsableBalanceAsync(EntityKey<User> user);
 
     /// <summary>
     /// Asynchronously creates a pending transaction from a user to another
-    /// This method does not write to the database
+    /// This method does not write to the database nor does it use transactions (unsafe to use
+    /// outside a transaction)
     /// </summary>
     /// <param name="fromId">The id of the user to transfer from</param>
     /// <param name="toId">The id of the user to transfer to</param>
