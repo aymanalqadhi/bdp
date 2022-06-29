@@ -39,9 +39,9 @@ public class FinancialRecordsController : ControllerBase
 
     [HttpGet("[action]")]
     [IsAdmin]
-    public IAsyncEnumerable<FinancialRecordDto> Pending([FromQuery] PagingParameters paging)
+    public async Task<IActionResult> Pending([FromQuery] PagingParameters paging)
     {
-        var ret = _financialRecordsSvc.Pending()
+        var ret = (await _financialRecordsSvc.PendingAsync(User.GetId()))
             .PageDescending(paging.Page, paging.PageLength)
             .Include(f => f.MadeBy)
             .Include(f => f.MadeBy!.Profile)
@@ -49,7 +49,7 @@ public class FinancialRecordsController : ControllerBase
             .Map<FinancialRecord, FinancialRecordDto>(_mapper)
             .AsAsyncEnumerable();
 
-        return ret;
+        return Ok(ret);
     }
 
     [HttpPost("{recordId}/[action]")]
