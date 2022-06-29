@@ -22,7 +22,7 @@ public interface IFinancialRecordsService
     /// </summary>
     /// <param name="userId">The id of the user to get pending records with</param>
     /// <returns></returns>
-    Task<IQueryBuilder<FinancialRecord>> Pending(EntityKey<User> userId);
+    Task<IQueryBuilder<FinancialRecord>> PendingAsync(EntityKey<User> userId);
 
     /// <summary>
     /// Asynchrnounsly gets the total balance from financial records
