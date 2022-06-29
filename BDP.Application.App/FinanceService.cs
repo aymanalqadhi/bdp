@@ -47,42 +47,25 @@ public class FinanceService : IFinanceService
     #region Public methods
 
     /// <inheritdoc/>
-    public async Task<decimal> CalculateTotalVirtualAsync(EntityKey<User> userId)
+    public async Task<decimal> CalculateBalanceAsync(EntityKey<User> userId)
     {
-        var recordsTotal = await _financialRecordsSvc.TotalUsableAsync(userId);
-        var transactionsIn = await _transactionsSvc.TotalInAsync(userId, true);
-        var transactionsOut = await _transactionsSvc.TotalOutAsync(userId, true);
-
-        return recordsTotal + (transactionsIn - transactionsOut);
-    }
-
-    /// <inheritdoc/>
-    public async Task<decimal> CalculateTotalUsableAsync(EntityKey<User> userId)
-    {
-        var recordsTotal = await _financialRecordsSvc.TotalUsableAsync(userId);
-        var transactionsTotal = await _transactionsSvc.TotalUsableAsync(userId);
+        var recordsTotal = await _financialRecordsSvc.CalculateUsableAsync(userId);
+        var transactionsTotal = await _transactionsSvc.CalculateUsableAsync(userId);
 
         return recordsTotal + transactionsTotal;
     }
 
     /// <inheritdoc/>
-    public async Task<decimal> TotalVirtualAsync(EntityKey<User> userId)
+    public async Task<decimal> BalanceAsync(EntityKey<User> userId)
     {
         await using var tx = await _uow.BeginTransactionAsync();
-        return await CalculateTotalVirtualAsync(userId);
-    }
-
-    /// <inheritdoc/>
-    public async Task<decimal> TotalUsableAsync(EntityKey<User> userId)
-    {
-        await using var tx = await _uow.BeginTransactionAsync();
-        return await CalculateTotalUsableAsync(userId);
+        return await CalculateBalanceAsync(userId);
     }
 
     /// <inheritdoc/>
     public async Task<Transaction> TransferUncomittedAsync(EntityKey<User> fromId, EntityKey<User> toId, decimal amount)
     {
-        if (await CalculateTotalUsableAsync(fromId) < amount)
+        if (await CalculateBalanceAsync(fromId) < amount)
             throw new InsufficientBalanceException(fromId, amount);
 
         var from = await _uow.Users.Query().FindAsync(fromId);
@@ -121,11 +104,8 @@ public class FinanceService : IFinanceService
         if (amount <= 0)
             throw new InvalidDepositAmountException(amount);
 
-        if (amount > 0 && await _uow.FinancialRecords.Query().AnyAsync
-            (r => r.MadeBy.Id == userId && r.Verification == null && r.Amount > 0))
-        {
+        if (await _financialRecordsSvc.ForUser(userId, true).AnyAsync(r => r.Amount > 0))
             throw new PendingRequestExistsException("a deposit request already exists");
-        }
 
         return await CreateFinancialRecord(userId, amount, note, tx);
     }
@@ -135,15 +115,11 @@ public class FinanceService : IFinanceService
     {
         await using var tx = await _uow.BeginTransactionAsync();
 
-        if (await CalculateTotalUsableAsync(userId) < amount)
+        if (await CalculateBalanceAsync(userId) < amount)
             throw new InsufficientBalanceException(userId, amount);
 
-        if (await _uow.FinancialRecords.Query().AnyAsync(r =>
-                r.MadeBy.Id == userId &&
-                r.Verification == null && r.Amount < 0))
-        {
+        if (await _financialRecordsSvc.ForUser(userId, true).AnyAsync(r => r.Amount < 0))
             throw new PendingRequestExistsException("a withdraw request already exists");
-        }
 
         return await CreateFinancialRecord(userId, -amount, note, tx);
     }
@@ -153,11 +129,11 @@ public class FinanceService : IFinanceService
     #region Private methods
 
     private async Task<FinancialRecord> CreateFinancialRecord(
-        EntityKey<User> userId, decimal amount, string? note, IAsyncDatabaseTransaction tx)
+        EntityKey<User> userId,
+        decimal amount,
+        string? note,
+        IAsyncDatabaseTransaction tx)
     {
-        /// TODO:
-        /// Use transactions here
-
         var user = await _uow.Users.Query().FindAsync(userId);
 
         var record = new FinancialRecord
