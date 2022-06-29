@@ -112,7 +112,7 @@ public class PurchasesService : IPurchasesService
         if (await _stockSvc.AvailableQuantityAsync(variantId) < quantity)
             throw new NotEnoughStockException(variantId, quantity);
 
-        if (await _financeSvc.CalculateTotalUsableAsync(userId) < totalPrice)
+        if (await _financeSvc.CalculateBalanceAsync(userId) < totalPrice)
             throw new InsufficientBalanceException(userId, totalPrice);
 
         var transaction = await _financeSvc.TransferUncomittedAsync(
@@ -147,7 +147,7 @@ public class PurchasesService : IPurchasesService
 
         await using var tx = await _uow.BeginTransactionAsync();
 
-        if (await _financeSvc.CalculateTotalUsableAsync(userId) < variant.Price)
+        if (await _financeSvc.CalculateBalanceAsync(userId) < variant.Price)
             throw new InsufficientBalanceException(userId, variant.Price);
 
         var transaction = await _financeSvc.TransferUncomittedAsync(userId, variant.Product.OwnedBy.Id, variant.Price);
