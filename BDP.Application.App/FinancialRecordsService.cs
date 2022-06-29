@@ -45,15 +45,26 @@ public class FinancialRecordsService : IFinancialRecordsService
     }
 
     /// <inheritdoc/>
-    public IQueryBuilder<FinancialRecord> ForUser(EntityKey<User> userId)
-        => _uow.FinancialRecords.Query().Where(f => f.MadeBy.Id == userId);
+    public IQueryBuilder<FinancialRecord> ForUser(EntityKey<User> userId, bool pendingOnly = false)
+    {
+        var query = _uow.FinancialRecords.Query().Where(f => f.MadeBy.Id == userId);
+
+        if (!pendingOnly)
+            return query;
+
+        return query.Where(r => r.Verification == null);
+    }
 
     /// <inheritdoc/>
-    public IQueryBuilder<FinancialRecord> Pending()
-        => _uow.FinancialRecords.Query().Where(f => f.Verification == null);
+    public async Task<IQueryBuilder<FinancialRecord>> PendingAsync(EntityKey<User> userId)
+    {
+        await _uow.Users.Query().FindWithRoleValidationAsync(userId, UserRole.Admin);
+
+        return _uow.FinancialRecords.Query().Where(f => f.Verification == null);
+    }
 
     /// <inheritdoc/>
-    public async Task<decimal> TotalUsableAsync(EntityKey<User> userId)
+    public async Task<decimal> CalculateUsableAsync(EntityKey<User> userId)
     {
         return await ForUser(userId)
             .Include(r => r.Verification!)
@@ -87,14 +98,7 @@ public class FinancialRecordsService : IFinancialRecordsService
     {
         await using var tx = await _uow.BeginTransactionAsync();
 
-        var user = await _uow.Users.Query().FindAsync(userId);
-
-        if (!user.Role.HasFlag(UserRole.Admin))
-        {
-            throw new InsufficientPermissionsException(
-                userId,
-                $"user #{userId} is not an admin to confirm financial record #{recordId}");
-        }
+        var user = await _uow.Users.Query().FindWithRoleValidationAsync(userId, UserRole.Admin);
 
         var record = await _uow.FinancialRecords.Query()
             .Include(r => r.Verification!)
@@ -112,11 +116,7 @@ public class FinancialRecordsService : IFinancialRecordsService
             Note = note,
         };
 
-        record.Verification = verification;
-
         _uow.FinancialRecordVerficiations.Add(verification);
-        _uow.FinancialRecords.Update(record);
-
         await _uow.CommitAsync(tx);
 
         return verification;
