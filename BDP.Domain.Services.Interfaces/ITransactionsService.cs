@@ -52,27 +52,11 @@ public interface ITransactionsService
     Task<string> GetConfirmationTokenAsync(EntityKey<User> userId, EntityKey<Transaction> transactionId);
 
     /// <summary>
-    /// Asynchronously gets the total input transferred to the user
-    /// </summary>
-    /// <param name="userId">The id of the user to get the total for</param>
-    /// <param name="confirmedOnly">If true, only confirmed transactions will count</param>
-    /// <returns>Total account input</returns>
-    Task<decimal> TotalInAsync(EntityKey<User> userId, bool confirmedOnly = false);
-
-    /// <summary>
-    /// Asynchronously gets the total output transferred by the user
-    /// </summary>
-    /// <param name="userId">The id of the user to get the total for</param>
-    /// <param name="confirmedOnly">If true, only confirmed transactions will count</param>
-    /// <returns>Total account output</returns>
-    Task<decimal> TotalOutAsync(EntityKey<User> userId, bool confirmedOnly = false);
-
-    /// <summary>
     /// Asynchronously gets the total usable balance for the user
     /// </summary>
     /// <param name="userId">The id of the user to get the total for</param>
     /// <returns>Total usable credit</returns>
-    Task<decimal> TotalUsableAsync(EntityKey<User> userId);
+    Task<decimal> CalculateUsableAsync(EntityKey<User> userId);
 
     #endregion Public Methods
 }
