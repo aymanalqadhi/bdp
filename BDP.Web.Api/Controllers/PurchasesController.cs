@@ -64,19 +64,19 @@ public class PurchasesController : ControllerBase
         return ret;
     }
 
-    [HttpPost("{purchaseId}/[action]")]
+    [HttpPost("{orderId}/[action]")]
     public async Task<IActionResult> EarlyOrderAccept(EntityKey<Order> orderId)
         => Ok(_mapper.Map<OrderDto>(await _purchasesSvc.EarlyOrderConfirmAsync(User.GetId(), orderId, true)));
 
-    [HttpPost("{purchaseId}/[action]")]
+    [HttpPost("{orderId}/[action]")]
     public async Task<IActionResult> EarlyOrderDecline(EntityKey<Order> orderId)
     => Ok(_mapper.Map<OrderDto>(await _purchasesSvc.EarlyOrderConfirmAsync(User.GetId(), orderId, false)));
 
-    [HttpPost("{purchaseId}/[action]")]
+    [HttpPost("{reservationId}/[action]")]
     public async Task<IActionResult> EarlyReservationAccept(EntityKey<Reservation> reservationId)
         => Ok(_mapper.Map<OrderDto>(await _purchasesSvc.EarlyResrvationConfirmAsync(User.GetId(), reservationId, true)));
 
-    [HttpPost("{purchaseId}/[action]")]
+    [HttpPost("{reservationId}/[action]")]
     public async Task<IActionResult> EarlyReservationDecline(EntityKey<Reservation> reservationId)
         => Ok(_mapper.Map<OrderDto>(await _purchasesSvc.EarlyResrvationConfirmAsync(User.GetId(), reservationId, false)));
 
