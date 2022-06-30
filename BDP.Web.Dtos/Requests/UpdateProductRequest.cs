@@ -15,10 +15,4 @@ public class UpdateProductRequest
     /// </summary>
     [Required]
     public string Description { get; set; } = null!;
-
-    /// <summary>
-    /// Gets or sets the price of the product
-    /// </summary>
-    [Required]
-    public decimal Price { get; set; }
 }
