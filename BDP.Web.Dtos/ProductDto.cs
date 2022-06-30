@@ -20,7 +20,7 @@ public sealed class ProductDto : MutableEntityDto<Product>
     /// <summary>
     /// Gets or sets the user who listed this sellable
     /// </summary>
-    public UserDto OfferedBy { get; set; } = null!;
+    public UserDto OwnedBy { get; set; } = null!;
 
     /// <summary>
     /// Gets or sets whether the sellable is available
