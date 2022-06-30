@@ -1,4 +1,5 @@
 ﻿using BDP.Domain.Entities;
+
 using System.ComponentModel.DataAnnotations;
 
 namespace BDP.Web.Dtos.Requests;
@@ -14,5 +15,5 @@ public class CreateCategoryRequest
     /// <summary>
     /// An optional parent id
     /// </summary>
-    public EntityKey<Category>? Parent { get; set; }
+    public EntityKey<Category>? ParentId { get; set; }
 }
