@@ -1,5 +1,7 @@
 ﻿using BDP.Web.Dtos.Attributes;
+
 using Microsoft.AspNetCore.Http;
+
 using System.ComponentModel.DataAnnotations;
 
 namespace BDP.Web.Dtos.Requests;
@@ -16,7 +18,7 @@ public class FinishProfileRequest
     /// Gets or set the account type sent in the request
     /// </summary>
     [Required]
-    public string AccountType { get; set; } = null!;
+    public string ProfileType { get; set; } = null!;
 
     /// <summary>
     /// Gets or sets the account profile picture

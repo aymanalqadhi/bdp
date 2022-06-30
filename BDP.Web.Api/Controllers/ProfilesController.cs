@@ -61,12 +61,12 @@ public class ProfilesController : ControllerBase
     [HttpPost("[action]")]
     public async Task<IActionResult> Create([FromForm] FinishProfileRequest form)
     {
-        var role = UserRoleConverter.Parse(form.AccountType);
+        var role = UserRoleConverter.Parse(form.ProfileType);
 
         if (!role.HasFlag(UserRole.Customer) && !role.HasFlag(UserRole.Provider))
-            return BadRequest(new { message = "invalid account type" });
+            return BadRequest(new { message = "invalid profile type" });
 
-        await _userProfilesSvc.CreateAsync(
+        var ret = await _userProfilesSvc.CreateAsync(
             User.GetId(),
             role,
             form.FullName,
@@ -75,7 +75,7 @@ public class ProfilesController : ControllerBase
                 : null
         );
 
-        return Ok();
+        return Ok(_mapper.Map<UserProfileDto>(ret));
     }
 
     #endregion Actions
