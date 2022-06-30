@@ -12,42 +12,24 @@ public interface IProductVariantsService
     #region Public Methods
 
     /// <summary>
-    /// Asynchronously adds a reservable product variant
+    /// Asynchronously adds a product variant
     /// </summary>
     /// <param name="userId">The id of the user owning the product variant</param>
     /// <param name="productId">The product to add the variant to</param>
     /// <param name="name">The name of the variant</param>
     /// <param name="description">The description of the variant</param>
     /// <param name="price">The price of the variant</param>
+    /// <param name="type">The type of the variant</param>
     /// <param name="attachments">The attachments of the variant</param>
     /// <returns>The created variant object</returns>
     /// <exception cref="InvalidPriceException"></exception>
-    Task<ProductVariant> AddReservableAsync(
+    Task<ProductVariant> AddAsync(
         EntityKey<User> userId,
         EntityKey<Product> productId,
         string name,
         string? description,
         decimal price,
-        IEnumerable<IUploadFile>? attachments = null
-     );
-
-    /// <summary>
-    /// Asynchronously adds a sellable product variant
-    /// </summary>
-    /// <param name="userId">The id of the user owning the product variant</param>
-    /// <param name="productId">The product to add the variant to</param>
-    /// <param name="name">The name of the variant</param>
-    /// <param name="description">The description of the variant</param>
-    /// <param name="price">The price of the variant</param>
-    /// <param name="attachments">The attachments of the variant</param>
-    /// <returns>The created variant object</returns>
-    /// <exception cref="InvalidPriceException"></exception>
-    Task<ProductVariant> AddSellableAsync(
-        EntityKey<User> userId,
-        EntityKey<Product> productId,
-        string name,
-        string? description,
-        decimal price,
+        ProductVariantType type,
         IEnumerable<IUploadFile>? attachments = null
      );
 

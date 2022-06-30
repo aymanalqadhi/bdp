@@ -13,8 +13,8 @@ public sealed class ProductVariantsService : IProductVariantsService
 {
     #region Fields
 
-    private readonly IUnitOfWork _uow;
     private readonly IAttachmentsService _attachmentsSvc;
+    private readonly IUnitOfWork _uow;
 
     #endregion Fields
 
@@ -35,41 +35,36 @@ public sealed class ProductVariantsService : IProductVariantsService
     #region Public Methods
 
     /// <inheritdoc/>
-    public Task<ProductVariant> AddReservableAsync(
+    public async Task<ProductVariant> AddAsync(
         EntityKey<User> userId,
         EntityKey<Product> productId,
         string name,
         string? description,
         decimal price,
+        ProductVariantType type,
         IEnumerable<IUploadFile>? attachments = null)
     {
-        return AddVariantAsync(
-            userId,
-            productId,
-            ProductVariantType.Reservable,
-            name,
-            description,
-            price,
-            attachments);
-    }
+        InvalidPriceException.ValidatePrice(price);
 
-    /// <inheritdoc/>
-    public Task<ProductVariant> AddSellableAsync(
-        EntityKey<User> userId,
-        EntityKey<Product> productId,
-        string name,
-        string? description,
-        decimal price,
-        IEnumerable<IUploadFile>? attachments = null)
-    {
-        return AddVariantAsync(
-            userId,
-            productId,
-            ProductVariantType.Reservable,
-            name,
-            description,
-            price,
-            attachments);
+        var product = await _uow.Products.Query()
+            .FindWithOwnershipValidationAsync(userId, productId);
+
+        var variant = new ProductVariant
+        {
+            Name = name,
+            Description = description,
+            Price = price,
+            Type = type,
+            Product = product,
+        };
+
+        if (attachments is not null)
+            variant.Attachments = await _attachmentsSvc.SaveAllAsync(attachments).ToListAsync();
+
+        _uow.ProductVariants.Add(variant);
+        await _uow.CommitAsync();
+
+        return variant;
     }
 
     /// <inheritdoc/>
@@ -114,40 +109,4 @@ public sealed class ProductVariantsService : IProductVariantsService
     }
 
     #endregion Public Methods
-
-    #region Private Methods
-
-    private async Task<ProductVariant> AddVariantAsync(
-        EntityKey<User> userId,
-        EntityKey<Product> productId,
-        ProductVariantType type,
-        string name,
-        string? description,
-        decimal price,
-        IEnumerable<IUploadFile>? attachments = null)
-    {
-        InvalidPriceException.ValidatePrice(price);
-
-        var product = await _uow.Products.Query()
-            .FindWithOwnershipValidationAsync(userId, productId);
-
-        var variant = new ProductVariant
-        {
-            Name = name,
-            Description = description,
-            Price = price,
-            Type = type,
-            Product = product,
-        };
-
-        if (attachments is not null)
-            variant.Attachments = await _attachmentsSvc.SaveAllAsync(attachments).ToListAsync();
-
-        _uow.ProductVariants.Add(variant);
-        await _uow.CommitAsync();
-
-        return variant;
-    }
-
-    #endregion Private Methods
 }

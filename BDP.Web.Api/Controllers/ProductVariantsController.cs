@@ -47,21 +47,13 @@ public class ProductVariantsController : ControllerBase
         [FromRoute] EntityKey<Product> productId,
         [FromBody] CreateProductVariantRequest form)
     {
-        Func<EntityKey<User>,
-             EntityKey<Product>,
-             string,
-             string?,
-             decimal,
-             IEnumerable<IUploadFile>?, Task<ProductVariant>> fn = form.Type == ProductVariantType.Sellable
-                ? _variantsSvc.AddSellableAsync
-                : _variantsSvc.AddReservableAsync;
-
-        var variant = await fn(
+        var variant = await _variantsSvc.AddAsync(
             User.GetId(),
             productId,
             form.Name,
             form.Description,
             form.Price,
+            form.Type,
             form.Attachments?.Select(f => new WebUploadFile(f)));
 
         return CreatedAtAction(
