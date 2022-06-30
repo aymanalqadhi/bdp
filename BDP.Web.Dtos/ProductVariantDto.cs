@@ -24,6 +24,11 @@ public sealed class ProductVariantDto : MutableEntityDto<ProductVariant>
     public decimal Price { get; set; }
 
     /// <summary>
+    /// Gets or sets the type of the product variant
+    /// </summary>
+    public ProductVariantType Type { get; set; }
+
+    /// <summary>
     /// Gets or sets the list of attachments of the variant
     /// </summary>
     public IEnumerable<Uri> Attachments { get; set; } = new List<Uri>();
