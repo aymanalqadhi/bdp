@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BDP.Web.Dtos.Requests;
 
-public class FinishProfileRequest
+public class CreateProfileRequest
 {
     /// <summary>
     /// Gets or sets the full name sent in the request
