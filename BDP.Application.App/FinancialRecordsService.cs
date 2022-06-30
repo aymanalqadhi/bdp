@@ -35,7 +35,7 @@ public class FinancialRecordsService : IFinancialRecordsService
     #region Public Methods
 
     /// <inheritdoc/>
-    public Task<FinancialRecordVerification> DeclineAsync(
+    public Task<FinancialRecordVerification> RejectAsync(
         EntityKey<User> userId,
         EntityKey<FinancialRecord>
         recordId, string? notes = null,
@@ -75,7 +75,7 @@ public class FinancialRecordsService : IFinancialRecordsService
     }
 
     /// <inheritdoc/>
-    public Task<FinancialRecordVerification> VerifyAsync(
+    public Task<FinancialRecordVerification> Approve(
         EntityKey<User> userId,
         EntityKey<FinancialRecord> recordId,
         string? notes = null,

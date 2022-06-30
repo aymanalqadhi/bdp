@@ -32,7 +32,7 @@ public interface IFinancialRecordsService
     Task<decimal> CalculateUsableAsync(EntityKey<User> userId);
 
     /// <summary>
-    /// Asynchronously verifies a financial record
+    /// Asynchronously approves a financial record
     /// </summary>
     /// <param name="userId">The id of the user to verify with</param>
     /// <param name="recordId">The id of the record to verify</param>
@@ -41,14 +41,14 @@ public interface IFinancialRecordsService
     /// <returns>The created verification object</returns>
     /// <exception cref="InsufficientPermissionsException"></exception>
     /// <exception cref="FinancialRecordAlreadyVerifiedException"></exception>
-    Task<FinancialRecordVerification> VerifyAsync(
+    Task<FinancialRecordVerification> Approve(
         EntityKey<User> userId,
         EntityKey<FinancialRecord> recordId,
         string? notes = null,
         IUploadFile? document = null);
 
     /// <summary>
-    /// Asynchronously declines a financial record
+    /// Asynchronously rejects a financial record
     /// </summary>
     /// <param name="userId">The id of the user to verify with</param>
     /// <param name="recordId">The id of the record to verify</param>
@@ -57,7 +57,7 @@ public interface IFinancialRecordsService
     /// <returns>The created verification object</returns>
     /// <exception cref="InsufficientPermissionsException"></exception>
     /// <exception cref="FinancialRecordAlreadyVerifiedException"></exception>
-    Task<FinancialRecordVerification> DeclineAsync(
+    Task<FinancialRecordVerification> RejectAsync(
         EntityKey<User> userId,
         EntityKey<FinancialRecord> recordId,
         string? notes = null,
