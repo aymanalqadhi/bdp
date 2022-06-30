@@ -72,6 +72,9 @@ public class ProfilesController : ControllerBase
             form.FullName,
             form.ProfilePicture is not null
                 ? new WebUploadFile(form.ProfilePicture)
+                : null,
+            form.CoverPicture is not null
+                ? new WebUploadFile(form.CoverPicture)
                 : null
         );
 

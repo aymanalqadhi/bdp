@@ -21,9 +21,16 @@ public class CreateProfileRequest
     public string ProfileType { get; set; } = null!;
 
     /// <summary>
-    /// Gets or sets the account profile picture
+    /// Gets or sets the profile profile picture
     /// </summary>
     [MaxFileSize(1024 * 1024 * 8)]
     [AllowedExtensions(".jpg", ".png", ".jpeg")]
     public IFormFile? ProfilePicture { get; set; }
+
+    /// <summary>
+    /// Gets or sets the profile cover picture
+    /// </summary>
+    [MaxFileSize(1024 * 1024 * 8)]
+    [AllowedExtensions(".jpg", ".png", ".jpeg")]
+    public IFormFile? CoverPicture { get; set; }
 }

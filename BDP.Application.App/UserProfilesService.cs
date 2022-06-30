@@ -56,7 +56,8 @@ public class UserProfilesService : IUserProfilesService
         EntityKey<User> userId,
         UserRole role,
         string fullName,
-        IUploadFile? profilePicture = null)
+        IUploadFile? profilePicture = null,
+        IUploadFile? coverPicture = null)
     {
         await using var tx = await _uow.BeginTransactionAsync();
 
@@ -79,6 +80,9 @@ public class UserProfilesService : IUserProfilesService
 
         if (profilePicture is not null)
             profile.ProfilePicture = await _attachmentsSvc.SaveAsync(profilePicture);
+
+        if (coverPicture is not null)
+            profile.CoverPicture = await _attachmentsSvc.SaveAsync(coverPicture);
 
         _uow.Users.Update(user);
         _uow.UserProfiles.Add(profile);

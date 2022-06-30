@@ -30,11 +30,13 @@ public interface IUserProfilesService
     /// <param name="role">The role to set for the user</param>
     /// <param name="fullName">The full name of the user</param>
     /// <param name="profilePicture">(optional) profile picture file</param>
+    /// <param name="coverPicture">(optional> cover picture file</param>
     /// <returns>The created user profile</returns>
     /// <exception cref="ExistingProfileFoundException"></exception>
     Task<UserProfile> CreateAsync(
         EntityKey<User> userId,
         UserRole role,
         string fullName,
-        IUploadFile? profilePicture = null);
+        IUploadFile? profilePicture = null,
+        IUploadFile? coverPicture = null);
 }
