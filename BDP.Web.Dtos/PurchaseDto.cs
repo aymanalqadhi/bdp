@@ -11,7 +11,7 @@ public abstract class PurchaseDto<TEntity> : EntityDto<TEntity>
     /// <summary>
     /// Gets or sets whether the purchase was accepted by the offering party
     /// </summary>
-    public bool IsEarlyAccepted { get; set; } = false;
+    public bool? IsEarlyAccepted { get; set; } = false;
 
     /// <summary>
     /// Gets or sets the payment transaction of the purchase
